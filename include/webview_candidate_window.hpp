@@ -24,7 +24,6 @@ class WebviewCandidateWindow : public CandidateWindow {
   private:
     void set_transparent_background();
     webview::webview w_;
-    std::thread thread_;
 };
 } // namespace candidate_window
 #endif
