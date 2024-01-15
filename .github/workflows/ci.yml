@@ -34,6 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          brew install ninja
           ./install-deps.sh ${{ matrix.arch }}
 
       - name: Build
