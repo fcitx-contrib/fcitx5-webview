@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background: rgba(0, 0, 0, 0);
+      }
+      .candidates {
+        display: flex;
+      }
+      .candidates.vertical {
+        flex-direction: column;
+      }
+      .candidates.horizontal {
+        flex-direction: row;
+      }
+      .candidate {
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div class="preedit"></div>
+      <div class="candidates">
+      </div>
+    </div>
+    <script>
+      const candidates = document.querySelector(".candidates")
+
+      function setLayout(layout) {
+        switch (layout) {
+        case 0:
+          candidates.classList.remove("vertical")
+          candidates.classList.add("horizontal")
+          break
+        case 1:
+          candidates.classList.remove("horizontal")
+          candidates.classList.add("vertical")
+        }
+      }
+
+      function setCandidates(cands) {
+        candidates.innerHTML = ""
+        cands = JSON.parse(cands)
+        for (let i = 0; i < cands.length; ++i) {
+          const candidate = document.createElement("div")
+          candidate.classList.add("candidate")
+          const text = document.createElement("div")
+          text.classList.add("text")
+          text.innerHTML = cands[i]
+          candidate.appendChild(text)
+          candidates.appendChild(candidate)
+        }
+      }
+    </script>
+  </body>
+</html>
