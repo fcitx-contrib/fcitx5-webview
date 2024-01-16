@@ -19,6 +19,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_select_callback(std::function<void(size_t index)>) override {}
     void set_style(const void *style) override{};
     void show() override;
+    void show(float x, float y) override;
     void hide() override;
 
   private:

@@ -48,10 +48,31 @@ void WebviewCandidateWindow::set_candidates(
 }
 
 void WebviewCandidateWindow::show() {
-    [static_cast<NSWindow *>(w_.window()) makeKeyAndOrderFront:nil];
+    dispatch_async(dispatch_get_main_queue(), ^void() {
+        auto window = static_cast<NSWindow *>(w_.window());
+        [window setIsVisible:YES];
+        [window orderFront:nil];
+    });
 }
+
+void WebviewCandidateWindow::show(float x, float y) {
+    dispatch_async(dispatch_get_main_queue(), ^void() {
+        auto window = static_cast<NSWindow *>(w_.window());
+        NSPoint origin;
+        origin.x = x;
+        origin.y = y;
+        [window orderFront:nil];
+        [window setFrameOrigin:origin];
+        [window setIsVisible:YES];
+    });
+}
+
 void WebviewCandidateWindow::hide() {
-    [static_cast<NSWindow *>(w_.window()) orderBack:nil];
+    dispatch_async(dispatch_get_main_queue(), ^void() {
+        auto window = static_cast<NSWindow *>(w_.window());
+        [window orderBack:nil];
+        [window setIsVisible:NO];
+    });
 }
 
 } // namespace candidate_window
