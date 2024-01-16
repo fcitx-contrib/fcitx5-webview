@@ -13,6 +13,7 @@ WebviewCandidateWindow::WebviewCandidateWindow() {
                                     styleMask:NSWindowStyleMaskBorderless
                                       backing:NSBackingStoreBuffered
                                         defer:NO];
+    [window setLevel:NSPopUpMenuWindowLevel];
     w_ = webview::webview(1, window);
     set_transparent_background();
     w_.set_html(HTML_TEMPLATE);
