@@ -7,7 +7,6 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
-#include <sys/_types/_size_t.h>
 
 namespace candidate_window {
 class WebviewCandidateWindow : public CandidateWindow {
@@ -24,7 +23,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_highlight_callback(std::function<void(size_t index)>) override {}
     void set_select_callback(std::function<void(size_t index)>) override {}
     void set_style(const void *style) override{};
-    void show(float x, float y) override;
+    void show(double x, double y) override;
     void hide() override;
 
   private:
@@ -73,7 +72,7 @@ class WebviewCandidateWindow : public CandidateWindow {
                 j, std::make_index_sequence<std::tuple_size_v<ArgsTp>>{});
             if constexpr (std::is_void_v<Ret>) {
                 std::apply(f, args);
-                return "undefined";
+                return "";
             } else {
                 auto ret = std::apply(f, args);
                 return nlohmann::json(ret).dump();

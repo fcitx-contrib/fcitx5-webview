@@ -13,8 +13,14 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                                             defer:NO]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
-    bind("_reportSize",
-         [](int w, int h) { std::cerr << w << ", " << h << "\n"; });
+    bind("_resize", [this](double width, double height) {
+        NSWindow *window = static_cast<NSWindow *>(w_.window());
+        NSRect frame = [window frame];
+        [window
+            setFrame:NSMakeRect(frame.origin.x, frame.origin.y, width, height)
+             display:NO
+             animate:NO];
+    });
     w_.set_html(HTML_TEMPLATE);
 }
 
@@ -39,7 +45,7 @@ void WebviewCandidateWindow::set_candidates(
     invoke_js("setCandidates", candidates, highlighted);
 }
 
-void WebviewCandidateWindow::show(float x, float y) {
+void WebviewCandidateWindow::show(double x, double y) {
     auto window = static_cast<NSWindow *>(w_.window());
     NSPoint origin;
     origin.x = x;

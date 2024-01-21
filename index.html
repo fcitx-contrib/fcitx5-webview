@@ -4,6 +4,8 @@
     <style>
       body {
         background: rgba(0, 0, 0, 0);
+        margin: 0;
+        overflow: hidden;
       }
       .panel {
         overflow: hidden;
@@ -46,7 +48,8 @@
       </div>
     </div>
     <script>
-      const candidates = document.querySelector(".candidates")
+      const panel = document.querySelector(".panel")
+      const candidates = panel.querySelector(".candidates")
 
       function setLayout(layout) {
         switch (layout) {
@@ -74,10 +77,9 @@
           candidate.appendChild(text)
           candidates.appendChild(candidate)
         }
+        const rect = panel.getBoundingClientRect()
+        _resize(rect.width, rect.height)
       }
-      setTimeout(() => {
-          _reportSize(233, 244)
-      }, 1000)
     </script>
   </body>
 </html>
