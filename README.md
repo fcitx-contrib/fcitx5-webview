@@ -11,8 +11,8 @@ Just edit [index.html](index.html) and view it in a browser.
 
 Execute the following JavaScript code to show candidates:
 ```js
-_resize = console.log
 setCandidates(["虚假的", "🀄", "candidates"], 0)
+setLayout(1) // vertical
 ```
 ## Build
 ```sh

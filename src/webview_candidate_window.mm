@@ -1,7 +1,7 @@
 #include "webview_candidate_window.hpp"
 #include "html_template.hpp"
 #import <WebKit/WKWebView.h>
-#include <iostream>
+#include <algorithm>
 #include <sstream>
 
 namespace candidate_window {
@@ -13,13 +13,29 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                                             defer:NO]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
-    bind("_resize", [this](double width, double height) {
+    bind("_resize", [this](double x, double y, double width, double height) {
+        const int gap = 4;
+        const int preedit_height = 24;
+        int screen_width = [[NSScreen mainScreen] frame].size.width;
+
+        if (x + width > screen_width) {
+            x = screen_width - width;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (height + gap > y) { // No enough space underneath
+            y = std::max<double>(y + preedit_height + gap, 0);
+        } else {
+            y -= height + gap;
+        }
+
         NSWindow *window = static_cast<NSWindow *>(w_.window());
-        NSRect frame = [window frame];
-        [window
-            setFrame:NSMakeRect(frame.origin.x, frame.origin.y, width, height)
-             display:NO
-             animate:NO];
+        [window setFrame:NSMakeRect(x, y, width, height)
+                 display:YES
+                 animate:NO];
+        [window orderFront:nil];
+        [window setIsVisible:YES];
     });
     w_.set_html(HTML_TEMPLATE);
 }
@@ -46,13 +62,7 @@ void WebviewCandidateWindow::set_candidates(
 }
 
 void WebviewCandidateWindow::show(double x, double y) {
-    auto window = static_cast<NSWindow *>(w_.window());
-    NSPoint origin;
-    origin.x = x;
-    origin.y = y;
-    [window orderFront:nil];
-    [window setFrameOrigin:origin];
-    [window setIsVisible:YES];
+    invoke_js("resize", x, y);
 }
 
 void WebviewCandidateWindow::hide() {
