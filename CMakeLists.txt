@@ -11,7 +11,7 @@ if(NOT CMAKE_OSX_ARCHITECTURES)
 endif()
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(JsonC REQUIRED IMPORTED_TARGET "json-c")
+pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
 include_directories(webview)
 add_custom_target(patch_webview

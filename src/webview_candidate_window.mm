@@ -1,8 +1,7 @@
-#include "webview_candidate_window.hpp"
 #include "html_template.hpp"
+#include "webview_candidate_window.hpp"
 #import <WebKit/WKWebView.h>
 #include <iostream>
-#include <json-c/json.h>
 #include <sstream>
 
 namespace candidate_window {
@@ -14,9 +13,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                                             defer:NO]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
-    w_.bind("_reportSize", [](std::string args) -> std::string {
-        std::cerr << args << "\n";
-        return {};
+    bind("_reportSize", [](int w, int h) {
+        std::cerr << w << ", " << h << "\n";
     });
     w_.set_html(HTML_TEMPLATE);
 }
@@ -34,22 +32,12 @@ void WebviewCandidateWindow::set_transparent_background() {
 }
 
 void WebviewCandidateWindow::set_layout(layout_t layout) {
-    std::stringstream ss;
-    ss << "setLayout(" << layout << ")";
-    w_.eval(ss.str());
+    invoke_js("setLayout", layout);
 }
 
 void WebviewCandidateWindow::set_candidates(
     const std::vector<std::string> &candidates, int highlighted) {
-    json_object *array = json_object_new_array();
-    for (const auto &candidate : candidates) {
-        json_object_array_add(array, json_object_new_string(candidate.c_str()));
-    }
-    std::string json = json_object_to_json_string(array);
-    std::stringstream ss;
-    ss << "setCandidates('" << json << "', " << highlighted << ")";
-    w_.eval(ss.str());
-    json_object_put(array);
+    invoke_js<void,true>("setCandidates", candidates, highlighted);
 }
 
 void WebviewCandidateWindow::show(float x, float y) {

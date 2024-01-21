@@ -62,7 +62,6 @@
 
       function setCandidates(cands, highlighted) {
         candidates.innerHTML = ""
-        cands = JSON.parse(cands)
         for (let i = 0; i < cands.length; ++i) {
           const candidate = document.createElement("div")
           candidate.classList.add("candidate")
@@ -77,7 +76,7 @@
         }
       }
       setTimeout(() => {
-          _reportSize("233", "244")
+          _reportSize(233, 244)
       }, 1000)
     </script>
   </body>
