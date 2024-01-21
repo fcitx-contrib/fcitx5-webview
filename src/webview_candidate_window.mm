@@ -1,21 +1,23 @@
 #include "webview_candidate_window.hpp"
 #include "html_template.hpp"
 #import <WebKit/WKWebView.h>
+#include <iostream>
 #include <json-c/json.h>
 #include <sstream>
 
 namespace candidate_window {
 
-WebviewCandidateWindow::WebviewCandidateWindow() {
-    NSRect frame = NSMakeRect(0, 0, 400, 300);
-    NSWindow *window =
-        [[NSWindow alloc] initWithContentRect:frame
-                                    styleMask:NSWindowStyleMaskBorderless
-                                      backing:NSBackingStoreBuffered
-                                        defer:NO];
-    [window setLevel:NSPopUpMenuWindowLevel];
-    w_ = webview::webview(1, window);
+WebviewCandidateWindow::WebviewCandidateWindow()
+    : w_(1, [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                                        styleMask:NSWindowStyleMaskBorderless
+                                          backing:NSBackingStoreBuffered
+                                            defer:NO]) {
+    [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
+    w_.bind("_reportSize", [](std::string args) -> std::string {
+        std::cerr << args << "\n";
+        return {};
+    });
     w_.set_html(HTML_TEMPLATE);
 }
 
