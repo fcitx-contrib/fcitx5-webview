@@ -1,22 +1,43 @@
 #include "webview_candidate_window.hpp"
 #include "html_template.hpp"
 #import <WebKit/WKWebView.h>
-#include <json-c/json.h>
+#include <algorithm>
 #include <sstream>
 
 namespace candidate_window {
 
-WebviewCandidateWindow::WebviewCandidateWindow() {
-    NSRect frame = NSMakeRect(0, 0, 400, 300);
-    NSWindow *window =
-        [[NSWindow alloc] initWithContentRect:frame
-                                    styleMask:NSWindowStyleMaskBorderless
-                                      backing:NSBackingStoreBuffered
-                                        defer:NO];
-    w_ = webview::webview(1, window);
+WebviewCandidateWindow::WebviewCandidateWindow()
+    : w_(1, [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                                        styleMask:NSWindowStyleMaskBorderless
+                                          backing:NSBackingStoreBuffered
+                                            defer:NO]) {
+    [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
+    bind("_resize", [this](double x, double y, double width, double height) {
+        const int gap = 4;
+        const int preedit_height = 24;
+        int screen_width = [[NSScreen mainScreen] frame].size.width;
+
+        if (x + width > screen_width) {
+            x = screen_width - width;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (height + gap > y) { // No enough space underneath
+            y = std::max<double>(y + preedit_height + gap, 0);
+        } else {
+            y -= height + gap;
+        }
+
+        NSWindow *window = static_cast<NSWindow *>(w_.window());
+        [window setFrame:NSMakeRect(x, y, width, height)
+                 display:YES
+                 animate:NO];
+        [window orderFront:nil];
+        [window setIsVisible:YES];
+    });
     w_.set_html(HTML_TEMPLATE);
-    thread_ = std::thread([this] { w_.run(); });
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {}
@@ -32,27 +53,22 @@ void WebviewCandidateWindow::set_transparent_background() {
 }
 
 void WebviewCandidateWindow::set_layout(layout_t layout) {
-    std::stringstream ss;
-    ss << "setLayout(" << layout << ")";
-    w_.eval(ss.str());
+    invoke_js("setLayout", layout);
 }
 
 void WebviewCandidateWindow::set_candidates(
-    const std::vector<std::string> &candidates) {
-    json_object *array = json_object_new_array();
-    for (const auto &candidate : candidates) {
-        json_object_array_add(array, json_object_new_string(candidate.c_str()));
-    }
-    std::string json = json_object_to_json_string(array);
-    w_.eval("setCandidates('" + json + "')");
-    json_object_put(array);
+    const std::vector<std::string> &candidates, int highlighted) {
+    invoke_js("setCandidates", candidates, highlighted);
 }
 
-void WebviewCandidateWindow::show() {
-    [static_cast<NSWindow *>(w_.window()) makeKeyAndOrderFront:nil];
+void WebviewCandidateWindow::show(double x, double y) {
+    invoke_js("resize", x, y);
 }
+
 void WebviewCandidateWindow::hide() {
-    [static_cast<NSWindow *>(w_.window()) orderBack:nil];
+    auto window = static_cast<NSWindow *>(w_.window());
+    [window orderBack:nil];
+    [window setIsVisible:NO];
 }
 
 } // namespace candidate_window

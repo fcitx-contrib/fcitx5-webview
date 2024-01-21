@@ -3,7 +3,15 @@
   <head>
     <style>
       body {
-        background: rgba(0, 0, 0, 0);
+        background: rgba(0, 0, 0, 0); /* transparent, draw panel as you wish */
+        margin: 0; /* default is 8px */
+        overflow: hidden; /* no scrollbar */
+        width: 1920px; /* big enough, disregard window size */
+        height: 1080px;
+      }
+      .panel {
+        overflow: hidden; /* needed because of border-radius */
+        display: inline-block; /* wrap content, not fill parent */
       }
       .candidates {
         display: flex;
@@ -15,18 +23,40 @@
         flex-direction: row;
       }
       .candidate {
-        padding: 8px;
+        min-height: 26px; /* compromise to 🀄's height */
+        display: flex;
+        align-items: center; /* English words have lower height */
+      }
+    </style>
+    <style id="macos">
+      /* use Digital Color Meter with sRGB mode to get correct color */
+      .macos.panel {
+        border: 1px solid #5c5c5c;
+        border-radius: 6px;
+        background-color: #333333;
+        font-family: sans-serif;
+      }
+      .macos .candidate {
+        color: white;
+        padding: 3px 7px 3px 7px;
+      }
+      .macos .candidate.highlighted {
+        background-color: #0059d0;
+      }
+      .macos .candidates.vertical .candidate:not(:first-child) {
+        border-top: 1px solid #5c5c5c;
       }
     </style>
   </head>
   <body>
-    <div class="panel">
+    <div class="panel macos">
       <div class="preedit"></div>
       <div class="candidates">
       </div>
     </div>
     <script>
-      const candidates = document.querySelector(".candidates")
+      const panel = document.querySelector(".panel")
+      const candidates = panel.querySelector(".candidates")
 
       function setLayout(layout) {
         switch (layout) {
@@ -40,18 +70,25 @@
         }
       }
 
-      function setCandidates(cands) {
+      function setCandidates(cands, highlighted) {
         candidates.innerHTML = ""
-        cands = JSON.parse(cands)
         for (let i = 0; i < cands.length; ++i) {
           const candidate = document.createElement("div")
           candidate.classList.add("candidate")
+          if (i === highlighted) {
+            candidate.classList.add("highlighted")
+          }
           const text = document.createElement("div")
           text.classList.add("text")
           text.innerHTML = cands[i]
           candidate.appendChild(text)
           candidates.appendChild(candidate)
         }
+      }
+
+      function resize(x, y) {
+        const rect = panel.getBoundingClientRect()
+        _resize(x, y, rect.width, rect.height)
       }
     </script>
   </body>

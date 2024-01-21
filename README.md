@@ -5,6 +5,15 @@ powered by [webview](https://github.com/webview/webview).
 
 It can be developed independently of fcitx5.
 
+## Tweak style
+To change style, you don't need to build the project.
+Just edit [index.html](index.html) and view it in a browser.
+
+Execute the following JavaScript code to show candidates:
+```js
+setCandidates(["虚假的", "🀄", "candidates"], 0)
+setLayout(1) // vertical
+```
 ## Build
 ```sh
 ./install-deps.sh
