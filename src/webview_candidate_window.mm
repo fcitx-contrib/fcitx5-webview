@@ -1,5 +1,5 @@
-#include "html_template.hpp"
 #include "webview_candidate_window.hpp"
+#include "html_template.hpp"
 #import <WebKit/WKWebView.h>
 #include <iostream>
 #include <sstream>
@@ -13,9 +13,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                                             defer:NO]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
-    bind("_reportSize", [](int w, int h) {
-        std::cerr << w << ", " << h << "\n";
-    });
+    bind("_reportSize",
+         [](int w, int h) { std::cerr << w << ", " << h << "\n"; });
     w_.set_html(HTML_TEMPLATE);
 }
 
@@ -37,7 +36,7 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 
 void WebviewCandidateWindow::set_candidates(
     const std::vector<std::string> &candidates, int highlighted) {
-    invoke_js<void,true>("setCandidates", candidates, highlighted);
+    invoke_js("setCandidates", candidates, highlighted);
 }
 
 void WebviewCandidateWindow::show(float x, float y) {

@@ -1,13 +1,13 @@
 #ifndef WEBVIEW_CANDIDATE_WINDOW_H
 #define WEBVIEW_CANDIDATE_WINDOW_H
 
-#include <iostream>
-#include <sstream>
-#include <nlohmann/json.hpp>
-#include <sys/_types/_size_t.h>
 #include "candidate_window.hpp"
 #include "utility.hpp"
 #include "webview.h"
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <sstream>
+#include <sys/_types/_size_t.h>
 
 namespace candidate_window {
 class WebviewCandidateWindow : public CandidateWindow {
@@ -64,8 +64,7 @@ class WebviewCandidateWindow : public CandidateWindow {
 
   private:
     /* Generic bind */
-    template <typename F>
-    inline void bind(const std::string &name, F f) {
+    template <typename F> inline void bind(const std::string &name, F f) {
         using Ret = typename function_traits<F>::return_type;
         using ArgsTp = typename function_traits<F>::args_tuple;
         w_.bind(name, [=](std::string args_json) -> std::string {
