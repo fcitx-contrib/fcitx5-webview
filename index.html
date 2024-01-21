@@ -3,9 +3,10 @@
   <head>
     <style>
       body {
-        /* XXX Just for testing */
-        background: grey;
-        border-radius: 5px;
+        background: rgba(0, 0, 0, 0);
+      }
+      .panel {
+        overflow: hidden;
       }
       .candidates {
         display: flex;
@@ -16,13 +17,25 @@
       .candidates.horizontal {
         flex-direction: row;
       }
-      .candidate {
-        padding: 8px;
+    </style>
+    <style id="macos">
+      .macos.panel {
+        border: 1px solid #5c5c5c;
+        border-radius: 6px;
+        background-color: #333333;
+        font-family: sans-serif;
+      }
+      .macos .candidate {
+        color: white;
+        padding: 3px 7px 3px 7px;
+      }
+      .macos .candidate.highlighted {
+        background-color: #0059d0;
       }
     </style>
   </head>
   <body>
-    <div class="panel">
+    <div class="panel macos">
       <div class="preedit"></div>
       <div class="candidates">
       </div>
@@ -42,12 +55,15 @@
         }
       }
 
-      function setCandidates(cands) {
+      function setCandidates(cands, highlighted) {
         candidates.innerHTML = ""
         cands = JSON.parse(cands)
         for (let i = 0; i < cands.length; ++i) {
           const candidate = document.createElement("div")
           candidate.classList.add("candidate")
+          if (i === highlighted) {
+            candidate.classList.add("highlighted")
+          }
           const text = document.createElement("div")
           text.classList.add("text")
           text.innerHTML = cands[i]

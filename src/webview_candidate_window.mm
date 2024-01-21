@@ -38,13 +38,15 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 }
 
 void WebviewCandidateWindow::set_candidates(
-    const std::vector<std::string> &candidates) {
+    const std::vector<std::string> &candidates, int highlighted) {
     json_object *array = json_object_new_array();
     for (const auto &candidate : candidates) {
         json_object_array_add(array, json_object_new_string(candidate.c_str()));
     }
     std::string json = json_object_to_json_string(array);
-    w_.eval("setCandidates('" + json + "')");
+    std::stringstream ss;
+    ss << "setCandidates('" << json << "', " << highlighted << ")";
+    w_.eval(ss.str());
     json_object_put(array);
 }
 

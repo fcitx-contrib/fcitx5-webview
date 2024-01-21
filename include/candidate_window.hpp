@@ -27,7 +27,8 @@ class CandidateWindow {
     virtual void set_preedit(const std::vector<std::string> &text,
                              const std::vector<format_t> format) = 0;
     virtual void set_labels(const std::vector<std::string> &labels) = 0;
-    virtual void set_candidates(const std::vector<std::string> &candidates) = 0;
+    virtual void set_candidates(const std::vector<std::string> &candidates,
+                                int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_select_callback(std::function<void(size_t index)>) = 0;
     virtual void set_style(const void *style) = 0;

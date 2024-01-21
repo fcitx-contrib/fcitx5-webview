@@ -3,6 +3,7 @@
 
 #include "candidate_window.hpp"
 #include "webview.h"
+#include <sys/_types/_size_t.h>
 
 namespace candidate_window {
 class WebviewCandidateWindow : public CandidateWindow {
@@ -14,7 +15,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_preedit(const std::vector<std::string> &text,
                      const std::vector<format_t> format) override {}
     void set_labels(const std::vector<std::string> &labels) override {}
-    void set_candidates(const std::vector<std::string> &candidates) override;
+    void set_candidates(const std::vector<std::string> &candidates,
+                        int highlighted) override;
     void set_highlight_callback(std::function<void(size_t index)>) override {}
     void set_select_callback(std::function<void(size_t index)>) override {}
     void set_style(const void *style) override{};

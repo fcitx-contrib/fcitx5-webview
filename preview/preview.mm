@@ -13,7 +13,7 @@ int main(int argc, const char *argv[]) {
         auto t = std::thread([&] {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             candidateWindow->set_layout(candidate_window::layout_t::vertical);
-            candidateWindow->set_candidates({"虚假的", "候选词"});
+            candidateWindow->set_candidates({"虚假的", "候选词"}, 0);
             candidateWindow->show(100, 200);
         });
         [application run];
