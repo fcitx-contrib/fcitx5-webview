@@ -16,6 +16,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_layout(layout_t layout) override;
     void set_preedit_mode(bool enabled) override {}
     void update_input_panel(const formatted<std::string> &preedit,
+                            int preedit_cursor,
                             const formatted<std::string> &auxUp,
                             const formatted<std::string> &auxDown) override;
     void set_labels(const std::vector<std::string> &labels) override {}

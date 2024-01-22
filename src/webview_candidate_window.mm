@@ -130,7 +130,8 @@ static std::string formatted_to_html(const formatted<std::string> &f) {
 }
 
 void WebviewCandidateWindow::update_input_panel(
-    const formatted<std::string> &preedit, const formatted<std::string> &auxUp,
+    const formatted<std::string> &preedit, int preedit_cursor,
+    const formatted<std::string> &auxUp,
     const formatted<std::string> &auxDown) {
     invoke_js("updateInputPanel", formatted_to_html(preedit),
               formatted_to_html(auxUp), formatted_to_html(auxDown));

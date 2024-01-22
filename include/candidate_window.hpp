@@ -27,6 +27,7 @@ class CandidateWindow {
     virtual void set_layout(layout_t layout) = 0;
     virtual void set_preedit_mode(bool enabled) = 0;
     virtual void update_input_panel(const formatted<std::string> &preedit,
+                                    int preedit_cursor,
                                     const formatted<std::string> &auxUp,
                                     const formatted<std::string> &auxDown) = 0;
     virtual void set_labels(const std::vector<std::string> &labels) = 0;
