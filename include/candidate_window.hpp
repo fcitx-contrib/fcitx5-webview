@@ -30,10 +30,16 @@ class CandidateWindow {
     virtual void set_candidates(const std::vector<std::string> &candidates,
                                 int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
-    virtual void set_select_callback(std::function<void(size_t index)>) = 0;
     virtual void set_style(const void *style) = 0;
     virtual void show(double x, double y) = 0;
     virtual void hide() = 0;
+
+    void set_select_callback(std::function<void(size_t index)> callback) {
+        select_callback = callback;
+    }
+
+  protected:
+    std::function<void(size_t index)> select_callback;
 };
 } // namespace candidate_window
 #endif

@@ -21,7 +21,6 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_candidates(const std::vector<std::string> &candidates,
                         int highlighted) override;
     void set_highlight_callback(std::function<void(size_t index)>) override {}
-    void set_select_callback(std::function<void(size_t index)>) override {}
     void set_style(const void *style) override{};
     void show(double x, double y) override;
     void hide() override;
