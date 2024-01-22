@@ -8,6 +8,7 @@
         overflow: hidden; /* no scrollbar */
         width: 1920px; /* big enough, disregard window size */
         height: 1080px;
+        user-select: none; /* disable text select */
       }
       .panel {
         overflow: hidden; /* needed because of border-radius */
@@ -57,6 +58,21 @@
     <script>
       const panel = document.querySelector(".panel")
       const candidates = panel.querySelector(".candidates")
+
+      candidates.addEventListener('click', e => {
+        let { target } = e
+        if (target === candidates) {
+          return
+        }
+        while (target.parentElement !== candidates) {
+          target = target.parentElement
+        }
+        for (let i = 0; i < candidates.childElementCount; ++i) {
+          if (candidates.children[i] === target) {
+            return _select(i)
+          }
+        }
+      })
 
       function setLayout(layout) {
         switch (layout) {

@@ -13,6 +13,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                                             defer:NO]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
+
     bind("_resize", [this](double x, double y, double width, double height) {
         const int gap = 4;
         const int preedit_height = 24;
@@ -37,6 +38,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         [window orderFront:nil];
         [window setIsVisible:YES];
     });
+
+    bind("_select", [this](size_t i) { select_callback(i); });
+
     w_.set_html(HTML_TEMPLATE);
 }
 
