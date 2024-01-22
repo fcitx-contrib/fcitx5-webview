@@ -22,7 +22,15 @@ setLayout(1) // vertical
 PKG_CONFIG_PATH=/tmp/fcitx5/lib/pkgconfig cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ```
+
 ## Preview
 ```sh
 build/preview/preview.app/Contents/MacOS/preview
 ```
+
+## Notes for Developers
+
+This library, fcitx5-webview, is intended to be a generic UI for input methods, regardless of the input method and the actual UI technology, so, disregarding either part of its name,
+
+1. Do NOT depend on fcitx5 directly.
+2. The API should be abstract enough to support non-web, native UI implementations.
