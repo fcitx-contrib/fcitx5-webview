@@ -15,8 +15,9 @@ class WebviewCandidateWindow : public CandidateWindow {
     ~WebviewCandidateWindow();
     void set_layout(layout_t layout) override;
     void set_preedit_mode(bool enabled) override {}
-    void set_preedit(const std::vector<std::string> &text,
-                     const std::vector<format_t> format) override {}
+    void update_input_panel(const formatted<std::string> &preedit,
+                            const formatted<std::string> &auxUp,
+                            const formatted<std::string> &auxDown) override;
     void set_labels(const std::vector<std::string> &labels) override {}
     void set_candidates(const std::vector<std::string> &candidates,
                         int highlighted) override;
@@ -57,8 +58,6 @@ class WebviewCandidateWindow : public CandidateWindow {
     }
 
     inline void build_js_args(std::stringstream &ss) {}
-
-    void error(int) {}
 
   private:
     /* Generic bind */

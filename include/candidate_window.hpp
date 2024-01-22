@@ -13,19 +13,22 @@ enum layout_t {
 
 enum format_t {
     Underline = (1 << 3),
-    HighLight = (1 << 4),
+    Highlight = (1 << 4),
     Bold = (1 << 6),
     Strike = (1 << 7),
     Italic = (1 << 8),
 };
+
+template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
 class CandidateWindow {
   public:
     virtual ~CandidateWindow() = default;
     virtual void set_layout(layout_t layout) = 0;
     virtual void set_preedit_mode(bool enabled) = 0;
-    virtual void set_preedit(const std::vector<std::string> &text,
-                             const std::vector<format_t> format) = 0;
+    virtual void update_input_panel(const formatted<std::string> &preedit,
+                                    const formatted<std::string> &auxUp,
+                                    const formatted<std::string> &auxDown) = 0;
     virtual void set_labels(const std::vector<std::string> &labels) = 0;
     virtual void set_candidates(const std::vector<std::string> &candidates,
                                 int highlighted) = 0;

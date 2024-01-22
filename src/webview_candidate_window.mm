@@ -75,4 +75,65 @@ void WebviewCandidateWindow::hide() {
     [window setIsVisible:NO];
 }
 
+static void build_html_open_tags(std::stringstream &ss, int flags) {
+    if (flags & Underline)
+        ss << "<u>";
+    if (flags & Highlight)
+        ss << "<mark>";
+    if (flags & Bold)
+        ss << "<b>";
+    if (flags & Strike)
+        ss << "<s>";
+    if (flags & Italic)
+        ss << "<i>";
+}
+
+static void build_html_close_tags(std::stringstream &ss, int flags) {
+    if (flags & Underline)
+        ss << "</u>";
+    if (flags & Highlight)
+        ss << "</mark>";
+    if (flags & Bold)
+        ss << "</b>";
+    if (flags & Strike)
+        ss << "</s>";
+    if (flags & Italic)
+        ss << "</i>";
+}
+
+static void build_html_escape(std::stringstream &ss, const std::string &str) {
+    for (char c : str) {
+        switch (c) {
+        case '<':
+            ss << "&lt;";
+            break;
+        case '>':
+            ss << "&gt;";
+            break;
+        case '&':
+            ss << "&amp;";
+            break;
+        default:
+            ss << c;
+        }
+    }
+}
+
+static std::string formatted_to_html(const formatted<std::string> &f) {
+    std::stringstream ss;
+    for (const auto &slice : f) {
+        build_html_open_tags(ss, slice.second);
+        build_html_escape(ss, slice.first);
+        build_html_close_tags(ss, slice.second);
+    }
+    return ss.str();
+}
+
+void WebviewCandidateWindow::update_input_panel(
+    const formatted<std::string> &preedit, const formatted<std::string> &auxUp,
+    const formatted<std::string> &auxDown) {
+    invoke_js("updateInputPanel", formatted_to_html(preedit),
+              formatted_to_html(auxUp), formatted_to_html(auxDown));
+}
+
 } // namespace candidate_window
