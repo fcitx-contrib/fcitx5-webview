@@ -28,6 +28,9 @@
         display: flex;
         align-items: center; /* English words have lower height */
       }
+      .hidden {
+        display: none;
+      }
     </style>
     <style id="macos">
       /* use Digital Color Meter with sRGB mode to get correct color */
@@ -37,7 +40,7 @@
         background-color: #333333;
         font-family: sans-serif;
       }
-      .macos .candidate {
+      .macos .candidate, .macos .preedit, .macos .aux-up, .macos .aux-down {
         color: white;
         padding: 3px 7px 3px 7px;
       }
@@ -51,13 +54,20 @@
   </head>
   <body>
     <div class="panel macos">
-      <div class="preedit"></div>
+      <div class="header">
+          <div class="aux-up"></div>
+          <div class="preedit"></div>
+      </div>
+      <div class="aux-down"></div>
       <div class="candidates">
       </div>
     </div>
     <script>
       const panel = document.querySelector(".panel")
       const candidates = panel.querySelector(".candidates")
+      const preedit = document.querySelector(".preedit")
+      const auxUp = document.querySelector(".aux-up")
+      const auxDown = document.querySelector(".aux-down")
 
       candidates.addEventListener('click', e => {
         let { target } = e
@@ -105,6 +115,21 @@
       function resize(x, y) {
         const rect = panel.getBoundingClientRect()
         _resize(x, y, rect.width, rect.height)
+      }
+
+      function updateElement(element, innerHTML) {
+        if (innerHTML === "") {
+            element.classList.add("hidden");
+        } else {
+            element.innerHTML = innerHTML;
+            element.classList.remove("hidden");
+        }
+      }
+
+      function updateInputPanel(preeditHTML, auxUpHTML, auxDownHTML) {
+        updateElement(preedit, preeditHTML);
+        updateElement(auxUp, auxUpHTML);
+        updateElement(auxDown, auxDownHTML);
       }
     </script>
   </body>
