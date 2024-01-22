@@ -30,7 +30,8 @@ build/preview/preview.app/Contents/MacOS/preview
 
 ## Notes for Developers
 
-This library, fcitx5-webview, is intended to be a generic UI for input methods, regardless of the input method and the actual UI technology, so, disregarding either part of its name,
+This library, fcitx5-webview, is intended to be a generic and cross-platform webview UI for input methods, regardless of the input method framework.
+So disregarding the first part of its name,
 
 1. Do NOT depend on fcitx5 directly.
-2. The API should be abstract enough to support non-web, native UI implementations.
+2. The API defined in [candidate_window.hpp](include/candidate_window.hpp) should be abstract enough to support non-web, native UI implementations.
