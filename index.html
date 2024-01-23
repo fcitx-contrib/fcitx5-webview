@@ -69,9 +69,36 @@
       const auxUp = document.querySelector(".aux-up")
       const auxDown = document.querySelector(".aux-down")
 
-      candidates.addEventListener('click', e => {
+      let cursorX = 0
+      let cursorY = 0
+      let pressed = false
+      let dragging = false
+      let startX = 0
+      let startY = 0
+
+      document.addEventListener('mousedown', e => {
+        pressed = true
+        startX = e.clientX
+        startY = e.clientY
+      })
+
+      document.addEventListener('mousemove', e => {
+        if (!pressed) {
+          return
+        }
+        dragging = true
+        // minus because macOS has bottom-left (0, 0)
+        resize(cursorX + (e.clientX - startX), cursorY - (e.clientY - startY))
+      })
+
+      document.addEventListener('mouseup', e => {
+        pressed = false
+        if (dragging) {
+          dragging = false
+          return
+        }
         let { target } = e
-        if (target === candidates) {
+        if (target === candidates || !candidates.contains(target)) {
           return
         }
         while (target.parentElement !== candidates) {
@@ -113,23 +140,25 @@
       }
 
       function resize(x, y) {
+        cursorX = x
+        cursorY = y
         const rect = panel.getBoundingClientRect()
         _resize(x, y, rect.width, rect.height)
       }
 
       function updateElement(element, innerHTML) {
         if (innerHTML === "") {
-            element.classList.add("hidden");
+            element.classList.add("hidden")
         } else {
-            element.innerHTML = innerHTML;
-            element.classList.remove("hidden");
+            element.innerHTML = innerHTML
+            element.classList.remove("hidden")
         }
       }
 
       function updateInputPanel(preeditHTML, auxUpHTML, auxDownHTML) {
-        updateElement(preedit, preeditHTML);
-        updateElement(auxUp, auxUpHTML);
-        updateElement(auxDown, auxDownHTML);
+        updateElement(preedit, preeditHTML)
+        updateElement(auxUp, auxUpHTML)
+        updateElement(auxDown, auxDownHTML)
       }
     </script>
   </body>
