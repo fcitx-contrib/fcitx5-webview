@@ -26,6 +26,7 @@
       .candidate {
         min-height: 26px; /* compromise to 🀄's height */
         display: flex;
+        gap: 6px;
         align-items: center; /* English words have lower height */
       }
       .hidden {
@@ -123,7 +124,7 @@
         }
       }
 
-      function setCandidates(cands, highlighted) {
+      function setCandidates(cands, labels, highlighted) {
         candidates.innerHTML = ""
         for (let i = 0; i < cands.length; ++i) {
           const candidate = document.createElement("div")
@@ -131,9 +132,13 @@
           if (i === highlighted) {
             candidate.classList.add("highlighted")
           }
+          const label = document.createElement("div")
+          label.classList.add("label")
+          label.innerHTML = labels[i]
           const text = document.createElement("div")
           text.classList.add("text")
           text.innerHTML = cands[i]
+          candidate.appendChild(label)
           candidate.appendChild(text)
           candidates.appendChild(candidate)
         }
