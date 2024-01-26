@@ -61,8 +61,9 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 }
 
 void WebviewCandidateWindow::set_candidates(
-    const std::vector<std::string> &candidates, int highlighted) {
-    invoke_js("setCandidates", candidates, highlighted);
+    const std::vector<std::string> &candidates,
+    const std::vector<std::string> &labels, int highlighted) {
+    invoke_js("setCandidates", candidates, labels, highlighted);
 }
 
 void WebviewCandidateWindow::show(double x, double y) {

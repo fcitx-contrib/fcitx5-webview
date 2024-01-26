@@ -9,12 +9,23 @@ It can be developed independently of fcitx5.
 To change style, you don't need to build the project.
 Just edit [index.html](index.html) and view it in a browser.
 
-Execute the following JavaScript code to show candidates:
+On macOS, it's best to use Safari since the real candidate window is rendered by WebKit.
+
+Execute the following JavaScript code to show candidates and more:
 ```js
+// Prerequisite: mock C++ callbacks to avoid throwing error.
 _select = console.log
 _resize = console.log
-setCandidates(["虚假的", "🀄", "candidates"], 0)
-setLayout(1) // vertical
+
+// Show candidates with labels, and highlight the first one.
+setCandidates(["虚假的", "🀄", "candidates"], ["1", "2", "3"], 0)
+
+// Set vertical layout. 0 means horizontal.
+setLayout(1)
+
+// Show aux-up.
+setCandidates([], [], -1)
+updateInputPanel("", "A", "")
 ```
 
 ## Build
