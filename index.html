@@ -14,6 +14,14 @@
         overflow: hidden; /* needed because of border-radius */
         display: inline-block; /* wrap content, not fill parent */
       }
+      .preedit, .aux-up, .aux-down {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .preedit.hidden, .aux-up.hidden, .aux-down.hidden {
+        display: none; /* needed because the above display has higher precedence than .hidden's */
+      }
       .candidates {
         display: flex;
       }
@@ -24,10 +32,10 @@
         flex-direction: row;
       }
       .candidate {
-        min-height: 26px; /* compromise to 🀄's height */
         display: flex;
         gap: 6px;
         align-items: center; /* English words have lower height */
+        line-height: 1em; /* align label and candidates */
       }
       .hidden {
         display: none;
@@ -43,7 +51,9 @@
       }
       .macos .candidate, .macos .preedit, .macos .aux-up, .macos .aux-down {
         color: white;
-        padding: 3px 7px 3px 7px;
+        min-height: 24px; /* compromise to 🀄's height */
+        min-width: 16px;
+        padding: 3px 7px 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
       }
       .macos .candidate.highlighted {
         background-color: #0059d0;
@@ -56,8 +66,8 @@
   <body>
     <div class="panel macos">
       <div class="header">
-          <div class="aux-up hidden"></div>
-          <div class="preedit hidden"></div>
+        <div class="aux-up hidden"></div>
+        <div class="preedit hidden"></div>
       </div>
       <div class="aux-down hidden"></div>
       <div class="candidates">
