@@ -15,20 +15,27 @@ pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
 include_directories(webview)
 add_custom_target(patch_webview
-    COMMAND git reset --hard
-    COMMAND git apply "${PROJECT_SOURCE_DIR}/patches/webview.patch"
+    COMMAND
+      [ ! -f "${PROJECT_SOURCE_DIR}/.patched" ]
+        && git reset --hard
+        && git apply "${PROJECT_SOURCE_DIR}/patches/webview.patch"
+        && touch "${PROJECT_SOURCE_DIR}/.patched"
+      || [ -f "${PROJECT_SOURCE_DIR}/.patched" ]
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/webview"
+    COMMENT "Patching webview..."
 )
 
-execute_process(
-    COMMAND pnpm run clean
-    COMMAND pnpm run build
+file(GLOB HTML_SOURCES CONFIGURE_DEPENDS "page/*")
+add_custom_command(
+    OUTPUT ${PROJECT_SOURCE_DIR}/include/html_template.hpp
+    COMMAND pnpm run clean && pnpm run build
+    COMMAND xxd -n HTML_TEMPLATE -i "${PROJECT_SOURCE_DIR}/dist/index.html" > "${PROJECT_SOURCE_DIR}/include/html_template.hpp"
+    DEPENDS ${HTML_SOURCES}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND_ERROR_IS_FATAL ANY
+    COMMENT "Generating the HTML template..."
 )
-file(READ "${PROJECT_SOURCE_DIR}/dist/index.html" HTML_TEMPLATE)
-configure_file("${PROJECT_SOURCE_DIR}/include/html_template.hpp.in"
-    "${PROJECT_SOURCE_DIR}/include/html_template.hpp"
+add_custom_target(GenerateHTML ALL
+    DEPENDS ${PROJECT_SOURCE_DIR}/include/html_template.hpp
 )
 
 add_subdirectory(src)

@@ -4,4 +4,4 @@ target_include_directories(WebviewCandidateWindow PRIVATE "${PROJECT_SOURCE_DIR}
 target_link_libraries(WebviewCandidateWindow "-framework WebKit" PkgConfig::NlohmannJson)
 target_compile_options(WebviewCandidateWindow PRIVATE "-Wno-auto-var-id")
 
-add_dependencies(WebviewCandidateWindow patch_webview)
+add_dependencies(WebviewCandidateWindow patch_webview GenerateHTML)
