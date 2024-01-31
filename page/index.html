@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @import "./generic.scss";
+    </style>
+    <style id="macos">
+      @import "./macos.scss";
+    </style>
+    <style id="user">
+      @import "./user.scss";
+    </style>
+  </head>
+  <body>
+    <div class="panel macos">
+      <div class="header">
+        <div class="aux-up hidden"></div>
+        <div class="preedit hidden"></div>
+      </div>
+      <div class="aux-down hidden"></div>
+      <div class="candidates">
+      </div>
+    </div>
+    <script type="module">
+      import './api.ts'
+    </script>
+  </body>
+</html>

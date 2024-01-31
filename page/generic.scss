@@ -1,0 +1,46 @@
+body {
+  background: rgb(0 0 0 / 0%); /* transparent, draw panel as you wish */
+  margin: 0; /* default is 8px */
+  overflow: hidden; /* no scrollbar */
+  width: 1920px; /* big enough, disregard window size */
+  height: 1080px;
+  user-select: none; /* disable text select */
+}
+
+.panel {
+  overflow: hidden; /* needed because of border-radius */
+  display: inline-block; /* wrap content, not fill parent */
+}
+
+.preedit, .aux-up, .aux-down {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &.hidden {
+    display: none; /* needed because the above display has higher precedence than .hidden's */
+  }
+}
+
+.candidates {
+  display: flex;
+
+  &.vertical {
+    flex-direction: column;
+  }
+
+  &.horizontal {
+    flex-direction: row;
+  }
+}
+
+.candidate {
+  display: flex;
+  gap: 6px;
+  align-items: center; /* English words have lower height */
+  line-height: 1em; /* align label and candidates */
+}
+
+.hidden {
+  display: none;
+}

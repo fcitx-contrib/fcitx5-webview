@@ -1,0 +1,30 @@
+{
+  "name": "fcitx5-webview",
+  "version": "0.1.0",
+  "description": "Candidate window for desktop, based on webview",
+  "type": "module",
+  "scripts": {
+    "dev": "parcel page/index.html",
+    "lint": "pnpm run eslint && pnpm run stylelint",
+    "lint:fix": "pnpm run eslint:fix && pnpm run stylelint:fix",
+    "eslint": "eslint --ext .ts,.html page",
+    "eslint:fix": "eslint --fix --ext .ts,.html page",
+    "stylelint": "stylelint page/*.scss",
+    "stylelint:fix": "stylelint --fix page/*.scss",
+    "check": "tsc --noEmit",
+    "clean": "rm -rf dist .parcel-cache",
+    "build": "parcel build page/index.html"
+  },
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "eslint": "^8.56.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-html": "^7.1.0",
+    "parcel": "^2.11.0",
+    "stylelint": "^16.2.0",
+    "stylelint-config-standard-scss": "^13.0.0",
+    "typescript": "^5.3.3"
+  }
+}

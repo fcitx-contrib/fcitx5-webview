@@ -41,7 +41,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_select", [this](size_t i) { select_callback(i); });
 
-    w_.set_html(HTML_TEMPLATE);
+    std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
+                              HTML_TEMPLATE_len);
+    w_.set_html(html_template.c_str());
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {}
