@@ -1,0 +1,24 @@
+/* use Digital Color Meter with sRGB mode to get correct color */
+.macos {
+  &.panel {
+    border: 1px solid #5c5c5c;
+    border-radius: 6px;
+    background-color: #333;
+    font-family: sans-serif;
+  }
+
+  .candidate, .preedit, .aux-up, .aux-down {
+    color: white;
+    min-height: 24px; /* compromise to 🀄's height */
+    min-width: 16px;
+    padding: 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
+  }
+
+  .candidate.highlighted {
+    background-color: #0059d0;
+  }
+
+  .candidates.vertical .candidate:not(:first-child) {
+    border-top: 1px solid #5c5c5c;
+  }
+}

@@ -20,7 +20,13 @@ add_custom_target(patch_webview
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/webview"
 )
 
-file(READ "${PROJECT_SOURCE_DIR}/index.html" HTML_TEMPLATE)
+execute_process(
+    COMMAND pnpm run clean
+    COMMAND pnpm run build
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND_ERROR_IS_FATAL ANY
+)
+file(READ "${PROJECT_SOURCE_DIR}/dist/index.html" HTML_TEMPLATE)
 configure_file("${PROJECT_SOURCE_DIR}/include/html_template.hpp.in"
     "${PROJECT_SOURCE_DIR}/include/html_template.hpp"
 )

@@ -5,11 +5,22 @@ powered by [webview](https://github.com/webview/webview).
 
 It can be developed independently of fcitx5.
 
-## Tweak style
-To change style, you don't need to build the project.
-Just edit [index.html](index.html) and view it in a browser.
+## Install Node dependencies
 
-On macOS, it's best to use Safari since the real candidate window is rendered by WebKit.
+You may use [nvm](https://github.com/nvm-sh/nvm)
+to install node, then
+
+```sh
+npm i -g pnpm
+pnpm i
+```
+
+## Tweak style
+```sh
+npm run dev
+```
+Open http://localhost:1234 with Safari,
+as the real candidate window on macOS is rendered by WebKit.
 
 Execute the following JavaScript code to show candidates and more:
 ```js
@@ -27,6 +38,10 @@ setLayout(1)
 setCandidates([], [], -1)
 updateInputPanel("", "A", "")
 ```
+
+To change style, just edit [user.scss](./page/user.scss) and refresh the page.
+In order to override predefined style in [macos.scss](./page/macos.scss),
+add `div` to the selectors so it has higher precedence.
 
 ## Build
 ```sh
