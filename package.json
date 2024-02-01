@@ -7,17 +7,20 @@
     "dev": "parcel page/index.html",
     "lint": "pnpm run eslint && pnpm run stylelint",
     "lint:fix": "pnpm run eslint:fix && pnpm run stylelint:fix",
-    "eslint": "eslint --ext .ts,.html page",
-    "eslint:fix": "eslint --fix --ext .ts,.html page",
+    "eslint": "eslint --ext .ts,.html page tests",
+    "eslint:fix": "eslint --fix --ext .ts,.html page tests",
     "stylelint": "stylelint page/*.scss",
     "stylelint:fix": "stylelint --fix page/*.scss",
     "check": "tsc --noEmit",
     "clean": "rm -rf dist .parcel-cache",
-    "build": "parcel build page/index.html"
+    "build": "parcel build page/index.html",
+    "test": "playwright test"
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@parcel/transformer-sass": "2.11.0",
+    "@playwright/test": "^1.41.1",
+    "@types/node": "^20.11.14",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",

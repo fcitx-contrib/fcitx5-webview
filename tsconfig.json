@@ -9,5 +9,5 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"]
   },
-  "include": ["page/*.ts"]
+  "include": ["page/*.ts", "tests/*.ts"]
 }
