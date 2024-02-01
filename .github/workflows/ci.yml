@@ -40,9 +40,9 @@ jobs:
         run: |
           npm i -g pnpm
           pnpm i
-          npx playwright install webkit
 
       - name: Lint and Check type
+        if: ${{ matrix.arch == 'x86_64' }}
         run: |
           pnpm run lint
           pnpm run check
@@ -59,8 +59,11 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build
 
-      - name: Build
-        run: pnpm run test
+      - name: Test
+        if: ${{ matrix.arch == 'x86_64' }}
+        run: |
+          npx playwright install webkit
+          pnpm run test
 
       - name: Setup tmate session
         if: ${{ failure() }}
