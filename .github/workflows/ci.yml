@@ -40,6 +40,7 @@ jobs:
         run: |
           npm i -g pnpm
           pnpm i
+          npx playwright install webkit
 
       - name: Lint and Check type
         run: |
@@ -57,6 +58,9 @@ jobs:
             -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build
+
+      - name: Build
+        run: pnpm run test
 
       - name: Setup tmate session
         if: ${{ failure() }}
