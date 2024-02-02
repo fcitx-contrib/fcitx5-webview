@@ -21,11 +21,14 @@ jobs:
 
   build:
     needs: lint
-    runs-on: macos-13
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86_64, arm64]
+        os: [macos-14, macos-13]
+        include:
+          - { os: macos-14, arch: arm64 }
+          - { os: macos-13, arch: x86_64 }
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +45,7 @@ jobs:
           pnpm i
 
       - name: Lint and Check type
-        if: ${{ matrix.arch == 'x86_64' }}
+        if: ${{ matrix.arch == 'arm64' }}
         run: |
           pnpm run lint
           pnpm run check
@@ -60,7 +63,7 @@ jobs:
           cmake --build build
 
       - name: Test
-        if: ${{ matrix.arch == 'x86_64' }}
+        if: ${{ matrix.arch == 'arm64' }}
         run: |
           npx playwright install webkit
           pnpm run test
