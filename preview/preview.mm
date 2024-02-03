@@ -19,6 +19,7 @@ int main(int argc, const char *argv[]) {
             candidateWindow->set_layout(candidate_window::layout_t::vertical);
             candidateWindow->set_candidates({"虚假的", "候选词"}, {"1", "2"},
                                             0);
+            candidateWindow->set_theme(candidate_window::theme_t::light);
             candidateWindow->show(100, 200);
         });
         [application run];

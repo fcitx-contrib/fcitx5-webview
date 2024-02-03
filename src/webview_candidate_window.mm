@@ -68,6 +68,10 @@ void WebviewCandidateWindow::set_candidates(
     invoke_js("setCandidates", candidates, labels, highlighted);
 }
 
+void WebviewCandidateWindow::set_theme(theme_t theme) {
+    invoke_js("setTheme", theme);
+}
+
 void WebviewCandidateWindow::show(double x, double y) {
     invoke_js("resize", x, y);
 }

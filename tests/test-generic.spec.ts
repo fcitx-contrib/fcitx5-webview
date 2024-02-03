@@ -18,7 +18,7 @@ test('HTML structure', async ({ page }) => {
 
   const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll('> <', '><')
   const expected = `
-<div class="macos panel">
+<div class="macos panel dark">
   <div class="header">
     <div class="aux-up hidden"></div>
     <div class="hidden preedit"></div>

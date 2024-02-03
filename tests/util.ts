@@ -8,6 +8,7 @@ export async function init (page: Page) {
   const url = 'file://' + join(dirname(import.meta.url), '..', 'dist', 'index.html').substring('file:'.length)
   await page.goto(url)
   await page.evaluate(() => {
+    window.setTheme(2)
     window.cppCalls = []
     window._resize = (x: number, y: number, width: number, height: number) => {
       window.cppCalls.push({
