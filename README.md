@@ -37,6 +37,9 @@ setLayout(1)
 // Show aux-up.
 setCandidates([], [], -1)
 updateInputPanel("", "A", "")
+
+// Set theme to 0=system (default), 1=light or 2=dark.
+setTheme(1)
 ```
 
 To change style, just edit [user.scss](./page/user.scss) and refresh the page.

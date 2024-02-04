@@ -14,24 +14,30 @@ import {
 
 test('HTML structure', async ({ page }) => {
   await init(page)
+  await page.evaluate(() => {
+    document.querySelector('.panel')?.classList.remove('macos', 'blur')
+    document.querySelector('.panel-blur')?.classList.remove('blur')
+  })
   await setCandidates(page, ['页面结构', '测试'], ['1', '2'], 0)
 
   const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll('> <', '><')
   const expected = `
-<div class="macos panel">
-  <div class="header">
-    <div class="aux-up hidden"></div>
-    <div class="hidden preedit"></div>
-  </div>
-  <div class="aux-down hidden"></div>
-  <div class="candidates">
-    <div class="candidate highlighted">
-      <div class="label">1</div>
-      <div class="text">页面结构</div>
+<div class="panel dark">
+  <div class="panel-blur">
+    <div class="header">
+      <div class="aux-up hidden"></div>
+      <div class="hidden preedit"></div>
     </div>
-    <div class="candidate">
-      <div class="label">2</div>
-      <div class="text">测试</div>
+    <div class="aux-down hidden"></div>
+    <div class="candidates">
+      <div class="candidate highlighted">
+        <div class="label">1</div>
+        <div class="text">页面结构</div>
+      </div>
+      <div class="candidate">
+        <div class="label">2</div>
+        <div class="text">测试</div>
+      </div>
     </div>
   </div>
 </div>

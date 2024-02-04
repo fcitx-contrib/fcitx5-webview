@@ -44,3 +44,7 @@ body {
 .hidden {
   display: none;
 }
+
+.blur {
+  backdrop-filter: blur(16px); /* blur background */
+}

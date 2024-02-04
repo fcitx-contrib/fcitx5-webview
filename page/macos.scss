@@ -1,24 +1,74 @@
 /* use Digital Color Meter with sRGB mode to get correct color */
+$panel-alpha: 0.8125;
+
+/* light */
+$panel-color-light: rgba(240, 240, 240, $panel-alpha);
+$panel-border-color-light: rgb(0 0 0 / 17.5%);
+$vertical-border-color-light: rgba(224, 224, 224, $panel-alpha);
+$text-color-light: rgb(0 0 0 / 70%);
+
+/* dark */
+$panel-color-dark: rgba(60, 60, 60, $panel-alpha);
+$panel-border-color-dark: rgb(0 0 0 / 47.5%);
+$vertical-border-color-dark: rgba(85, 85, 85, $panel-alpha);
+$text-color-dark: rgb(255 255 255 / 90%);
+
+/* accent color */
+$light-blue: rgb(0 90 216);
+$dark-blue: rgb(0 89 208);
+
 .macos {
   &.panel {
-    border: 1px solid #5c5c5c;
     border-radius: 6px;
-    background-color: #333;
+    background-clip: padding-box; /* make border alpha and content alpha independent */
     font-family: sans-serif;
   }
 
   .candidate, .preedit, .aux-up, .aux-down {
-    color: white;
     min-height: 24px; /* compromise to 🀄's height */
     min-width: 16px;
     padding: 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
+    background-clip: padding-box;
+  }
+}
+
+.macos.light {
+  &.panel {
+    border: 1px solid $panel-border-color-light;
+  }
+
+  .candidate, .preedit, .aux-up, .aux-down {
+    color: $text-color-light;
+    background-color: $panel-color-light;
   }
 
   .candidate.highlighted {
-    background-color: #0059d0;
+    color: white;
+    background-color: $light-blue;
   }
 
   .candidates.vertical .candidate:not(:first-child) {
-    border-top: 1px solid #5c5c5c;
+    border-top: 1px solid $vertical-border-color-light;
+  }
+}
+
+.macos.dark {
+  &.panel {
+    border: 1px solid $panel-border-color-dark;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  .candidate, .preedit, .aux-up, .aux-down {
+    color: $text-color-dark;
+    background-color: $panel-color-dark;
+  }
+
+  .candidate.highlighted {
+    color: white;
+    background-color: $dark-blue;
+  }
+
+  .candidates.vertical .candidate:not(:first-child) {
+    border-top: 1px solid $vertical-border-color-dark;
   }
 }

@@ -21,6 +21,8 @@ enum format_t {
 
 template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
+enum theme_t { system = 0, light = 1, dark = 2 };
+
 class CandidateWindow {
   public:
     virtual ~CandidateWindow() = default;
@@ -34,6 +36,7 @@ class CandidateWindow {
                                 const std::vector<std::string> &labels,
                                 int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
+    virtual void set_theme(theme_t theme) = 0;
     virtual void set_style(const void *style) = 0;
     virtual void show(double x, double y) = 0;
     virtual void hide() = 0;
