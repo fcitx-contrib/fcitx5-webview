@@ -51,3 +51,21 @@ document.addEventListener('mouseup', e => {
     }
   }
 })
+
+// HACK: force redraw blur every 40ms so that window background change counts
+let blurSwitch = false
+const panelBlur = document.querySelector('.panel-blur')!
+function redrawBlur () {
+  if (!panel.classList.contains('macos')) {
+    return
+  }
+  if (blurSwitch) {
+    panelBlur.classList.add('blur')
+    panel.classList.remove('blur')
+  } else {
+    panel.classList.add('blur')
+    panelBlur.classList.remove('blur')
+  }
+  blurSwitch = !blurSwitch
+}
+setInterval(redrawBlur, 40)
