@@ -16,6 +16,20 @@ $text-color-dark: rgb(255 255 255 / 90%);
 /* accent color */
 $light-blue: rgb(0 90 216);
 $dark-blue: rgb(0 89 208);
+$light-purple: rgb(125 42 126);
+$dark-purple: rgb(128 52 130);
+$light-pink: rgb(217 59 134);
+$dark-pink: rgb(201 51 120);
+$light-red: rgb(196 38 43);
+$dark-red: rgb(209 53 57);
+$light-orange: rgb(217 107 10);
+$dark-orange: rgb(200 96 4);
+$light-yellow: rgb(214 164 14);
+$dark-yellow: rgb(209 158 0);
+$light-green: rgb(76 160 50);
+$dark-green: rgb(67 146 42);
+$light-graphite: rgb(128 128 128);
+$dark-graphite: rgb(105 105 105);
 
 .macos {
   &.panel {
@@ -44,7 +58,38 @@ $dark-blue: rgb(0 89 208);
 
   .candidate.highlighted {
     color: white;
+  }
+
+  &.blue .candidate.highlighted {
     background-color: $light-blue;
+  }
+
+  &.purple .candidate.highlighted {
+    background-color: $light-purple;
+  }
+
+  &.pink .candidate.highlighted {
+    background-color: $light-pink;
+  }
+
+  &.red .candidate.highlighted {
+    background-color: $light-red;
+  }
+
+  &.orange .candidate.highlighted {
+    background-color: $light-orange;
+  }
+
+  &.yellow .candidate.highlighted {
+    background-color: $light-yellow;
+  }
+
+  &.green .candidate.highlighted {
+    background-color: $light-green;
+  }
+
+  &.graphite .candidate.highlighted {
+    background-color: $light-graphite;
   }
 
   .candidates.vertical .candidate:not(:first-child) {
@@ -63,9 +108,41 @@ $dark-blue: rgb(0 89 208);
     background-color: $panel-color-dark;
   }
 
+  /* stylelint-disable-next-line no-descending-specificity */
   .candidate.highlighted {
     color: white;
+  }
+
+  &.blue .candidate.highlighted {
     background-color: $dark-blue;
+  }
+
+  &.purple .candidate.highlighted {
+    background-color: $dark-purple;
+  }
+
+  &.pink .candidate.highlighted {
+    background-color: $dark-pink;
+  }
+
+  &.red .candidate.highlighted {
+    background-color: $dark-red;
+  }
+
+  &.orange .candidate.highlighted {
+    background-color: $dark-orange;
+  }
+
+  &.yellow .candidate.highlighted {
+    background-color: $dark-yellow;
+  }
+
+  &.green .candidate.highlighted {
+    background-color: $dark-green;
+  }
+
+  &.graphite .candidate.highlighted {
+    background-color: $dark-graphite;
   }
 
   .candidates.vertical .candidate:not(:first-child) {

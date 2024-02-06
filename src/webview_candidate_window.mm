@@ -4,15 +4,40 @@
 #include <algorithm>
 #include <sstream>
 
+@interface NotificationListener : NSObject
+
+@property(nonatomic, assign)
+    candidate_window::WebviewCandidateWindow *candidateWindow;
+- (void)accentColorChanged:(NSNotification *)notification;
+
+@end
+
+@implementation NotificationListener
+
+- (void)accentColorChanged:(NSNotification *)notification {
+    self.candidateWindow->update_accent_color();
+}
+
+@end
+
 namespace candidate_window {
 
 WebviewCandidateWindow::WebviewCandidateWindow()
     : w_(1, [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
                                         styleMask:NSWindowStyleMaskBorderless
                                           backing:NSBackingStoreBuffered
-                                            defer:NO]) {
+                                            defer:NO]),
+      listener_([[NotificationListener alloc] init]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
+
+    auto listener = static_cast<NotificationListener *>(listener_);
+    [listener setCandidateWindow:this];
+    [[NSDistributedNotificationCenter defaultCenter]
+        addObserver:listener
+           selector:@selector(accentColorChanged:)
+               name:@"AppleColorPreferencesChangedNotification"
+             object:nil];
 
     bind("_resize", [this](double x, double y, double width, double height) {
         const int gap = 4;
@@ -58,6 +83,16 @@ void WebviewCandidateWindow::set_transparent_background() {
     [webView setUnderPageBackgroundColor:[NSColor clearColor]];
 }
 
+void WebviewCandidateWindow::update_accent_color() {
+    NSNumber *accentColor = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"AppleAccentColor"];
+    if (accentColor == nil) {
+        invoke_js("setAccentColor", nil);
+    } else {
+        invoke_js("setAccentColor", [accentColor intValue]);
+    }
+}
+
 void WebviewCandidateWindow::set_layout(layout_t layout) {
     invoke_js("setLayout", layout);
 }
@@ -73,6 +108,10 @@ void WebviewCandidateWindow::set_theme(theme_t theme) {
 }
 
 void WebviewCandidateWindow::show(double x, double y) {
+    if (first_draw_) {
+        first_draw_ = false;
+        update_accent_color();
+    }
     invoke_js("resize", x, y);
 }
 
