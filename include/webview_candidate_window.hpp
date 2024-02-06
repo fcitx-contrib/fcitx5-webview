@@ -28,9 +28,14 @@ class WebviewCandidateWindow : public CandidateWindow {
     void show(double x, double y) override;
     void hide() override;
 
+    void update_accent_color();
+
   private:
     void set_transparent_background();
     webview::webview w_;
+    void *listener_;
+    bool first_draw_ = true;
+    int accent_color_ = 0;
 
   private:
     /* Invoke a JavaScript function. */

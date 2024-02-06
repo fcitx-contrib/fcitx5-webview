@@ -5,7 +5,10 @@ import {
   auxDown
 } from './selector'
 import { resize } from './ux'
-import { setTheme } from './theme'
+import {
+  setTheme,
+  setAccentColor
+} from './theme'
 
 function setLayout (layout : 0 | 1) {
   switch (layout) {
@@ -62,3 +65,4 @@ window.setLayout = setLayout
 window.updateInputPanel = updateInputPanel
 window.resize = resize
 window.setTheme = setTheme
+window.setAccentColor = setAccentColor
