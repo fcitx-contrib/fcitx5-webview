@@ -16,6 +16,7 @@
 
 - (void)accentColorChanged:(NSNotification *)notification {
     self.candidateWindow->update_accent_color();
+    self.candidateWindow->set_accent_color();
 }
 
 @end
@@ -38,6 +39,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
            selector:@selector(accentColorChanged:)
                name:@"AppleColorPreferencesChangedNotification"
              object:nil];
+    update_accent_color();
 
     bind("_resize", [this](double x, double y, double width, double height) {
         const int gap = 4;
@@ -91,9 +93,18 @@ void WebviewCandidateWindow::update_accent_color() {
     NSNumber *accentColor = [[NSUserDefaults standardUserDefaults]
         objectForKey:@"AppleAccentColor"];
     if (accentColor == nil) {
-        invoke_js("setAccentColor", nil);
+        accent_color_nil_ = true;
     } else {
-        invoke_js("setAccentColor", [accentColor intValue]);
+        accent_color_nil_ = false;
+        accent_color_ = [accentColor intValue];
+    }
+}
+
+void WebviewCandidateWindow::set_accent_color() {
+    if (accent_color_nil_) {
+        invoke_js("setAccentColor", nullptr);
+    } else {
+        invoke_js("setAccentColor", accent_color_);
     }
 }
 
@@ -113,9 +124,11 @@ void WebviewCandidateWindow::set_theme(theme_t theme) {
 
 void WebviewCandidateWindow::show(double x, double y) {
     // It's _resize which is called by resize that actually shows the window
-    if (first_draw_) {
-        first_draw_ = false;
-        update_accent_color();
+    if (hidden_) {
+        // Ideally this could be called only on first draw since we listen on
+        // accent color change, but the first draw may fail if webview is not
+        // warmed-up yet, and it won't be updated until user changes color.
+        set_accent_color();
     }
     invoke_js("resize", x, y);
 }

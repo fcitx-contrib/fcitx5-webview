@@ -29,6 +29,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void hide() override;
 
     void update_accent_color();
+    void set_accent_color();
 
   private:
     void set_transparent_background();
@@ -36,7 +37,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void *listener_;
     bool hidden_ = true;
     bool was_above_ = false;
-    bool first_draw_ = true;
+    bool accent_color_nil_ = false;
     int accent_color_ = 0;
 
   private:
