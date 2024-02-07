@@ -41,16 +41,19 @@ WebviewCandidateWindow::WebviewCandidateWindow()
              object:nil];
     update_accent_color();
 
-    bind("_resize", [this](double x, double y, double width, double height) {
+    bind("_resize", [this](double x, double y, double width, double height,
+                           bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
         int screen_width = [[NSScreen mainScreen] frame].size.width;
 
-        if (x + width > screen_width) {
-            x = screen_width - width;
-        }
-        if (x < 0) {
-            x = 0;
+        if (!dragging) {
+            if (x + width > screen_width) {
+                x = screen_width - width;
+            }
+            if (x < 0) {
+                x = 0;
+            }
         }
         if ((hidden_ && height + gap > y)  // No enough space underneath
             || (!hidden_ && was_above_)) { // It was above, avoid flicker
@@ -130,7 +133,7 @@ void WebviewCandidateWindow::show(double x, double y) {
         // warmed-up yet, and it won't be updated until user changes color.
         set_accent_color();
     }
-    invoke_js("resize", x, y);
+    invoke_js("resize", x, y, false);
 }
 
 void WebviewCandidateWindow::hide() {

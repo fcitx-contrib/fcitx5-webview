@@ -10,11 +10,11 @@ let dragging = false
 let startX = 0
 let startY = 0
 
-export function resize (x: number, y: number) {
+export function resize (x: number, y: number, dragging: boolean) {
   cursorX = x
   cursorY = y
   const rect = panel.getBoundingClientRect()
-  window._resize(x, y, rect.width, rect.height)
+  window._resize(x, y, rect.width, rect.height, dragging)
 }
 
 document.addEventListener('mousedown', e => {
@@ -29,7 +29,7 @@ document.addEventListener('mousemove', e => {
   }
   dragging = true
   // minus because macOS has bottom-left (0, 0)
-  resize(cursorX + (e.clientX - startX), cursorY - (e.clientY - startY))
+  resize(cursorX + (e.clientX - startX), cursorY - (e.clientY - startY), true)
 })
 
 document.addEventListener('mouseup', e => {
