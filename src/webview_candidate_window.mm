@@ -50,11 +50,15 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         if (x < 0) {
             x = 0;
         }
-        if (height + gap > y) { // No enough space underneath
+        if ((hidden_ && height + gap > y)  // No enough space underneath
+            || (!hidden_ && was_above_)) { // It was above, avoid flicker
             y = std::max<double>(y + preedit_height + gap, 0);
+            was_above_ = true;
         } else {
             y -= height + gap;
+            was_above_ = false;
         }
+        hidden_ = false;
 
         NSWindow *window = static_cast<NSWindow *>(w_.window());
         [window setFrame:NSMakeRect(x, y, width, height)
@@ -108,6 +112,7 @@ void WebviewCandidateWindow::set_theme(theme_t theme) {
 }
 
 void WebviewCandidateWindow::show(double x, double y) {
+    // It's _resize which is called by resize that actually shows the window
     if (first_draw_) {
         first_draw_ = false;
         update_accent_color();
@@ -119,6 +124,7 @@ void WebviewCandidateWindow::hide() {
     auto window = static_cast<NSWindow *>(w_.window());
     [window orderBack:nil];
     [window setIsVisible:NO];
+    hidden_ = true;
 }
 
 static void build_html_open_tags(std::stringstream &ss, int flags) {

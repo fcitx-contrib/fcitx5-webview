@@ -34,6 +34,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_transparent_background();
     webview::webview w_;
     void *listener_;
+    bool hidden_ = true;
+    bool was_above_ = false;
     bool first_draw_ = true;
     int accent_color_ = 0;
 
