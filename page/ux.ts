@@ -3,18 +3,14 @@ import {
   candidates
 } from './selector'
 
-let cursorX = 0
-let cursorY = 0
 let pressed = false
 let dragging = false
 let startX = 0
 let startY = 0
 
-export function resize (x: number, y: number) {
-  cursorX = x
-  cursorY = y
+export function resize (dx: number, dy: number, dragging: boolean) {
   const rect = panel.getBoundingClientRect()
-  window._resize(x, y, rect.width, rect.height)
+  window._resize(dx, dy, rect.width, rect.height, dragging)
 }
 
 document.addEventListener('mousedown', e => {
@@ -29,7 +25,7 @@ document.addEventListener('mousemove', e => {
   }
   dragging = true
   // minus because macOS has bottom-left (0, 0)
-  resize(cursorX + (e.clientX - startX), cursorY - (e.clientY - startY))
+  resize(e.clientX - startX, -(e.clientY - startY), true)
 })
 
 document.addEventListener('mouseup', e => {

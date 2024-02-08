@@ -29,12 +29,19 @@ class WebviewCandidateWindow : public CandidateWindow {
     void hide() override;
 
     void update_accent_color();
+    void set_accent_color();
 
   private:
     void set_transparent_background();
     webview::webview w_;
     void *listener_;
-    bool first_draw_ = true;
+    double cursor_x_ = 0;
+    double cursor_y_ = 0;
+    double x_ = 0;
+    double y_ = 0;
+    bool hidden_ = true;
+    bool was_above_ = false;
+    bool accent_color_nil_ = false;
     int accent_color_ = 0;
 
   private:
