@@ -41,32 +41,36 @@ WebviewCandidateWindow::WebviewCandidateWindow()
              object:nil];
     update_accent_color();
 
-    bind("_resize", [this](double x, double y, double width, double height,
+    bind("_resize", [this](double dx, double dy, double width, double height,
                            bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
         int screen_width = [[NSScreen mainScreen] frame].size.width;
 
-        if (!dragging) {
-            if (x + width > screen_width) {
-                x = screen_width - width;
-            }
-            if (x < 0) {
-                x = 0;
-            }
-        }
-        if ((hidden_ && height + gap > y)  // No enough space underneath
-            || (!hidden_ && was_above_)) { // It was above, avoid flicker
-            y = std::max<double>(y + preedit_height + gap, 0);
-            was_above_ = true;
+        if (dragging) {
+            x_ += dx;
+            y_ += dy;
         } else {
-            y -= height + gap;
-            was_above_ = false;
+            x_ = cursor_x_;
+            y_ = cursor_y_;
+            if (x_ + width > screen_width) {
+                x_ = screen_width - width;
+            }
+            if (x_ < 0) {
+                x_ = 0;
+            }
+            if (height + gap > y_              // No enough space underneath
+                || (!hidden_ && was_above_)) { // It was above, avoid flicker
+                y_ = std::max<double>(y_ + preedit_height + gap, 0);
+                was_above_ = true;
+            } else {
+                y_ -= height + gap;
+                was_above_ = false;
+            }
         }
         hidden_ = false;
-
         NSWindow *window = static_cast<NSWindow *>(w_.window());
-        [window setFrame:NSMakeRect(x, y, width, height)
+        [window setFrame:NSMakeRect(x_, y_, width, height)
                  display:YES
                  animate:NO];
         [window orderFront:nil];
@@ -126,6 +130,8 @@ void WebviewCandidateWindow::set_theme(theme_t theme) {
 }
 
 void WebviewCandidateWindow::show(double x, double y) {
+    cursor_x_ = x;
+    cursor_y_ = y;
     // It's _resize which is called by resize that actually shows the window
     if (hidden_) {
         // Ideally this could be called only on first draw since we listen on
@@ -133,7 +139,7 @@ void WebviewCandidateWindow::show(double x, double y) {
         // warmed-up yet, and it won't be updated until user changes color.
         set_accent_color();
     }
-    invoke_js("resize", x, y, false);
+    invoke_js("resize", 0., 0., false);
 }
 
 void WebviewCandidateWindow::hide() {
