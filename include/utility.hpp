@@ -47,3 +47,5 @@ struct function_traits : function_traits<decltype(&T::operator())> {};
 template <typename T> function_traits<T> make_function_traits(const T &) {
     return function_traits<T>();
 }
+
+std::string escape_html(const std::string &content);

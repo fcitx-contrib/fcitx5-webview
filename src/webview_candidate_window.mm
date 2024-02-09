@@ -122,7 +122,15 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 void WebviewCandidateWindow::set_candidates(
     const std::vector<std::string> &candidates,
     const std::vector<std::string> &labels, int highlighted) {
-    invoke_js("setCandidates", candidates, labels, highlighted);
+    std::vector<std::string> escaped_candidates;
+    std::vector<std::string> escaped_labels;
+    escaped_candidates.reserve(candidates.size());
+    std::transform(candidates.begin(), candidates.end(),
+                   std::back_inserter(escaped_candidates), escape_html);
+    escaped_labels.reserve(labels.size());
+    std::transform(labels.begin(), labels.end(),
+                   std::back_inserter(escaped_labels), escape_html);
+    invoke_js("setCandidates", escaped_candidates, escaped_labels, highlighted);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {
@@ -175,29 +183,11 @@ static void build_html_close_tags(std::stringstream &ss, int flags) {
         ss << "</i>";
 }
 
-static void build_html_escape(std::stringstream &ss, const std::string &str) {
-    for (char c : str) {
-        switch (c) {
-        case '<':
-            ss << "&lt;";
-            break;
-        case '>':
-            ss << "&gt;";
-            break;
-        case '&':
-            ss << "&amp;";
-            break;
-        default:
-            ss << c;
-        }
-    }
-}
-
 static std::string formatted_to_html(const formatted<std::string> &f) {
     std::stringstream ss;
     for (const auto &slice : f) {
         build_html_open_tags(ss, slice.second);
-        build_html_escape(ss, slice.first);
+        ss << escape_html(slice.first);
         build_html_close_tags(ss, slice.second);
     }
     return ss.str();
