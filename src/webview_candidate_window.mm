@@ -71,9 +71,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     w_.set_html(html_template.c_str());
 }
 
-WebviewCandidateWindow::~WebviewCandidateWindow() {
-    [(id) w_.window() close];
-}
+WebviewCandidateWindow::~WebviewCandidateWindow() { [(id)w_.window() close]; }
 
 void WebviewCandidateWindow::set_transparent_background() {
     // Transparent NSWindow
