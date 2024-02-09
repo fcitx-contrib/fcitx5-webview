@@ -13,6 +13,7 @@ endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
+include_directories(pugixml/src)
 include_directories(webview)
 add_custom_target(patch_webview
     COMMAND
