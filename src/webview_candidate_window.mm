@@ -91,7 +91,7 @@ void WebviewCandidateWindow::set_transparent_background() {
     [static_cast<NSWindow *>(w_.window())
         setBackgroundColor:[NSColor colorWithRed:0 green:0 blue:0 alpha:0]];
     // Transparent WKWebView
-    WKWebView *webView = static_cast<WKWebView *>(w_.view());
+    WKWebView *webView = static_cast<WKWebView *>(w_.widget());
     [webView setValue:@NO forKey:@"drawsBackground"];
     [webView setUnderPageBackgroundColor:[NSColor clearColor]];
 }
