@@ -15,16 +15,6 @@ pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
 include_directories(pugixml/src)
 include_directories(webview)
-add_custom_target(patch_webview
-    COMMAND
-      [ ! -f "${PROJECT_SOURCE_DIR}/.patched" ]
-        && git reset --hard
-        && git apply "${PROJECT_SOURCE_DIR}/patches/webview.patch"
-        && touch "${PROJECT_SOURCE_DIR}/.patched"
-      || [ -f "${PROJECT_SOURCE_DIR}/.patched" ]
-    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/webview"
-    COMMENT "Patching webview..."
-)
 
 file(GLOB HTML_SOURCES CONFIGURE_DEPENDS "page/*")
 add_custom_command(
