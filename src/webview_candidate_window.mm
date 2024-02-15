@@ -29,7 +29,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                                           backing:NSBackingStoreBuffered
                                             defer:NO]),
       listener_([[NotificationListener alloc] init]) {
-    [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
+    auto window = static_cast<NSWindow *>(w_.window());
+    [window setLevel:NSPopUpMenuWindowLevel];
+    [window setHasShadow:YES];
     set_transparent_background();
 
     auto listener = static_cast<NotificationListener *>(listener_);
