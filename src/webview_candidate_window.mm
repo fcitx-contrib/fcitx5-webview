@@ -41,8 +41,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
              object:nil];
     update_accent_color();
 
-    bind("_resize", [this](double dx, double dy, double panel_x, double panel_y, double width, double height,
-                           bool dragging) {
+    bind("_resize", [this](double dx, double dy, double panel_x, double panel_y,
+                           double width, double height, bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
         int screen_width = [[NSScreen mainScreen] frame].size.width;
