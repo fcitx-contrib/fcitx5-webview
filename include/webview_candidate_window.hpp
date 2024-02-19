@@ -80,8 +80,16 @@ class WebviewCandidateWindow : public CandidateWindow {
         using ArgsTp = typename function_traits<F>::args_tuple;
         w_.bind(name, [=](std::string args_json) -> std::string {
             auto j = nlohmann::json::parse(args_json);
-            auto args = json_to_tuple<ArgsTp>(
-                j, std::make_index_sequence<std::tuple_size_v<ArgsTp>>{});
+            ArgsTp args;
+            try {
+                args = json_to_tuple<ArgsTp>(
+                    j, std::make_index_sequence<std::tuple_size_v<ArgsTp>>{});
+            } catch (const std::exception &e) {
+                // No access to fcitx logging; print to stderr.
+                std::cerr << "[JS] Error running '" << name << "': " << e.what()
+                          << std::endl;
+                return "";
+            }
             if constexpr (std::is_void_v<Ret>) {
                 std::apply(f, args);
                 return "";
