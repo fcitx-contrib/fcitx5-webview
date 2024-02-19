@@ -49,8 +49,8 @@ $dark-graphite: rgb(105 105 105);
 .macos.light {
   &.panel {
     border: 1px solid $panel-border-color-light;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.14),
-                0px 0px 25px rgb(0, 0, 0, 0.12);
+    box-shadow: 0 10px 20px rgb(0 0 0 / 14%),
+                0 0 25px rgb(0 0 0 / 12%);
     transform: translate(25px, 25px);
   }
 

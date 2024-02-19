@@ -9,36 +9,36 @@ let startX = 0
 let startY = 0
 
 export function resize (dx: number, dy: number, dragging: boolean) {
-  let rect = getBoundingRectWithShadow(panel)
+  const rect = getBoundingRectWithShadow(panel)
   window._resize(dx, dy, rect.x, rect.y, rect.width, rect.height, dragging)
 }
 
-function getBoundingRectWithShadow(element: Element) {
-  let rect = element.getBoundingClientRect()
-  const element_x_hi = rect.x + rect.width
-  const element_y_hi = rect.y + rect.height
-  let x_hi = element_x_hi
-  let y_hi = element_y_hi
-  let vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
+function getBoundingRectWithShadow (element: Element) {
+  const rect = element.getBoundingClientRect()
+  const elementXHi = rect.x + rect.width
+  const elementYHi = rect.y + rect.height
+  let xHi = elementXHi
+  let yHi = elementYHi
+  const vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
   // The format of computed style is 'rgb(255, 0, 0) 10px 5px 5px 0px, rgb(255, 0, 0) 10px 5px 5px 0px'
   // Therefore, vals has exactly (7*n) elements, and vals[7*i] will be NaN.
-  for (var i = 0; i < vals.length / 7; i += 1) {
-    const offsetX = vals[7*i+3]
-    const offsetY = vals[7*i+4]
-    const blurRadius = vals[7*i+5]
-    const spreadRadius = vals[7*i+6]
-    const delta_x = offsetX + blurRadius + spreadRadius
-    const delta_y = offsetY + blurRadius + spreadRadius
-    const shadow_x_hi = element_x_hi + (delta_x > 0 ? delta_x : 0)
-    const shadow_y_hi = element_y_hi + (delta_y > 0 ? delta_y : 0)
-    if (shadow_x_hi > x_hi) x_hi = shadow_x_hi;
-    if (shadow_y_hi > y_hi) y_hi = shadow_y_hi;
+  for (let i = 0; i < vals.length / 7; i += 1) {
+    const offsetX = vals[7 * i + 3]
+    const offsetY = vals[7 * i + 4]
+    const blurRadius = vals[7 * i + 5]
+    const spreadRadius = vals[7 * i + 6]
+    const deltaX = offsetX + blurRadius + spreadRadius
+    const deltaY = offsetY + blurRadius + spreadRadius
+    const shadowXHi = elementXHi + (deltaX > 0 ? deltaX : 0)
+    const shadowYHi = elementYHi + (deltaY > 0 ? deltaY : 0)
+    if (shadowXHi > xHi) xHi = shadowXHi
+    if (shadowYHi > yHi) yHi = shadowYHi
   }
   // Extend the rect to contain the shadow.
   // rect.x and rect.y will be the coordinates of the top-left of the panel.
   // rect.height and rect.width will cover the whole panel and its shadow.
-  rect.width = x_hi;
-  rect.height = y_hi;
+  rect.width = xHi
+  rect.height = yHi
   return rect
 }
 
