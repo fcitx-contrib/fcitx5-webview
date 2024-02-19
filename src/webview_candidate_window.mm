@@ -41,7 +41,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
              object:nil];
     update_accent_color();
 
-    bind("_resize", [this](double dx, double dy, double width, double height,
+    bind("_resize", [this](double dx, double dy, double panel_x, double panel_y, double width, double height,
                            bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
@@ -70,7 +70,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         }
         hidden_ = false;
         NSWindow *window = static_cast<NSWindow *>(w_.window());
-        [window setFrame:NSMakeRect(x_, y_, width, height)
+        [window setFrame:NSMakeRect(x_ - panel_x, y_ + panel_y, width, height)
                  display:YES
                  animate:NO];
         [window orderFront:nil];
