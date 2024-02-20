@@ -15,8 +15,10 @@ import {
 test('HTML structure', async ({ page }) => {
   await init(page)
   await page.evaluate(() => {
-    document.querySelector('.panel')?.classList.remove('macos', 'blur')
-    document.querySelector('.panel-blur')?.classList.remove('blur')
+    document.querySelector('.panel')?.classList.remove('macos')
+    for (const klass of ['.panel-blur-outer', '.panel-blur-inner']) {
+      document.querySelector(klass)?.classList.remove('blur')
+    }
   })
   await setCandidates(page, ['页面结构', '测试'], ['1', '2'], 0)
 
@@ -79,7 +81,7 @@ test('Set layout', async ({ page }) => {
   await setLayout(page, 1)
   const verticalBox = await getBox(panel(page))
   expect(verticalBox).toMatchObject({
-    x: 0, y: 0
+    x: 25, y: 25 // shadow
   })
   expect(verticalBox.width).toBeGreaterThan(41)
   expect(verticalBox.width).toBeLessThan(51)
@@ -89,7 +91,7 @@ test('Set layout', async ({ page }) => {
   await setLayout(page, 0)
   const horizontalBox = await getBox(panel(page))
   expect(horizontalBox).toMatchObject({
-    x: 0, y: 0
+    x: 25, y: 25
   })
   expect(horizontalBox.width).toBeGreaterThan(176)
   expect(horizontalBox.width).toBeLessThan(186)
