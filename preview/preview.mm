@@ -14,6 +14,8 @@ int main(int argc, const char *argv[]) {
         candidateWindow->set_select_callback([](size_t index) {
             std::cout << "selected " << index << std::endl;
         });
+        candidateWindow->set_init_callback(
+            []() { std::cout << "Window loaded" << std::endl; });
         auto t = std::thread([&] {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             candidateWindow->set_layout(candidate_window::layout_t::vertical);
