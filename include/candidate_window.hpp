@@ -50,8 +50,8 @@ class CandidateWindow {
     }
 
   protected:
-    std::function<void()> init_callback;
-    std::function<void(size_t index)> select_callback;
+    std::function<void()> init_callback = []() {};
+    std::function<void(size_t index)> select_callback = [](size_t) {};
 };
 } // namespace candidate_window
 #endif

@@ -81,9 +81,10 @@ class WebviewCandidateWindow : public CandidateWindow {
         w_.bind(name, [=](std::string args_json) -> std::string {
             auto j = nlohmann::json::parse(args_json);
             ArgsTp args;
-            if (std::tuple_size<ArgsTp>() != j.size()) {
-                std::cerr << "[JS] Mismatched number of arguments of '" << name
-                          << "'" << std::endl;
+            if (std::tuple_size<ArgsTp>() > j.size()) {
+                std::cerr << "[JS] Insufficient number of arguments of '"
+                          << name << "', needed " << std::tuple_size<ArgsTp>()
+                          << ", got " << j.size() << std::endl;
                 return "";
             }
             try {
