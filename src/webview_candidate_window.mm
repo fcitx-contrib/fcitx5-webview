@@ -41,7 +41,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
              object:nil];
     update_accent_color();
 
-    bind("_resize", [this](double dx, double dy, double width, double height,
+    bind("_resize", [this](double dx, double dy, double shadow_top,
+                           double shadow_right, double shadow_bottom,
+                           double shadow_left, double width, double height,
                            bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
@@ -51,20 +53,21 @@ WebviewCandidateWindow::WebviewCandidateWindow()
             x_ += dx;
             y_ += dy;
         } else {
-            x_ = cursor_x_;
-            y_ = cursor_y_;
-            if (x_ + width > screen_width) {
-                x_ = screen_width - width;
+            x_ = cursor_x_ - shadow_left;
+            if (x_ + (width - shadow_right) > screen_width) {
+                x_ = screen_width - (width - shadow_right);
             }
-            if (x_ < 0) {
-                x_ = 0;
+            if (x_ < -shadow_left) {
+                x_ = -shadow_left;
             }
-            if (height + gap > y_              // No enough space underneath
+            if ((height - shadow_top - shadow_bottom) + gap >
+                    cursor_y_                  // No enough space underneath
                 || (!hidden_ && was_above_)) { // It was above, avoid flicker
-                y_ = std::max<double>(y_ + preedit_height + gap, 0);
+                y_ = std::max<double>(
+                    cursor_y_ + preedit_height + gap - shadow_bottom, 0);
                 was_above_ = true;
             } else {
-                y_ -= height + gap;
+                y_ = cursor_y_ - gap - (height - shadow_top);
                 was_above_ = false;
             }
         }
@@ -78,6 +81,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     });
 
     bind("_select", [this](size_t i) { select_callback(i); });
+
+    bind("onload", [this]() { init_callback(); });
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);

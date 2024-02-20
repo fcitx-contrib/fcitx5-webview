@@ -10,9 +10,9 @@ export async function init (page: Page) {
   await page.evaluate(() => {
     window.setTheme(2)
     window.cppCalls = []
-    window._resize = (dx: number, dy: number, width: number, height: number, dragging: boolean) => {
+    window._resize = (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, dragging: boolean) => {
       window.cppCalls.push({
-        resize: [dx, dy, width, height, dragging]
+        resize: [dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, dragging]
       })
     }
     window._select = (index: number) => {
