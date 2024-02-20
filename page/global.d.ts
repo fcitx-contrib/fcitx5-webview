@@ -2,7 +2,7 @@ declare global {
   interface Window {
     // C++ APIs that api.ts calls
     _select: (index: number) => void
-    _resize: (dx: number, dy: number, panelX: number, panelY: number, width: number, height: number, dragging: boolean) => void
+    _resize: (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, dragging: boolean) => void
 
     // JavaScript APIs that webview_candidate_window.mm calls
     setCandidates: (cands: string[], labels: string[], highlighted: number) => void

@@ -8,12 +8,28 @@ let dragging = false
 let startX = 0
 let startY = 0
 
-export function resize (dx: number, dy: number, dragging: boolean) {
-  const rect = getBoundingRectWithShadow(panel)
-  window._resize(dx, dy, rect.x, rect.y, rect.width, rect.height, dragging)
+type ShadowBox = {
+  shadowTop: number,
+  shadowRight: number,
+  shadowBottom: number,
+  shadowLeft: number,
+  fullWidth: number,
+  fullHeight: number
 }
 
-function getBoundingRectWithShadow (element: Element) {
+export function resize (dx: number, dy: number, dragging: boolean) {
+  const {
+    shadowTop,
+    shadowRight,
+    shadowBottom,
+    shadowLeft,
+    fullWidth,
+    fullHeight
+  } = getBoundingRectWithShadow(panel)
+  window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, dragging)
+}
+
+function getBoundingRectWithShadow (element: Element): ShadowBox {
   const rect = element.getBoundingClientRect()
   const elementXHi = rect.x + rect.width
   const elementYHi = rect.y + rect.height
@@ -39,7 +55,14 @@ function getBoundingRectWithShadow (element: Element) {
   // rect.height and rect.width will cover the whole panel and its shadow.
   rect.width = xHi
   rect.height = yHi
-  return rect
+  return {
+    shadowTop: rect.y,
+    shadowRight: xHi - elementXHi,
+    shadowBottom: yHi - elementYHi,
+    shadowLeft: rect.x,
+    fullWidth: xHi,
+    fullHeight: yHi
+  }
 }
 
 document.addEventListener('mousedown', e => {
