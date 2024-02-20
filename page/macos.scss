@@ -54,7 +54,7 @@ $dark-graphite: rgb(105 105 105);
     border: 1px solid $panel-border-color-light;
   }
 
-  .candidate, .preedit, .aux-up, .aux-down {
+  .candidate, .header {
     color: $text-color-light;
     background-color: $panel-color-light;
   }
@@ -106,7 +106,7 @@ $dark-graphite: rgb(105 105 105);
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .preedit, .aux-up, .aux-down {
+  .candidate, .header {
     color: $text-color-dark;
     background-color: $panel-color-dark;
   }
