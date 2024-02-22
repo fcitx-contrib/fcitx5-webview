@@ -24,7 +24,7 @@ class WebviewCandidateWindow : public CandidateWindow {
                         int highlighted) override;
     void set_highlight_callback(std::function<void(size_t index)>) override {}
     void set_theme(theme_t theme) override;
-    void set_style(const void *style) override{};
+    void set_style(const void *style) override;
     void show(double x, double y) override;
     void hide() override;
 
