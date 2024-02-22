@@ -11,6 +11,7 @@ declare global {
     resize: (dx: number, dy: number, dragging: boolean) => void
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null) => void
+    setStyle: (style: string) => void
   }
 }
 

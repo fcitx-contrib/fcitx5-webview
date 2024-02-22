@@ -100,12 +100,17 @@ document.addEventListener('mouseup', e => {
   }
 })
 
+let blurEnabled = true
+export function setBlur (enabled: boolean) {
+  blurEnabled = enabled
+}
+
 // HACK: force redraw blur every 40ms so that window background change counts
 let blurSwitch = false
 const panelBlurOuter = document.querySelector('.panel-blur-outer')!
 const panelBlurInner = document.querySelector('.panel-blur-inner')!
 function redrawBlur () {
-  if (!panel.classList.contains('macos')) {
+  if (!blurEnabled || !panel.classList.contains('macos')) {
     return
   }
   if (blurSwitch) {

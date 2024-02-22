@@ -9,6 +9,7 @@ import {
   setTheme,
   setAccentColor
 } from './theme'
+import { setStyle } from './customize'
 
 function setLayout (layout : 0 | 1) {
   switch (layout) {
@@ -66,3 +67,4 @@ window.updateInputPanel = updateInputPanel
 window.resize = resize
 window.setTheme = setTheme
 window.setAccentColor = setAccentColor
+window.setStyle = setStyle

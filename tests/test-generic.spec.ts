@@ -24,7 +24,7 @@ test('HTML structure', async ({ page }) => {
 
   const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll('> <', '><')
   const expected = `
-<div class="blue panel dark">
+<div class="basic blue panel dark">
   <div class="panel-blur-outer">
     <div class="panel-blur-inner">
       <div class="header">

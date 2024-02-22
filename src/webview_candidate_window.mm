@@ -142,6 +142,10 @@ void WebviewCandidateWindow::set_theme(theme_t theme) {
     invoke_js("setTheme", theme);
 }
 
+void WebviewCandidateWindow::set_style(const void *style) {
+    invoke_js("setStyle", static_cast<const char *>(style));
+}
+
 void WebviewCandidateWindow::show(double x, double y) {
     cursor_x_ = x;
     cursor_y_ = y;
