@@ -33,6 +33,8 @@ $dark-graphite: rgb(105 105 105);
 
 .macos {
   &.panel {
+    border-width: 1px;
+    border-style: solid;
     border-radius: 6px;
     background-clip: padding-box; /* make border alpha and content alpha independent */
     font-family: sans-serif;
@@ -47,13 +49,19 @@ $dark-graphite: rgb(105 105 105);
     padding: 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
     background-clip: padding-box;
   }
+
+  .candidates.vertical .candidate:not(:first-child) {
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
 }
 
 .macos.light {
   &.panel {
-    border: 1px solid $panel-border-color-light;
+    border-color: $panel-border-color-light;
   }
 
+  /* stylelint-disable-next-line no-descending-specificity */
   .candidate, .header {
     color: $text-color-light;
     background-color: $panel-color-light;
@@ -96,13 +104,13 @@ $dark-graphite: rgb(105 105 105);
   }
 
   .candidates.vertical .candidate:not(:first-child) {
-    border-top: 1px solid $vertical-border-color-light;
+    border-top-color: $vertical-border-color-light;
   }
 }
 
 .macos.dark {
   &.panel {
-    border: 1px solid $panel-border-color-dark;
+    border-color: $panel-border-color-dark;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
@@ -149,6 +157,6 @@ $dark-graphite: rgb(105 105 105);
   }
 
   .candidates.vertical .candidate:not(:first-child) {
-    border-top: 1px solid $vertical-border-color-dark;
+    border-top-color: $vertical-border-color-dark;
   }
 }
