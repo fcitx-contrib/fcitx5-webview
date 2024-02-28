@@ -15,8 +15,11 @@ type STYLE_JSON = {
   DarkMode: LIGHT_MODE & {
     SameWithLightMode: CONFIG_BOOL
   }
-  BackgroundBlur: CONFIG_BOOL
-  BlurRadius: string
+  Background: {
+    ImageUrl: string
+    Blur: CONFIG_BOOL
+    BlurRadius: string
+  }
   Shadow: CONFIG_BOOL
   BorderWidth: string
   BorderRadius: string
@@ -26,15 +29,18 @@ type STYLE_JSON = {
 const PANEL = '.panel.basic'
 const HORIZONTAL_DIVIDER = '.candidates.vertical .candidate:not(:first-child)'
 const PANEL_HORIZONTAL_DIVIDER = `${PANEL} ${HORIZONTAL_DIVIDER}`
+const CANDIDATES = '.candidates'
 
 const PANEL_LIGHT = `${PANEL}.light`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted`
-const PANEL_LIGHT_BACKGROUND = `${PANEL_LIGHT} .candidate, ${PANEL_LIGHT} .header`
+const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} .header`
+const CANDIDATE_LIGHT_BACKGROUND = `${PANEL_LIGHT} .candidate`
 const PANEL_LIGHT_HORIZONTAL_DIVIDER = `${PANEL_LIGHT} ${HORIZONTAL_DIVIDER}`
 
 const PANEL_DARK = `${PANEL}.dark`
 const PANEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted`
-const PANEL_DARK_BACKGROUND = `${PANEL_DARK} .candidate, ${PANEL_DARK} .header`
+const HEADER_DARK_BACKGROUND = `${PANEL_DARK} .header`
+const CANDIDATE_DARK_BACKGROUND = `${PANEL_DARK} .candidate`
 const PANEL_DARK_HORIZONTAL_DIVIDER = `${PANEL_DARK} ${HORIZONTAL_DIVIDER}`
 
 function px (n: string) {
@@ -44,14 +50,19 @@ function px (n: string) {
 export function setStyle (style: string) {
   const j = JSON.parse(style) as STYLE_JSON
   const rules: {[key: string]: {[key: string]: string}} = {}
+  const hasBackgroundImage = j.Background.ImageUrl.trim() !== ''
   rules[PANEL] = {}
 
   if (j.LightMode.OverrideDefault === 'True') {
     rules[PANEL_LIGHT_HIGHLIGHT] = {
       'background-color': j.LightMode.HighlightColor
     }
-    rules[PANEL_LIGHT_BACKGROUND] = {
+    rules[HEADER_LIGHT_BACKGROUND] = {
       'background-color': j.LightMode.PanelColor
+    }
+    rules[CANDIDATE_LIGHT_BACKGROUND] = {
+      // With background image, discard panel color for unselected candidates
+      'background-color': hasBackgroundImage ? 'inherit' : j.LightMode.PanelColor
     }
     rules[PANEL_LIGHT] = {
       'border-color': j.LightMode.BorderColor
@@ -64,15 +75,19 @@ export function setStyle (style: string) {
   if (j.DarkMode.OverrideDefault === 'True') {
     if (j.DarkMode.SameWithLightMode === 'True' && j.LightMode.OverrideDefault === 'True') {
       rules[PANEL_DARK_HIGHLIGHT] = rules[PANEL_LIGHT_HIGHLIGHT]
-      rules[PANEL_DARK_BACKGROUND] = rules[PANEL_LIGHT_BACKGROUND]
+      rules[HEADER_DARK_BACKGROUND] = rules[HEADER_LIGHT_BACKGROUND]
+      rules[CANDIDATE_DARK_BACKGROUND] = rules[CANDIDATE_LIGHT_BACKGROUND]
       rules[PANEL_DARK] = rules[PANEL_LIGHT]
       rules[PANEL_DARK_HORIZONTAL_DIVIDER] = rules[PANEL_LIGHT_HORIZONTAL_DIVIDER]
     } else {
       rules[PANEL_DARK_HIGHLIGHT] = {
         'background-color': j.DarkMode.HighlightColor
       }
-      rules[PANEL_DARK_BACKGROUND] = {
+      rules[HEADER_DARK_BACKGROUND] = {
         'background-color': j.DarkMode.PanelColor
+      }
+      rules[CANDIDATE_DARK_BACKGROUND] = {
+        'background-color': hasBackgroundImage ? 'inherit' : j.DarkMode.PanelColor
       }
       rules[PANEL_DARK] = {
         'border-color': j.DarkMode.BorderColor
@@ -83,9 +98,17 @@ export function setStyle (style: string) {
     }
   }
 
-  if (j.BackgroundBlur === 'True') {
+  if (j.Background.ImageUrl) {
+    // Background image should not affect aux
+    rules[CANDIDATES] = {
+      'background-image': `url(${JSON.stringify(j.Background.ImageUrl)})`,
+      'background-size': 'cover'
+    }
+  }
+
+  if (j.Background.Blur === 'True') {
     setBlur(true)
-    rules['.blur'] = { '-webkit-backdrop-filter': `blur(${px(j.BlurRadius)})` }
+    rules['.blur'] = { '-webkit-backdrop-filter': `blur(${px(j.Background.BlurRadius)})` }
   } else {
     setBlur(false)
     document.querySelector('.panel-blur-outer')?.classList.remove('blur')
