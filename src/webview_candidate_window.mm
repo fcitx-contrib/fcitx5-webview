@@ -192,11 +192,32 @@ static void build_html_close_tags(std::stringstream &ss, int flags) {
         ss << "</i>";
 }
 
-static std::string formatted_to_html(const formatted<std::string> &f) {
+static std::string formatted_to_html(const formatted<std::string> &f,
+                                     const std::string &cursor_text = "",
+                                     int cursor = -1) {
     std::stringstream ss;
+    int cursor_pos = 0;
     for (const auto &slice : f) {
         build_html_open_tags(ss, slice.second);
-        ss << escape_html(slice.first);
+        auto size =
+            (int)slice.first
+                .size(); // ensure signed comparison since cursor may be -1
+        if (cursor_pos <= cursor && cursor <= cursor_pos + size) {
+            ss << escape_html(slice.first.substr(0, cursor - cursor_pos));
+            if (cursor_text.empty()) {
+                ss << "<div class=\"cursor no-text\">";
+            } else {
+                ss << "<div class=\"cursor\">";
+                ss << escape_html(cursor_text);
+            }
+            ss << "</div>";
+            ss << escape_html(slice.first.substr(cursor - cursor_pos));
+            // Do not draw cursor again when it's at the end of current slice
+            cursor = -1;
+        } else {
+            ss << escape_html(slice.first);
+            cursor_pos += size;
+        }
         build_html_close_tags(ss, slice.second);
     }
     return ss.str();
@@ -206,7 +227,8 @@ void WebviewCandidateWindow::update_input_panel(
     const formatted<std::string> &preedit, int preedit_cursor,
     const formatted<std::string> &auxUp,
     const formatted<std::string> &auxDown) {
-    invoke_js("updateInputPanel", formatted_to_html(preedit),
+    invoke_js("updateInputPanel",
+              formatted_to_html(preedit, cursor_text_, preedit_cursor),
               formatted_to_html(auxUp), formatted_to_html(auxDown));
 }
 

@@ -49,9 +49,12 @@ class CandidateWindow {
         select_callback = callback;
     }
 
+    void set_cursor_text(const std::string &text) { cursor_text_ = text; }
+
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(size_t index)> select_callback = [](size_t) {};
+    std::string cursor_text_ = "";
 };
 } // namespace candidate_window
 #endif

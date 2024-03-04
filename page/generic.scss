@@ -16,6 +16,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 1em; /* align preedit and text cursor */
 
   &.hidden {
     display: none; /* needed because the above display has higher precedence than .hidden's */

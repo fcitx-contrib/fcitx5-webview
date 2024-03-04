@@ -1,4 +1,7 @@
-import { setBlur } from './ux'
+import {
+  setBlur,
+  setBlink
+} from './ux'
 
 type CONFIG_BOOL = 'False' | 'True'
 
@@ -36,6 +39,10 @@ type STYLE_JSON = {
     PreeditFontFamily: FONT_FAMILY
     PreeditFontSize: string
   }
+  Cursor: {
+    Style: 'Blink' | 'Static' | 'Text'
+    Text: string
+  }
   BorderWidth: string
   BorderRadius: string
   HorizontalDividerWidth: string
@@ -48,6 +55,7 @@ const CANDIDATES = `${PANEL} .candidates`
 const LABEL = `${PANEL} .label`
 const TEXT = `${PANEL} .text`
 const PREEDIT = `${PANEL} .preedit`
+const CURSOR_NO_TEXT = `${PANEL} .cursor.no-text`
 
 const PANEL_LIGHT = `${PANEL}.light`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted`
@@ -59,6 +67,7 @@ const PREEDIT_LIGHT = `${PANEL_LIGHT} .preedit`
 const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} .header`
 const CANDIDATE_LIGHT_BACKGROUND = `${PANEL_LIGHT} .candidate`
 const PANEL_LIGHT_HORIZONTAL_DIVIDER = `${PANEL_LIGHT} ${HORIZONTAL_DIVIDER}`
+const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .cursor.no-text`
 
 const PANEL_DARK = `${PANEL}.dark`
 const PANEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted`
@@ -70,6 +79,7 @@ const PREEDIT_DARK = `${PANEL_DARK} .preedit`
 const HEADER_DARK_BACKGROUND = `${PANEL_DARK} .header`
 const CANDIDATE_DARK_BACKGROUND = `${PANEL_DARK} .candidate`
 const PANEL_DARK_HORIZONTAL_DIVIDER = `${PANEL_DARK} ${HORIZONTAL_DIVIDER}`
+const CURSOR_NO_TEXT_DARK = `${PANEL_DARK} .cursor.no-text`
 
 function px (n: string) {
   return `${n}px`
@@ -91,6 +101,7 @@ export function setStyle (style: string) {
   rules[TEXT] = {}
   rules[LABEL] = {}
   rules[PREEDIT] = {}
+  rules[CURSOR_NO_TEXT] = {}
 
   if (j.LightMode.OverrideDefault === 'True') {
     rules[PANEL_LIGHT_HIGHLIGHT] = {
@@ -118,6 +129,9 @@ export function setStyle (style: string) {
     rules[PREEDIT_LIGHT] = {
       color: j.LightMode.PreeditColor
     }
+    rules[CURSOR_NO_TEXT_LIGHT] = {
+      'background-color': j.LightMode.PreeditColor
+    }
     rules[PANEL_LIGHT] = {
       'border-color': j.LightMode.BorderColor
     }
@@ -136,6 +150,7 @@ export function setStyle (style: string) {
       rules[TEXT_DARK] = rules[TEXT_LIGHT]
       rules[LABEL_DARK] = rules[LABEL_LIGHT]
       rules[PREEDIT_DARK] = rules[PREEDIT_LIGHT]
+      rules[CURSOR_NO_TEXT_DARK] = rules[CURSOR_NO_TEXT_LIGHT]
       rules[PANEL_DARK] = rules[PANEL_LIGHT]
       rules[PANEL_DARK_HORIZONTAL_DIVIDER] = rules[PANEL_LIGHT_HORIZONTAL_DIVIDER]
     } else {
@@ -162,6 +177,9 @@ export function setStyle (style: string) {
       }
       rules[PREEDIT_DARK] = {
         color: j.DarkMode.PreeditColor
+      }
+      rules[CURSOR_NO_TEXT_DARK] = {
+        'background-color': j.DarkMode.PreeditColor
       }
       rules[PANEL_DARK] = {
         'border-color': j.DarkMode.BorderColor
@@ -199,6 +217,10 @@ export function setStyle (style: string) {
 
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
   rules[PREEDIT]['font-size'] = px(j.Font.PreeditFontSize)
+  // Cursor height should be the same with preedit
+  rules[CURSOR_NO_TEXT].height = px(j.Font.PreeditFontSize)
+
+  setBlink(j.Cursor.Style === 'Blink')
 
   rules[PANEL]['border-width'] = px(j.BorderWidth)
   rules[PANEL]['border-radius'] = px(j.BorderRadius)

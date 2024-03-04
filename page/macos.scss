@@ -43,6 +43,13 @@ $dark-graphite: rgb(105 105 105);
     transform: translate(25px, 25px);
   }
 
+  .cursor.no-text {
+    width: 1px;
+    height: 16px;
+    margin-left: 1px;
+    margin-right: 1px;
+  }
+
   .candidate, .preedit, .aux-up, .aux-down {
     min-height: 24px; /* compromise to 🀄's height */
     min-width: 16px;
@@ -59,6 +66,10 @@ $dark-graphite: rgb(105 105 105);
 .macos.light {
   &.panel {
     border-color: $panel-border-color-light;
+  }
+
+  .cursor.no-text {
+    background-color: $text-color-light;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
@@ -111,6 +122,10 @@ $dark-graphite: rgb(105 105 105);
 .macos.dark {
   &.panel {
     border-color: $panel-border-color-dark;
+  }
+
+  .cursor.no-text {
+    background-color: $text-color-dark;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
