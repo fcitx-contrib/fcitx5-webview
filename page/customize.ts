@@ -40,7 +40,7 @@ type STYLE_JSON = {
     PreeditFontSize: string
   }
   Cursor: {
-    Style: "Blink" | "Static" | "Text"
+    Style: 'Blink' | 'Static' | 'Text'
     Text: string
   }
   BorderWidth: string
@@ -218,7 +218,7 @@ export function setStyle (style: string) {
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
   rules[PREEDIT]['font-size'] = px(j.Font.PreeditFontSize)
   // Cursor height should be the same with preedit
-  rules[CURSOR_NO_TEXT]['height'] = px(j.Font.PreeditFontSize)
+  rules[CURSOR_NO_TEXT].height = px(j.Font.PreeditFontSize)
 
   setBlink(j.Cursor.Style === 'Blink')
 
