@@ -123,3 +123,27 @@ function redrawBlur () {
   blurSwitch = !blurSwitch
 }
 setInterval(redrawBlur, 40)
+
+export function showCursor (show: boolean) {
+  const cursor = document.querySelector('.cursor')
+  if (cursor) {
+    (<HTMLElement>cursor).style.opacity = show ? '1' : '0'
+  }
+}
+
+let blinkEnabled = true
+export function setBlink (enabled: boolean) {
+  blinkEnabled = enabled
+  if (!enabled) {
+    showCursor(true)
+  }
+}
+
+let blinkSwitch = false
+setInterval(() => {
+  if (!blinkEnabled) {
+    return
+  }
+  showCursor(blinkSwitch)
+  blinkSwitch = !blinkSwitch
+}, 500)
