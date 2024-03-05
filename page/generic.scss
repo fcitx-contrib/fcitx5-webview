@@ -35,7 +35,7 @@ body {
   }
 }
 
-.candidate {
+.candidate-inner {
   display: flex;
   gap: 6px;
   align-items: center; /* English words have lower height */

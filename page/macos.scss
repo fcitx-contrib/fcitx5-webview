@@ -50,7 +50,7 @@ $dark-graphite: rgb(105 105 105);
     margin-right: 1px;
   }
 
-  .candidate, .preedit, .aux-up, .aux-down {
+  .candidate-inner, .preedit, .aux-up, .aux-down {
     min-height: 24px; /* compromise to 🀄's height */
     min-width: 16px;
     padding: 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
@@ -82,35 +82,35 @@ $dark-graphite: rgb(105 105 105);
     color: white;
   }
 
-  &.blue .candidate.highlighted {
+  &.blue .candidate.highlighted .candidate-inner {
     background-color: $light-blue;
   }
 
-  &.purple .candidate.highlighted {
+  &.purple .candidate.highlighted .candidate-inner {
     background-color: $light-purple;
   }
 
-  &.pink .candidate.highlighted {
+  &.pink .candidate.highlighted .candidate-inner {
     background-color: $light-pink;
   }
 
-  &.red .candidate.highlighted {
+  &.red .candidate.highlighted .candidate-inner {
     background-color: $light-red;
   }
 
-  &.orange .candidate.highlighted {
+  &.orange .candidate.highlighted .candidate-inner {
     background-color: $light-orange;
   }
 
-  &.yellow .candidate.highlighted {
+  &.yellow .candidate.highlighted .candidate-inner {
     background-color: $light-yellow;
   }
 
-  &.green .candidate.highlighted {
+  &.green .candidate.highlighted .candidate-inner {
     background-color: $light-green;
   }
 
-  &.graphite .candidate.highlighted {
+  &.graphite .candidate.highlighted .candidate-inner {
     background-color: $light-graphite;
   }
 
@@ -139,35 +139,35 @@ $dark-graphite: rgb(105 105 105);
     color: white;
   }
 
-  &.blue .candidate.highlighted {
+  &.blue .candidate.highlighted .candidate-inner {
     background-color: $dark-blue;
   }
 
-  &.purple .candidate.highlighted {
+  &.purple .candidate.highlighted .candidate-inner {
     background-color: $dark-purple;
   }
 
-  &.pink .candidate.highlighted {
+  &.pink .candidate.highlighted .candidate-inner {
     background-color: $dark-pink;
   }
 
-  &.red .candidate.highlighted {
+  &.red .candidate.highlighted .candidate-inner {
     background-color: $dark-red;
   }
 
-  &.orange .candidate.highlighted {
+  &.orange .candidate.highlighted .candidate-inner {
     background-color: $dark-orange;
   }
 
-  &.yellow .candidate.highlighted {
+  &.yellow .candidate.highlighted .candidate-inner {
     background-color: $dark-yellow;
   }
 
-  &.green .candidate.highlighted {
+  &.green .candidate.highlighted .candidate-inner {
     background-color: $dark-green;
   }
 
-  &.graphite .candidate.highlighted {
+  &.graphite .candidate.highlighted .candidate-inner {
     background-color: $dark-graphite;
   }
 
