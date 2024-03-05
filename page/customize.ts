@@ -43,9 +43,15 @@ type STYLE_JSON = {
     Style: 'Blink' | 'Static' | 'Text'
     Text: string
   }
-  BorderWidth: string
-  BorderRadius: string
-  HorizontalDividerWidth: string
+  Size: {
+    BorderWidth: string
+    BorderRadius: string
+    Margin: string
+    HighlightRadius: string
+    VerticalPadding: string
+    HorizontalPadding: string
+    HorizontalDividerWidth: string
+  }
 }
 
 const PANEL = '.panel.basic'
@@ -56,9 +62,10 @@ const LABEL = `${PANEL} .label`
 const TEXT = `${PANEL} .text`
 const PREEDIT = `${PANEL} .preedit`
 const CURSOR_NO_TEXT = `${PANEL} .cursor.no-text`
+const CANDIDATE_INNER = `${PANEL} .candidate-inner`
 
 const PANEL_LIGHT = `${PANEL}.light`
-const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted`
+const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner`
 const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .text`
 const LABEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .label`
 const TEXT_LIGHT = `${PANEL_LIGHT} .text`
@@ -70,7 +77,7 @@ const PANEL_LIGHT_HORIZONTAL_DIVIDER = `${PANEL_LIGHT} ${HORIZONTAL_DIVIDER}`
 const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .cursor.no-text`
 
 const PANEL_DARK = `${PANEL}.dark`
-const PANEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted`
+const PANEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .candidate-inner`
 const TEXT_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .text`
 const LABEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .label`
 const TEXT_DARK = `${PANEL_DARK} .text`
@@ -102,6 +109,7 @@ export function setStyle (style: string) {
   rules[LABEL] = {}
   rules[PREEDIT] = {}
   rules[CURSOR_NO_TEXT] = {}
+  rules[CANDIDATE_INNER] = {}
 
   if (j.LightMode.OverrideDefault === 'True') {
     rules[PANEL_LIGHT_HIGHLIGHT] = {
@@ -222,10 +230,13 @@ export function setStyle (style: string) {
 
   setBlink(j.Cursor.Style === 'Blink')
 
-  rules[PANEL]['border-width'] = px(j.BorderWidth)
-  rules[PANEL]['border-radius'] = px(j.BorderRadius)
+  rules[PANEL]['border-width'] = px(j.Size.BorderWidth)
+  rules[PANEL]['border-radius'] = px(j.Size.BorderRadius)
+  rules[CANDIDATE_INNER].margin = px(j.Size.Margin)
+  rules[CANDIDATE_INNER]['border-radius'] = px(j.Size.HighlightRadius)
+  rules[CANDIDATE_INNER].padding = `${px(j.Size.VerticalPadding)} ${px(j.Size.HorizontalPadding)}`
   rules[PANEL_HORIZONTAL_DIVIDER] = {
-    'border-top-width': px(j.HorizontalDividerWidth)
+    'border-top-width': px(j.Size.HorizontalDividerWidth)
   }
 
   const basic = document.head.querySelector('#basic')

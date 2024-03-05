@@ -34,12 +34,16 @@ test('HTML structure', async ({ page }) => {
       <div class="aux-down hidden"></div>
       <div class="candidates">
         <div class="candidate highlighted">
-          <div class="label">1</div>
-          <div class="text">页面结构</div>
+          <div class="candidate-inner">
+            <div class="label">1</div>
+            <div class="text">页面结构</div>
+          </div>
         </div>
         <div class="candidate">
-          <div class="label">2</div>
-          <div class="text">测试</div>
+          <div class="candidate-inner">
+            <div class="label">2</div>
+            <div class="text">测试</div>
+          </div>
         </div>
       </div>
     </div>

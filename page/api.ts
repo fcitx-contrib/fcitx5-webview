@@ -37,8 +37,11 @@ function setCandidates (cands: string[], labels: string[], highlighted: number) 
     const text = document.createElement('div')
     text.classList.add('text')
     text.innerHTML = cands[i]
-    candidate.appendChild(label)
-    candidate.appendChild(text)
+    const candidateInner = document.createElement('div')
+    candidateInner.classList.add('candidate-inner')
+    candidateInner.appendChild(label)
+    candidateInner.appendChild(text)
+    candidate.appendChild(candidateInner)
     candidates.appendChild(candidate)
   }
 }
