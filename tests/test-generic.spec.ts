@@ -35,6 +35,7 @@ test('HTML structure', async ({ page }) => {
       <div class="candidates">
         <div class="candidate highlighted">
           <div class="candidate-inner">
+            <div class="mark no-text"></div>
             <div class="label">1</div>
             <div class="text">页面结构</div>
           </div>

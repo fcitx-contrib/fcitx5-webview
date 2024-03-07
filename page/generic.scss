@@ -40,6 +40,20 @@ body {
   gap: 6px;
   align-items: center; /* English words have lower height */
   line-height: 1em; /* align label and candidates */
+  position: relative; /* for absolute position of mark */
+}
+
+.mark {
+  opacity: 0;
+
+  &.no-text {
+    position: absolute;
+    left: 0;
+    width: 3px;
+    border-radius: 1.5px;
+    height: 16px;
+    background-color: white;
+  }
 }
 
 .hidden {

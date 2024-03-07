@@ -23,7 +23,7 @@ function setLayout (layout : 0 | 1) {
   }
 }
 
-function setCandidates (cands: string[], labels: string[], highlighted: number) {
+function setCandidates (cands: string[], labels: string[], highlighted: number, markText: string) {
   candidates.innerHTML = ''
   for (let i = 0; i < cands.length; ++i) {
     const candidate = document.createElement('div')
@@ -39,6 +39,17 @@ function setCandidates (cands: string[], labels: string[], highlighted: number) 
     text.innerHTML = cands[i]
     const candidateInner = document.createElement('div')
     candidateInner.classList.add('candidate-inner')
+    // Render placeholder for vertical non-highlighted candidates
+    if (candidates.classList.contains('vertical') || i === highlighted) {
+      const mark = document.createElement('div')
+      mark.classList.add('mark')
+      if (markText === '') {
+        mark.classList.add('no-text')
+      } else {
+        mark.innerHTML = markText
+      }
+      candidateInner.appendChild(mark)
+    }
     candidateInner.appendChild(label)
     candidateInner.appendChild(text)
     candidate.appendChild(candidateInner)

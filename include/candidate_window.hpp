@@ -50,11 +50,15 @@ class CandidateWindow {
     }
 
     void set_cursor_text(const std::string &text) { cursor_text_ = text; }
+    void set_highlight_mark_text(const std::string &text) {
+        highlight_mark_text_ = text;
+    }
 
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(size_t index)> select_callback = [](size_t) {};
     std::string cursor_text_ = "";
+    std::string highlight_mark_text_ = "";
 };
 } // namespace candidate_window
 #endif

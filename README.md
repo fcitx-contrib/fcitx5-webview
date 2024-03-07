@@ -29,7 +29,7 @@ _select = console.log
 _resize = console.log
 
 // Show candidates with labels, and highlight the first one.
-setCandidates(["虚假的", "🀄", "candidates"], ["1", "2", "3"], 0)
+setCandidates(["虚假的", "🀄", "candidates"], ["1", "2", "3"], 0, "")
 
 // Set vertical layout. 0 means horizontal.
 setLayout(1)

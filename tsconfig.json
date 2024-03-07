@@ -7,7 +7,7 @@
     "strict": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"]
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
   "include": ["page/*.ts", "tests/*.ts"]
 }
