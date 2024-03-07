@@ -1,5 +1,6 @@
 #include "webview_candidate_window.hpp"
 #include "html_template.hpp"
+#include "utility.hpp"
 #import <WebKit/WKWebView.h>
 #include <algorithm>
 #include <sstream>
@@ -135,7 +136,8 @@ void WebviewCandidateWindow::set_candidates(
     escaped_labels.reserve(labels.size());
     std::transform(labels.begin(), labels.end(),
                    std::back_inserter(escaped_labels), escape_html);
-    invoke_js("setCandidates", escaped_candidates, escaped_labels, highlighted);
+    invoke_js("setCandidates", escaped_candidates, escaped_labels, highlighted,
+              escape_html(highlight_mark_text_));
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {
