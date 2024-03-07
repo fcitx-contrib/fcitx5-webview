@@ -258,7 +258,7 @@ export function setStyle (style: string) {
   rules[CANDIDATE_INNER]['padding-right'] = px(j.Size.RightPadding)
   rules[CANDIDATE_INNER]['padding-bottom'] = px(j.Size.BottomPadding)
   rules[CANDIDATE_INNER]['padding-left'] = px(j.Size.LeftPadding)
-  rules[CANDIDATE_INNER]['gap'] = px(j.Size.LabelTextGap)
+  rules[CANDIDATE_INNER].gap = px(j.Size.LabelTextGap)
   rules[PANEL_HORIZONTAL_DIVIDER] = {
     'border-top-width': px(j.Size.HorizontalDividerWidth)
   }
