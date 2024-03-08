@@ -236,13 +236,13 @@ export function setStyle (style: string) {
   }
 
   setFontFamily(rules[TEXT], j.Font.TextFontFamily)
-  rules[TEXT]['font-size'] = px(j.Font.TextFontSize)
+  rules[TEXT]['font-size'] = rules[CANDIDATE_INNER]['line-height'] = px(j.Font.TextFontSize)
 
   setFontFamily(rules[LABEL], j.Font.LabelFontFamily)
   rules[LABEL]['font-size'] = px(j.Font.LabelFontSize)
 
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
-  rules[PREEDIT]['font-size'] = px(j.Font.PreeditFontSize)
+  rules[PREEDIT]['font-size'] = rules[PREEDIT]['line-height'] = px(j.Font.PreeditFontSize)
   // Cursor height should be the same with preedit
   rules[CURSOR_NO_TEXT].height = px(j.Font.PreeditFontSize)
 
