@@ -147,3 +147,12 @@ setInterval(() => {
   showCursor(blinkSwitch)
   blinkSwitch = !blinkSwitch
 }, 500)
+
+export type HOVER_BEHAVIOR = 'None' | 'Move' | 'Add'
+let hoverBehavior: HOVER_BEHAVIOR = 'None'
+export function setHoverBehavior (behavior: HOVER_BEHAVIOR) {
+  hoverBehavior = behavior
+}
+export function getHoverBehavior () {
+  return hoverBehavior
+}

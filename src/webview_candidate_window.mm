@@ -22,13 +22,26 @@
 
 @end
 
+@interface HoverableWindow : NSWindow
+
+@end
+
+@implementation HoverableWindow
+
+- (BOOL)isKeyWindow {
+    return YES;
+}
+
+@end
+
 namespace candidate_window {
 
 WebviewCandidateWindow::WebviewCandidateWindow()
-    : w_(1, [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
-                                        styleMask:NSWindowStyleMaskBorderless
-                                          backing:NSBackingStoreBuffered
-                                            defer:NO]),
+    : w_(1, [[HoverableWindow alloc]
+                initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                          styleMask:NSWindowStyleMaskBorderless
+                            backing:NSBackingStoreBuffered
+                              defer:NO]),
       listener_([[NotificationListener alloc] init]) {
     [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
