@@ -33,7 +33,7 @@ test('HTML structure', async ({ page }) => {
       </div>
       <div class="aux-down hidden"></div>
       <div class="candidates">
-        <div class="candidate highlighted">
+        <div class="candidate highlighted highlighted-original">
           <div class="candidate-inner">
             <div class="mark no-text"></div>
             <div class="label">1</div>

@@ -1,4 +1,6 @@
 import {
+  HOVER_BEHAVIOR,
+  setHoverBehavior,
   setBlur,
   setBlink
 } from './ux'
@@ -43,8 +45,9 @@ type STYLE_JSON = {
   Cursor: {
     Style: 'Blink' | 'Static' | 'Text'
   }
-  HighlightMark: {
-    Style: 'None' | 'Bar' | 'Text'
+  Highlight: {
+    MarkStyle: 'None' | 'Bar' | 'Text'
+    HoverBehavior: HOVER_BEHAVIOR
   }
   Size: {
     BorderWidth: string
@@ -70,6 +73,7 @@ const PREEDIT = `${PANEL} .preedit`
 const CURSOR_NO_TEXT = `${PANEL} .cursor.no-text`
 const CANDIDATE_INNER = `${PANEL} .candidate-inner`
 const HIGHLIGHT_MARK = `${PANEL} .highlighted .mark`
+const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .highlighted-original .mark`
 
 const PANEL_LIGHT = `${PANEL}.light`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner`
@@ -112,7 +116,7 @@ export function setStyle (style: string) {
   const j = JSON.parse(style) as STYLE_JSON
   const rules: {[key: string]: {[key: string]: string}} = {}
   const hasBackgroundImage = j.Background.ImageUrl.trim() !== ''
-  const markKey = j.HighlightMark.Style === 'Text' ? 'color' : 'background-color'
+  const markKey = j.Highlight.MarkStyle === 'Text' ? 'color' : 'background-color'
   rules[PANEL] = {}
   rules[CANDIDATES] = {}
   rules[TEXT] = {}
@@ -120,6 +124,7 @@ export function setStyle (style: string) {
   rules[PREEDIT] = {}
   rules[CURSOR_NO_TEXT] = {}
   rules[HIGHLIGHT_MARK] = {}
+  rules[HIGHLIGHT_ORIGINAL_MARK] = {}
   rules[CANDIDATE_INNER] = {}
 
   if (j.LightMode.OverrideDefault === 'True') {
@@ -248,7 +253,8 @@ export function setStyle (style: string) {
 
   setBlink(j.Cursor.Style === 'Blink')
 
-  rules[HIGHLIGHT_MARK].opacity = j.HighlightMark.Style === 'None' ? '0' : '1'
+  rules[j.Highlight.HoverBehavior === 'Add' ? HIGHLIGHT_ORIGINAL_MARK : HIGHLIGHT_MARK].opacity = j.Highlight.MarkStyle === 'None' ? '0' : '1'
+  setHoverBehavior(j.Highlight.HoverBehavior)
 
   rules[PANEL]['border-width'] = px(j.Size.BorderWidth)
   rules[PANEL]['border-radius'] = px(j.Size.BorderRadius)

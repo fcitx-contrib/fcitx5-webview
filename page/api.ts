@@ -4,7 +4,10 @@ import {
   auxUp,
   auxDown
 } from './selector'
-import { resize } from './ux'
+import {
+  getHoverBehavior,
+  resize
+} from './ux'
 import {
   setTheme,
   setAccentColor
@@ -23,14 +26,40 @@ function setLayout (layout : 0 | 1) {
   }
 }
 
+function moveHighlight (from: Element | null, to: Element | null) {
+  from?.classList.remove('highlighted')
+  to?.classList.add('highlighted')
+  const fromMark = from?.querySelector('.mark')
+  const toMark = to?.querySelector('.mark')
+  if (fromMark && !toMark) {
+    to?.querySelector('.candidate-inner')?.prepend(fromMark)
+  }
+}
+
+function clearAdditionalHighlight () {
+  candidates.querySelector('.highlighted:not(.highlighted-original)')?.classList.remove('highlighted')
+}
+
 function setCandidates (cands: string[], labels: string[], highlighted: number, markText: string) {
   candidates.innerHTML = ''
   for (let i = 0; i < cands.length; ++i) {
     const candidate = document.createElement('div')
     candidate.classList.add('candidate')
     if (i === highlighted) {
-      candidate.classList.add('highlighted')
+      candidate.classList.add('highlighted', 'highlighted-original')
     }
+
+    candidate.addEventListener('mouseenter', () => {
+      const hoverBehavior = getHoverBehavior()
+      if (hoverBehavior === 'Move') {
+        const lastHighlighted = candidates.querySelector('.highlighted')
+        moveHighlight(lastHighlighted, candidate)
+      } else if (hoverBehavior === 'Add') {
+        clearAdditionalHighlight()
+        candidate.classList.add('highlighted')
+      }
+    })
+
     const label = document.createElement('div')
     label.classList.add('label')
     label.innerHTML = labels[i]
@@ -48,12 +77,11 @@ function setCandidates (cands: string[], labels: string[], highlighted: number, 
       } else {
         mark.innerHTML = markText
       }
-      candidateInner.appendChild(mark)
+      candidateInner.append(mark)
     }
-    candidateInner.appendChild(label)
-    candidateInner.appendChild(text)
-    candidate.appendChild(candidateInner)
-    candidates.appendChild(candidate)
+    candidateInner.append(label, text)
+    candidate.append(candidateInner)
+    candidates.append(candidate)
   }
 }
 
@@ -71,6 +99,17 @@ function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: 
   updateElement(auxUp, auxUpHTML)
   updateElement(auxDown, auxDownHTML)
 }
+
+candidates.addEventListener('mouseleave', () => {
+  const hoverBehavior = getHoverBehavior()
+  if (hoverBehavior === 'Move') {
+    const lastHighlighted = candidates.querySelector('.highlighted')
+    const originalHighlighted = candidates.querySelector('.highlighted-original')
+    moveHighlight(lastHighlighted, originalHighlighted)
+  } else if (hoverBehavior === 'Add') {
+    clearAdditionalHighlight()
+  }
+})
 
 setTheme(0)
 
