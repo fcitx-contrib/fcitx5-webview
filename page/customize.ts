@@ -10,7 +10,9 @@ type CONFIG_BOOL = 'False' | 'True'
 type LIGHT_MODE = {
   OverrideDefault: CONFIG_BOOL
   HighlightColor: string
+  HighlightHoverColor: string
   HighlightTextColor: string
+  HighlightTextPressColor: string
   HighlightLabelColor: string
   HighlightMarkColor: string
   PanelColor: string
@@ -77,7 +79,12 @@ const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .highlighted-original .mark`
 
 const PANEL_LIGHT = `${PANEL}.light`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner`
+const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner:hover`
+const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner:active`
+const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .candidate:not(.highlighted) .candidate-inner:hover`
+const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .candidate:not(.highlighted) .candidate-inner:active`
 const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .text`
+const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .candidate .candidate-inner:active .text`
 const LABEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .label`
 const TEXT_LIGHT = `${PANEL_LIGHT} .text`
 const LABEL_LIGHT = `${PANEL_LIGHT} .label`
@@ -90,7 +97,12 @@ const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .highlighted .mark`
 
 const PANEL_DARK = `${PANEL}.dark`
 const PANEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .candidate-inner`
+const PANEL_DARK_HIGHLIGHT_HOVER = `${PANEL_DARK} .candidate.highlighted .candidate-inner:hover`
+const PANEL_DARK_HIGHLIGHT_PRESS = `${PANEL_DARK} .candidate.highlighted .candidate-inner:active`
+const PANEL_DARK_OTHER_HOVER = `${PANEL_DARK} .candidate:not(.highlighted) .candidate-inner:hover`
+const PANEL_DARK_OTHER_PRESS = `${PANEL_DARK} .candidate:not(.highlighted) .candidate-inner:active`
 const TEXT_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .text`
+const TEXT_DARK_PRESS = `${PANEL_DARK} .candidate .candidate-inner:active .text`
 const LABEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .label`
 const TEXT_DARK = `${PANEL_DARK} .text`
 const LABEL_DARK = `${PANEL_DARK} .label`
@@ -131,8 +143,17 @@ export function setStyle (style: string) {
     rules[PANEL_LIGHT_HIGHLIGHT] = {
       'background-color': j.LightMode.HighlightColor
     }
+    rules[PANEL_LIGHT_HIGHLIGHT_HOVER] = {
+      'background-color': j.LightMode.HighlightHoverColor
+    }
+    rules[PANEL_LIGHT_HIGHLIGHT_PRESS] = {
+      'background-color': j.LightMode.HighlightColor
+    }
     rules[TEXT_LIGHT_HIGHLIGHT] = {
       color: j.LightMode.HighlightTextColor
+    }
+    rules[TEXT_LIGHT_PRESS] = {
+      color: j.LightMode.HighlightTextPressColor
     }
     rules[LABEL_LIGHT_HIGHLIGHT] = {
       color: j.LightMode.HighlightLabelColor
@@ -165,12 +186,23 @@ export function setStyle (style: string) {
     rules[HIGHLIGHT_MARK_LIGHT] = {
       [markKey]: j.LightMode.HighlightMarkColor
     }
+    if (j.Highlight.HoverBehavior === 'Add') {
+      rules[PANEL_LIGHT_OTHER_HOVER] = {
+        'background-color': j.LightMode.HighlightColor
+      }
+      rules[PANEL_LIGHT_OTHER_PRESS] = {
+        'background-color': j.LightMode.HighlightHoverColor
+      }
+    }
   }
 
   if (j.DarkMode.OverrideDefault === 'True') {
     if (j.DarkMode.SameWithLightMode === 'True' && j.LightMode.OverrideDefault === 'True') {
       rules[PANEL_DARK_HIGHLIGHT] = rules[PANEL_LIGHT_HIGHLIGHT]
+      rules[PANEL_DARK_HIGHLIGHT_HOVER] = rules[PANEL_LIGHT_HIGHLIGHT_HOVER]
+      rules[PANEL_DARK_HIGHLIGHT_PRESS] = rules[PANEL_LIGHT_HIGHLIGHT_PRESS]
       rules[TEXT_DARK_HIGHLIGHT] = rules[TEXT_LIGHT_HIGHLIGHT]
+      rules[TEXT_DARK_PRESS] = rules[TEXT_LIGHT_PRESS]
       rules[LABEL_DARK_HIGHLIGHT] = rules[LABEL_LIGHT_HIGHLIGHT]
       rules[HEADER_DARK_BACKGROUND] = rules[HEADER_LIGHT_BACKGROUND]
       rules[CANDIDATE_DARK_BACKGROUND] = rules[CANDIDATE_LIGHT_BACKGROUND]
@@ -181,12 +213,26 @@ export function setStyle (style: string) {
       rules[PANEL_DARK] = rules[PANEL_LIGHT]
       rules[PANEL_DARK_HORIZONTAL_DIVIDER] = rules[PANEL_LIGHT_HORIZONTAL_DIVIDER]
       rules[HIGHLIGHT_MARK_DARK] = rules[HIGHLIGHT_MARK_LIGHT]
+      if (j.Highlight.HoverBehavior === 'Add') {
+        // This is the behavior of MSPY
+        rules[PANEL_DARK_OTHER_HOVER] = rules[PANEL_LIGHT_OTHER_HOVER]
+        rules[PANEL_DARK_OTHER_PRESS] = rules[PANEL_LIGHT_OTHER_PRESS]
+      }
     } else {
       rules[PANEL_DARK_HIGHLIGHT] = {
         'background-color': j.DarkMode.HighlightColor
       }
+      rules[PANEL_DARK_HIGHLIGHT_HOVER] = {
+        'background-color': j.DarkMode.HighlightHoverColor
+      }
+      rules[PANEL_DARK_HIGHLIGHT_PRESS] = {
+        'background-color': j.DarkMode.HighlightColor
+      }
       rules[TEXT_DARK_HIGHLIGHT] = {
         color: j.DarkMode.HighlightTextColor
+      }
+      rules[TEXT_DARK_PRESS] = {
+        color: j.DarkMode.HighlightTextPressColor
       }
       rules[LABEL_DARK_HIGHLIGHT] = {
         color: j.DarkMode.HighlightLabelColor
@@ -217,6 +263,14 @@ export function setStyle (style: string) {
       }
       rules[HIGHLIGHT_MARK_DARK] = {
         [markKey]: j.DarkMode.HighlightMarkColor
+      }
+      if (j.Highlight.HoverBehavior === 'Add') {
+        rules[PANEL_DARK_OTHER_HOVER] = {
+          'background-color': j.DarkMode.HighlightColor
+        }
+        rules[PANEL_DARK_OTHER_PRESS] = {
+          'background-color': j.DarkMode.HighlightHoverColor
+        }
       }
     }
   }
