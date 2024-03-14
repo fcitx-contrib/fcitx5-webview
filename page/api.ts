@@ -36,10 +36,6 @@ function moveHighlight (from: Element | null, to: Element | null) {
   }
 }
 
-function clearAdditionalHighlight () {
-  candidates.querySelector('.highlighted:not(.highlighted-original)')?.classList.remove('highlighted')
-}
-
 function setCandidates (cands: string[], labels: string[], highlighted: number, markText: string) {
   candidates.innerHTML = ''
   for (let i = 0; i < cands.length; ++i) {
@@ -54,9 +50,6 @@ function setCandidates (cands: string[], labels: string[], highlighted: number, 
       if (hoverBehavior === 'Move') {
         const lastHighlighted = candidates.querySelector('.highlighted')
         moveHighlight(lastHighlighted, candidate)
-      } else if (hoverBehavior === 'Add') {
-        clearAdditionalHighlight()
-        candidate.classList.add('highlighted')
       }
     })
 
@@ -106,8 +99,6 @@ candidates.addEventListener('mouseleave', () => {
     const lastHighlighted = candidates.querySelector('.highlighted')
     const originalHighlighted = candidates.querySelector('.highlighted-original')
     moveHighlight(lastHighlighted, originalHighlighted)
-  } else if (hoverBehavior === 'Add') {
-    clearAdditionalHighlight()
   }
 })
 

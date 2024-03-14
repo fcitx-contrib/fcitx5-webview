@@ -56,6 +56,10 @@ body {
   }
 }
 
+.highlighted :active .mark.no-text {
+  height: 12px;
+}
+
 .hidden {
   display: none;
 }
