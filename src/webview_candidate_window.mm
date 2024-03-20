@@ -149,7 +149,10 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     w_.set_html(html_template.c_str());
 }
 
-WebviewCandidateWindow::~WebviewCandidateWindow() { [(id)w_.window() close]; }
+WebviewCandidateWindow::~WebviewCandidateWindow() {
+    [(id)w_.window() close]; // By default NSWindow is released on close.
+    [static_cast<NotificationListener *>(listener_) release];
+}
 
 void WebviewCandidateWindow::set_transparent_background() {
     // Transparent NSWindow
