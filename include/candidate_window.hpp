@@ -54,9 +54,14 @@ class CandidateWindow {
         highlight_mark_text_ = text;
     }
 
+    void set_page_callback(std::function<void(bool)> callback) {
+        page_callback = callback;
+    }
+
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(size_t index)> select_callback = [](size_t) {};
+    std::function<void(bool next)> page_callback = [](bool) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";
 };

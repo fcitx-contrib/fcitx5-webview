@@ -102,6 +102,10 @@ candidates.addEventListener('mouseleave', () => {
   }
 })
 
+candidates.addEventListener('wheel', e => {
+  window._page((<WheelEvent>e).deltaY > 0)
+})
+
 setTheme(0)
 
 // JavaScript APIs that webview_candidate_window.mm calls

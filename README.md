@@ -26,6 +26,7 @@ Execute the following JavaScript code to show candidates and more:
 ```js
 // Prerequisite: mock C++ callbacks to avoid throwing error.
 _select = console.log
+_page = console.log
 _resize = console.log
 
 // Show candidates with labels, and highlight the first one.
