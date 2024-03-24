@@ -22,9 +22,10 @@ test('HTML structure', async ({ page }) => {
   })
   await setCandidates(page, ['页面结构', '测试'], ['1', '2'], 0)
 
-  const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll('> <', '><')
+  const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
+    .replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
-<div class="basic blue panel dark">
+<div class="basic blue dark panel">
   <div class="panel-blur-outer">
     <div class="panel-blur-inner">
       <div class="header">
