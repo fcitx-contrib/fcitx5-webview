@@ -55,7 +55,10 @@ class WebviewCandidateWindow : public CandidateWindow {
         if constexpr (debug) {
             std::cerr << ss.str() << "\n";
         }
-        w_.eval(ss.str());
+        auto s = ss.str();
+        dispatch_async(dispatch_get_main_queue(), ^{
+          w_.eval(s);
+        });
     }
 
     template <typename T>
