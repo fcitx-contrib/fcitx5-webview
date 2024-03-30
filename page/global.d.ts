@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     // C++ APIs that api.ts calls
+    _onload?: () => void
     _select: (index: number) => void
     _page: (next: boolean) => void
     _resize: (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, dragging: boolean) => void
