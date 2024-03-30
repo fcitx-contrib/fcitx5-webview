@@ -14,6 +14,14 @@ import {
 } from './theme'
 import { setStyle } from './customize'
 
+window._onload && window._onload()
+
+function div (...classList: string[]) {
+  const element = document.createElement('div')
+  element.classList.add(...classList)
+  return element
+}
+
 function setLayout (layout : 0 | 1) {
   switch (layout) {
     case 0:
@@ -39,8 +47,7 @@ function moveHighlight (from: Element | null, to: Element | null) {
 function setCandidates (cands: string[], labels: string[], highlighted: number, markText: string) {
   candidates.innerHTML = ''
   for (let i = 0; i < cands.length; ++i) {
-    const candidate = document.createElement('div')
-    candidate.classList.add('candidate')
+    const candidate = div('candidate')
     if (i === highlighted) {
       candidate.classList.add('highlighted', 'highlighted-original')
     }
@@ -53,18 +60,14 @@ function setCandidates (cands: string[], labels: string[], highlighted: number, 
       }
     })
 
-    const label = document.createElement('div')
-    label.classList.add('label')
+    const label = div('label')
     label.innerHTML = labels[i]
-    const text = document.createElement('div')
-    text.classList.add('text')
+    const text = div('text')
     text.innerHTML = cands[i]
-    const candidateInner = document.createElement('div')
-    candidateInner.classList.add('candidate-inner')
+    const candidateInner = div('candidate-inner')
     // Render placeholder for vertical non-highlighted candidates
     if (candidates.classList.contains('vertical') || i === highlighted) {
-      const mark = document.createElement('div')
-      mark.classList.add('mark')
+      const mark = div('mark')
       if (markText === '') {
         mark.classList.add('no-text')
       } else {
