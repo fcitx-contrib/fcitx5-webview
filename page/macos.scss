@@ -57,9 +57,28 @@ $dark-graphite: rgb(105 105 105);
     background-clip: padding-box;
   }
 
-  .candidates.vertical .candidate:not(:first-child) {
-    border-top-width: 1px;
-    border-top-style: solid;
+  /* Use a dedicated div because
+   * 1. divider color is not overlaid by panel color
+   * 2. divider may not be full-length
+   */
+  .hoverables.vertical .divider {
+    height: 1px;
+
+    .divider-middle {
+      width: 100%;
+    }
+  }
+
+  .hoverables.horizontal .divider {
+    width: 0;
+
+    &.divider-paging {
+      width: 1px;
+    }
+
+    .divider-middle {
+      height: 100%;
+    }
   }
 }
 
@@ -78,44 +97,59 @@ $dark-graphite: rgb(105 105 105);
     background-color: $panel-color-light;
   }
 
+  .paging {
+    color: gray; // disabled
+    background-color: $panel-color-light;
+
+    .hoverable-inner {
+      color: $text-color-light; // enabled
+    }
+  }
+
   .candidate.highlighted {
     color: white;
   }
 
-  &.blue .candidate.highlighted .candidate-inner {
+  &.blue .hoverable.highlighted .hoverable-inner {
     background-color: $light-blue;
   }
 
-  &.purple .candidate.highlighted .candidate-inner {
+  &.purple .hoverable.highlighted .hoverable-inner {
     background-color: $light-purple;
   }
 
-  &.pink .candidate.highlighted .candidate-inner {
+  &.pink .hoverable.highlighted .hoverable-inner {
     background-color: $light-pink;
   }
 
-  &.red .candidate.highlighted .candidate-inner {
+  &.red .hoverable.highlighted .hoverable-inner {
     background-color: $light-red;
   }
 
-  &.orange .candidate.highlighted .candidate-inner {
+  &.orange .hoverable.highlighted .hoverable-inner {
     background-color: $light-orange;
   }
 
-  &.yellow .candidate.highlighted .candidate-inner {
+  &.yellow .hoverable.highlighted .hoverable-inner {
     background-color: $light-yellow;
   }
 
-  &.green .candidate.highlighted .candidate-inner {
+  &.green .hoverable.highlighted .hoverable-inner {
     background-color: $light-green;
   }
 
-  &.graphite .candidate.highlighted .candidate-inner {
+  &.graphite .hoverable.highlighted .hoverable-inner {
     background-color: $light-graphite;
   }
 
-  .candidates.vertical .candidate:not(:first-child) {
-    border-top-color: $vertical-border-color-light;
+  .hoverables .divider {
+    .divider-side {
+      background-color: $panel-color-light;
+    }
+
+    .divider-middle {
+      background-color: $vertical-border-color-light;
+    }
   }
 }
 
@@ -134,44 +168,60 @@ $dark-graphite: rgb(105 105 105);
     background-color: $panel-color-dark;
   }
 
+  .paging {
+    color: gray; // disabled
+    background-color: $panel-color-dark;
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    .hoverable-inner {
+      color: $text-color-dark; // enabled
+    }
+  }
+
   /* stylelint-disable-next-line no-descending-specificity */
   .candidate.highlighted {
     color: white;
   }
 
-  &.blue .candidate.highlighted .candidate-inner {
+  &.blue .hoverable.highlighted .hoverable-inner {
     background-color: $dark-blue;
   }
 
-  &.purple .candidate.highlighted .candidate-inner {
+  &.purple .hoverable.highlighted .hoverable-inner {
     background-color: $dark-purple;
   }
 
-  &.pink .candidate.highlighted .candidate-inner {
+  &.pink .hoverable.highlighted .hoverable-inner {
     background-color: $dark-pink;
   }
 
-  &.red .candidate.highlighted .candidate-inner {
+  &.red .hoverable.highlighted .hoverable-inner {
     background-color: $dark-red;
   }
 
-  &.orange .candidate.highlighted .candidate-inner {
+  &.orange .hoverable.highlighted .hoverable-inner {
     background-color: $dark-orange;
   }
 
-  &.yellow .candidate.highlighted .candidate-inner {
+  &.yellow .hoverable.highlighted .hoverable-inner {
     background-color: $dark-yellow;
   }
 
-  &.green .candidate.highlighted .candidate-inner {
+  &.green .hoverable.highlighted .hoverable-inner {
     background-color: $dark-green;
   }
 
-  &.graphite .candidate.highlighted .candidate-inner {
+  &.graphite .hoverable.highlighted .hoverable-inner {
     background-color: $dark-graphite;
   }
 
-  .candidates.vertical .candidate:not(:first-child) {
-    border-top-color: $vertical-border-color-dark;
+  .hoverables .divider {
+    .divider-side {
+      background-color: $panel-color-dark;
+    }
+
+    .divider-middle {
+      background-color: $vertical-border-color-dark;
+    }
   }
 }

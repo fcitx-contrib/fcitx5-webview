@@ -1,5 +1,5 @@
 import {
-  candidates,
+  hoverables,
   preedit,
   auxUp,
   auxDown
@@ -22,15 +22,28 @@ function div (...classList: string[]) {
   return element
 }
 
+function divider (paging: boolean = false) {
+  const e = div('divider')
+  // Is this divider between candidates and paging buttons?
+  if (paging) {
+    e.classList.add('divider-paging')
+  }
+  const dividerStart = div('divider-side')
+  const dividerMiddle = div('divider-middle')
+  const dividerEnd = div('divider-side')
+  e.append(dividerStart, dividerMiddle, dividerEnd)
+  return e
+}
+
 function setLayout (layout : 0 | 1) {
   switch (layout) {
     case 0:
-      candidates.classList.remove('vertical')
-      candidates.classList.add('horizontal')
+      hoverables.classList.remove('vertical')
+      hoverables.classList.add('horizontal')
       break
     case 1:
-      candidates.classList.remove('horizontal')
-      candidates.classList.add('vertical')
+      hoverables.classList.remove('horizontal')
+      hoverables.classList.add('vertical')
   }
 }
 
@@ -44,29 +57,35 @@ function moveHighlight (from: Element | null, to: Element | null) {
   }
 }
 
-function setCandidates (cands: string[], labels: string[], highlighted: number, markText: string) {
-  candidates.innerHTML = ''
+// font-awesome
+// Use 2 icons instead of flipping one to avoid 1-pixel shift bug.
+const common = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 192 512"><path d="{}" fill="currentColor"></path></svg>'
+const caretLeft = common.replace('{}', 'M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z')
+const caretRight = common.replace('{}', 'M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z')
+
+function setCandidates (cands: string[], labels: string[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean) {
+  hoverables.innerHTML = ''
   for (let i = 0; i < cands.length; ++i) {
-    const candidate = div('candidate')
+    const candidate = div('candidate', 'hoverable')
+    if (i === 0) {
+      candidate.classList.add('candidate-first')
+    } else {
+      hoverables.append(divider())
+    }
     if (i === highlighted) {
       candidate.classList.add('highlighted', 'highlighted-original')
     }
-
-    candidate.addEventListener('mouseenter', () => {
-      const hoverBehavior = getHoverBehavior()
-      if (hoverBehavior === 'Move') {
-        const lastHighlighted = candidates.querySelector('.highlighted')
-        moveHighlight(lastHighlighted, candidate)
-      }
-    })
+    if (i === cands.length - 1) {
+      candidate.classList.add('candidate-last')
+    }
 
     const label = div('label')
     label.innerHTML = labels[i]
     const text = div('text')
     text.innerHTML = cands[i]
-    const candidateInner = div('candidate-inner')
+    const candidateInner = div('candidate-inner', 'hoverable-inner')
     // Render placeholder for vertical non-highlighted candidates
-    if (candidates.classList.contains('vertical') || i === highlighted) {
+    if (hoverables.classList.contains('vertical') || i === highlighted) {
       const mark = div('mark')
       if (markText === '') {
         mark.classList.add('no-text')
@@ -77,7 +96,41 @@ function setCandidates (cands: string[], labels: string[], highlighted: number, 
     }
     candidateInner.append(label, text)
     candidate.append(candidateInner)
-    candidates.append(candidate)
+    hoverables.append(candidate)
+  }
+  if (pageable) {
+    hoverables.append(divider(true))
+
+    const prev = div('prev', 'hoverable')
+    const prevInner = div('paging-inner')
+    if (hasPrev) {
+      prevInner.classList.add('hoverable-inner')
+    }
+    prevInner.innerHTML = caretLeft
+    prev.appendChild(prevInner)
+
+    const next = div('next', 'hoverable')
+    const nextInner = div('paging-inner')
+    if (hasNext) {
+      nextInner.classList.add('hoverable-inner')
+    }
+    nextInner.innerHTML = caretRight
+    next.appendChild(nextInner)
+
+    const paging = div('paging')
+    paging.appendChild(prev)
+    paging.appendChild(next)
+    hoverables.appendChild(paging)
+  }
+
+  for (const hoverable of hoverables.querySelectorAll('.hoverable')) {
+    hoverable.addEventListener('mouseenter', () => {
+      const hoverBehavior = getHoverBehavior()
+      if (hoverBehavior === 'Move') {
+        const lastHighlighted = hoverables.querySelector('.highlighted')
+        moveHighlight(lastHighlighted, hoverable)
+      }
+    })
   }
 }
 
@@ -96,16 +149,16 @@ function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: 
   updateElement(auxDown, auxDownHTML)
 }
 
-candidates.addEventListener('mouseleave', () => {
+hoverables.addEventListener('mouseleave', () => {
   const hoverBehavior = getHoverBehavior()
   if (hoverBehavior === 'Move') {
-    const lastHighlighted = candidates.querySelector('.highlighted')
-    const originalHighlighted = candidates.querySelector('.highlighted-original')
+    const lastHighlighted = hoverables.querySelector('.highlighted')
+    const originalHighlighted = hoverables.querySelector('.highlighted-original')
     moveHighlight(lastHighlighted, originalHighlighted)
   }
 })
 
-candidates.addEventListener('wheel', e => {
+hoverables.addEventListener('wheel', e => {
   window._page((<WheelEvent>e).deltaY > 0)
 })
 

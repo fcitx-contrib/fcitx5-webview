@@ -23,15 +23,27 @@ body {
   }
 }
 
-.candidates {
+.hoverables {
   display: flex;
+
+  .divider {
+    display: flex;
+  }
 
   &.vertical {
     flex-direction: column;
+
+    .divider {
+      flex-direction: row;
+    }
   }
 
   &.horizontal {
     flex-direction: row;
+
+    .divider {
+      flex-direction: column;
+    }
   }
 }
 
@@ -41,6 +53,28 @@ body {
   align-items: center; /* English words have lower height */
   line-height: 1em; /* align label and candidates */
   position: relative; /* for absolute position of mark */
+}
+
+.paging {
+  display: flex;
+}
+
+/* When horizontal, paging is shorter than candidates, so need to centralize them. */
+.prev, .next {
+  display: flex;
+  align-items: center;
+}
+
+.paging-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+
+  svg {
+    height: 16px;
+  }
 }
 
 .mark {

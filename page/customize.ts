@@ -18,9 +18,11 @@ type LIGHT_MODE = {
   PanelColor: string
   TextColor: string
   LabelColor: string
+  PagingButtonColor: string
+  DisabledPagingButtonColor: string
   PreeditColor: string
   BorderColor: string
-  HorizontalDividerColor: string
+  DividerColor: string
 }
 
 type FONT_FAMILY = {[key: string]: string}
@@ -65,55 +67,77 @@ type STYLE_JSON = {
   }
 }
 
+function lightToDark (light: string) {
+  return light.replace(PANEL_LIGHT, PANEL_DARK)
+}
+
 const PANEL = '.panel.basic'
-const HORIZONTAL_DIVIDER = '.candidates.vertical .candidate:not(:first-child)'
-const PANEL_HORIZONTAL_DIVIDER = `${PANEL} ${HORIZONTAL_DIVIDER}`
-const CANDIDATES = `${PANEL} .candidates`
+const PANEL_HORIZONTAL_DIVIDER = `${PANEL} .hoverables.vertical .divider`
+const PANEL_HORIZONTAL_DIVIDER_SIDE = `${PANEL} .hoverables.vertical .divider-side`
+// left of prev paging button, same with MSPY
+const PANEL_VERTICAL_DIVIDER_SIDE = `${PANEL} .hoverables.horizontal .divider-paging .divider-side`
+const HOVERABLES = `${PANEL} .hoverables`
 const LABEL = `${PANEL} .label`
 const TEXT = `${PANEL} .text`
 const PREEDIT = `${PANEL} .preedit`
 const CURSOR_NO_TEXT = `${PANEL} .cursor.no-text`
 const CANDIDATE_INNER = `${PANEL} .candidate-inner`
+const FIRST_CANDIDATE_INNER = '.candidate-first .candidate-inner'
+const LAST_CANDIDATE_INNER = '.candidate-last .candidate-inner'
+const VERTICAL_CANDIDATE_INNER = `${PANEL} .hoverables.vertical .candidate-inner`
+const VERTICAL_FIRST_CANDIDATE_INNER = `${PANEL} .hoverables.vertical ${FIRST_CANDIDATE_INNER}`
+const VERTICAL_LAST_CANDIDATE_INNER = `${PANEL} .hoverables.vertical ${LAST_CANDIDATE_INNER}`
+const HORIZONTAL_CANDIDATE_INNER = `${PANEL} .hoverables.horizontal .candidate-inner`
+const HORIZONTAL_FIRST_CANDIDATE_INNER = `${PANEL} .hoverables.horizontal ${FIRST_CANDIDATE_INNER}`
+const HORIZONTAL_LAST_CANDIDATE_INNER = `${PANEL} .hoverables.horizontal ${LAST_CANDIDATE_INNER}`
+const PAGING_OUTER = `${PANEL} :is(.prev, .next)`
+const PAGING_INNER = `${PANEL} .paging-inner`
 const HIGHLIGHT_MARK = `${PANEL} .highlighted .mark`
 const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .highlighted-original .mark`
 
 const PANEL_LIGHT = `${PANEL}.light`
-const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner`
-const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner:hover`
-const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .candidate.highlighted .candidate-inner:active`
-const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .candidate:not(.highlighted) .candidate-inner:hover`
-const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .candidate:not(.highlighted) .candidate-inner:active`
+const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .hoverable.highlighted .hoverable-inner`
+const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .hoverable.highlighted:hover .hoverable-inner`
+const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .hoverable.highlighted:active .hoverable-inner`
+const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .hoverable:not(.highlighted):hover .hoverable-inner`
+const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .hoverable:not(.highlighted):active .hoverable-inner`
 const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .text`
-const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .candidate .candidate-inner:active .text`
+const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .candidate:active .candidate-inner .text`
 const LABEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .label`
 const TEXT_LIGHT = `${PANEL_LIGHT} .text`
 const LABEL_LIGHT = `${PANEL_LIGHT} .label`
+const PAGING_BUTTON_LIGHT = `${PANEL_LIGHT} .paging .hoverable-inner svg`
+const PAGING_BUTTON_DISABLED_LIGHT = `${PANEL_LIGHT} .paging svg`
 const PREEDIT_LIGHT = `${PANEL_LIGHT} .preedit`
 const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} .header`
-const CANDIDATE_LIGHT_BACKGROUND = `${PANEL_LIGHT} .candidate`
-const PANEL_LIGHT_HORIZONTAL_DIVIDER = `${PANEL_LIGHT} ${HORIZONTAL_DIVIDER}`
+const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .hoverables :is(.candidate, .paging)`
+const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .hoverables .divider .divider-middle`
+const PANEL_LIGHT_DIVIDER_SIDE = `${PANEL_LIGHT} .hoverables .divider .divider-side`
 const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .cursor.no-text`
 const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .highlighted .mark`
 
 const PANEL_DARK = `${PANEL}.dark`
-const PANEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .candidate-inner`
-const PANEL_DARK_HIGHLIGHT_HOVER = `${PANEL_DARK} .candidate.highlighted .candidate-inner:hover`
-const PANEL_DARK_HIGHLIGHT_PRESS = `${PANEL_DARK} .candidate.highlighted .candidate-inner:active`
-const PANEL_DARK_OTHER_HOVER = `${PANEL_DARK} .candidate:not(.highlighted) .candidate-inner:hover`
-const PANEL_DARK_OTHER_PRESS = `${PANEL_DARK} .candidate:not(.highlighted) .candidate-inner:active`
-const TEXT_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .text`
-const TEXT_DARK_PRESS = `${PANEL_DARK} .candidate .candidate-inner:active .text`
-const LABEL_DARK_HIGHLIGHT = `${PANEL_DARK} .candidate.highlighted .label`
-const TEXT_DARK = `${PANEL_DARK} .text`
-const LABEL_DARK = `${PANEL_DARK} .label`
-const PREEDIT_DARK = `${PANEL_DARK} .preedit`
-const HEADER_DARK_BACKGROUND = `${PANEL_DARK} .header`
-const CANDIDATE_DARK_BACKGROUND = `${PANEL_DARK} .candidate`
-const PANEL_DARK_HORIZONTAL_DIVIDER = `${PANEL_DARK} ${HORIZONTAL_DIVIDER}`
-const CURSOR_NO_TEXT_DARK = `${PANEL_DARK} .cursor.no-text`
-const HIGHLIGHT_MARK_DARK = `${PANEL_DARK} .highlighted .mark`
+const PANEL_DARK_HIGHLIGHT = lightToDark(PANEL_LIGHT_HIGHLIGHT)
+const PANEL_DARK_HIGHLIGHT_HOVER = lightToDark(PANEL_LIGHT_HIGHLIGHT_HOVER)
+const PANEL_DARK_HIGHLIGHT_PRESS = lightToDark(PANEL_LIGHT_HIGHLIGHT_PRESS)
+const PANEL_DARK_OTHER_HOVER = lightToDark(PANEL_LIGHT_OTHER_HOVER)
+const PANEL_DARK_OTHER_PRESS = lightToDark(PANEL_LIGHT_OTHER_PRESS)
+const TEXT_DARK_HIGHLIGHT = lightToDark(TEXT_LIGHT_HIGHLIGHT)
+const TEXT_DARK_PRESS = lightToDark(TEXT_LIGHT_PRESS)
+const LABEL_DARK_HIGHLIGHT = lightToDark(LABEL_LIGHT_HIGHLIGHT)
+const TEXT_DARK = lightToDark(TEXT_LIGHT)
+const LABEL_DARK = lightToDark(LABEL_LIGHT)
+const PAGING_BUTTON_DARK = lightToDark(PAGING_BUTTON_LIGHT)
+const PAGING_BUTTON_DISABLED_DARK = lightToDark(PAGING_BUTTON_DISABLED_LIGHT)
+const PREEDIT_DARK = lightToDark(PREEDIT_LIGHT)
+const HEADER_DARK_BACKGROUND = lightToDark(HEADER_LIGHT_BACKGROUND)
+const HOVERABLES_DARK_BACKGROUND = lightToDark(HOVERABLES_LIGHT_BACKGROUND)
+const PANEL_DARK_DIVIDER_MIDDLE = lightToDark(PANEL_LIGHT_DIVIDER_MIDDLE)
+const PANEL_DARK_DIVIDER_SIDE = lightToDark(PANEL_LIGHT_DIVIDER_SIDE)
+const CURSOR_NO_TEXT_DARK = lightToDark(CURSOR_NO_TEXT_LIGHT)
+const HIGHLIGHT_MARK_DARK = lightToDark(HIGHLIGHT_MARK_LIGHT)
 
-function px (n: string) {
+function px (n: string | number) {
   return `${n}px`
 }
 
@@ -130,7 +154,7 @@ export function setStyle (style: string) {
   const hasBackgroundImage = j.Background.ImageUrl.trim() !== ''
   const markKey = j.Highlight.MarkStyle === 'Text' ? 'color' : 'background-color'
   rules[PANEL] = {}
-  rules[CANDIDATES] = {}
+  rules[HOVERABLES] = {}
   rules[TEXT] = {}
   rules[LABEL] = {}
   rules[PREEDIT] = {}
@@ -138,8 +162,12 @@ export function setStyle (style: string) {
   rules[HIGHLIGHT_MARK] = {}
   rules[HIGHLIGHT_ORIGINAL_MARK] = {}
   rules[CANDIDATE_INNER] = {}
+  rules[PAGING_OUTER] = {}
+  rules[PAGING_INNER] = {}
 
   if (j.LightMode.OverrideDefault === 'True') {
+    const lightBackgroundColor = hasBackgroundImage ? 'inherit' : j.LightMode.PanelColor
+
     rules[PANEL_LIGHT_HIGHLIGHT] = {
       'background-color': j.LightMode.HighlightColor
     }
@@ -161,15 +189,21 @@ export function setStyle (style: string) {
     rules[HEADER_LIGHT_BACKGROUND] = {
       'background-color': j.LightMode.PanelColor
     }
-    rules[CANDIDATE_LIGHT_BACKGROUND] = {
+    rules[HOVERABLES_LIGHT_BACKGROUND] = {
       // With background image, discard panel color for unselected candidates
-      'background-color': hasBackgroundImage ? 'inherit' : j.LightMode.PanelColor
+      'background-color': lightBackgroundColor
     }
     rules[TEXT_LIGHT] = {
       color: j.LightMode.TextColor
     }
     rules[LABEL_LIGHT] = {
       color: j.LightMode.LabelColor
+    }
+    rules[PAGING_BUTTON_LIGHT] = {
+      color: j.LightMode.PagingButtonColor
+    }
+    rules[PAGING_BUTTON_DISABLED_LIGHT] = {
+      color: j.LightMode.DisabledPagingButtonColor
     }
     rules[PREEDIT_LIGHT] = {
       color: j.LightMode.PreeditColor
@@ -180,8 +214,11 @@ export function setStyle (style: string) {
     rules[PANEL_LIGHT] = {
       'border-color': j.LightMode.BorderColor
     }
-    rules[PANEL_LIGHT_HORIZONTAL_DIVIDER] = {
-      'border-top-color': j.LightMode.HorizontalDividerColor
+    rules[PANEL_LIGHT_DIVIDER_MIDDLE] = {
+      'background-color': j.LightMode.DividerColor
+    }
+    rules[PANEL_LIGHT_DIVIDER_SIDE] = {
+      'background-color': lightBackgroundColor
     }
     rules[HIGHLIGHT_MARK_LIGHT] = {
       [markKey]: j.LightMode.HighlightMarkColor
@@ -198,27 +235,36 @@ export function setStyle (style: string) {
 
   if (j.DarkMode.OverrideDefault === 'True') {
     if (j.DarkMode.SameWithLightMode === 'True' && j.LightMode.OverrideDefault === 'True') {
-      rules[PANEL_DARK_HIGHLIGHT] = rules[PANEL_LIGHT_HIGHLIGHT]
-      rules[PANEL_DARK_HIGHLIGHT_HOVER] = rules[PANEL_LIGHT_HIGHLIGHT_HOVER]
-      rules[PANEL_DARK_HIGHLIGHT_PRESS] = rules[PANEL_LIGHT_HIGHLIGHT_PRESS]
-      rules[TEXT_DARK_HIGHLIGHT] = rules[TEXT_LIGHT_HIGHLIGHT]
-      rules[TEXT_DARK_PRESS] = rules[TEXT_LIGHT_PRESS]
-      rules[LABEL_DARK_HIGHLIGHT] = rules[LABEL_LIGHT_HIGHLIGHT]
-      rules[HEADER_DARK_BACKGROUND] = rules[HEADER_LIGHT_BACKGROUND]
-      rules[CANDIDATE_DARK_BACKGROUND] = rules[CANDIDATE_LIGHT_BACKGROUND]
-      rules[TEXT_DARK] = rules[TEXT_LIGHT]
-      rules[LABEL_DARK] = rules[LABEL_LIGHT]
-      rules[PREEDIT_DARK] = rules[PREEDIT_LIGHT]
-      rules[CURSOR_NO_TEXT_DARK] = rules[CURSOR_NO_TEXT_LIGHT]
-      rules[PANEL_DARK] = rules[PANEL_LIGHT]
-      rules[PANEL_DARK_HORIZONTAL_DIVIDER] = rules[PANEL_LIGHT_HORIZONTAL_DIVIDER]
-      rules[HIGHLIGHT_MARK_DARK] = rules[HIGHLIGHT_MARK_LIGHT]
+      const keys = [
+        PANEL_LIGHT_HIGHLIGHT,
+        PANEL_LIGHT_HIGHLIGHT_HOVER,
+        PANEL_LIGHT_HIGHLIGHT_PRESS,
+        TEXT_LIGHT_HIGHLIGHT,
+        TEXT_LIGHT_PRESS,
+        LABEL_LIGHT_HIGHLIGHT,
+        HEADER_LIGHT_BACKGROUND,
+        HOVERABLES_LIGHT_BACKGROUND,
+        TEXT_LIGHT,
+        LABEL_LIGHT,
+        PAGING_BUTTON_LIGHT,
+        PAGING_BUTTON_DISABLED_LIGHT,
+        PREEDIT_LIGHT,
+        CURSOR_NO_TEXT_LIGHT,
+        PANEL_LIGHT,
+        PANEL_LIGHT_DIVIDER_MIDDLE,
+        PANEL_LIGHT_DIVIDER_SIDE,
+        HIGHLIGHT_MARK_LIGHT
+      ]
       if (j.Highlight.HoverBehavior === 'Add') {
         // This is the behavior of MSPY
-        rules[PANEL_DARK_OTHER_HOVER] = rules[PANEL_LIGHT_OTHER_HOVER]
-        rules[PANEL_DARK_OTHER_PRESS] = rules[PANEL_LIGHT_OTHER_PRESS]
+        keys.push(PANEL_LIGHT_OTHER_HOVER, PANEL_LIGHT_OTHER_PRESS)
+      }
+      for (const key of keys) {
+        rules[lightToDark(key)] = rules[key]
       }
     } else {
+      const darkBackgroundColor = hasBackgroundImage ? 'inherit' : j.DarkMode.PanelColor
+
       rules[PANEL_DARK_HIGHLIGHT] = {
         'background-color': j.DarkMode.HighlightColor
       }
@@ -240,14 +286,20 @@ export function setStyle (style: string) {
       rules[HEADER_DARK_BACKGROUND] = {
         'background-color': j.DarkMode.PanelColor
       }
-      rules[CANDIDATE_DARK_BACKGROUND] = {
-        'background-color': hasBackgroundImage ? 'inherit' : j.DarkMode.PanelColor
+      rules[HOVERABLES_DARK_BACKGROUND] = {
+        'background-color': darkBackgroundColor
       }
       rules[TEXT_DARK] = {
         color: j.DarkMode.TextColor
       }
       rules[LABEL_DARK] = {
         color: j.DarkMode.LabelColor
+      }
+      rules[PAGING_BUTTON_DARK] = {
+        color: j.DarkMode.PagingButtonColor
+      }
+      rules[PAGING_BUTTON_DISABLED_DARK] = {
+        color: j.DarkMode.DisabledPagingButtonColor
       }
       rules[PREEDIT_DARK] = {
         color: j.DarkMode.PreeditColor
@@ -258,8 +310,11 @@ export function setStyle (style: string) {
       rules[PANEL_DARK] = {
         'border-color': j.DarkMode.BorderColor
       }
-      rules[PANEL_DARK_HORIZONTAL_DIVIDER] = {
-        'border-top-color': j.DarkMode.HorizontalDividerColor
+      rules[PANEL_DARK_DIVIDER_MIDDLE] = {
+        'background-color': j.DarkMode.DividerColor
+      }
+      rules[PANEL_DARK_DIVIDER_SIDE] = {
+        'background-color': darkBackgroundColor
       }
       rules[HIGHLIGHT_MARK_DARK] = {
         [markKey]: j.DarkMode.HighlightMarkColor
@@ -277,8 +332,8 @@ export function setStyle (style: string) {
 
   if (j.Background.ImageUrl) {
     // Background image should not affect aux
-    rules[CANDIDATES]['background-image'] = `url(${JSON.stringify(j.Background.ImageUrl)})`
-    rules[CANDIDATES]['background-size'] = 'cover'
+    rules[HOVERABLES]['background-image'] = `url(${JSON.stringify(j.Background.ImageUrl)})`
+    rules[HOVERABLES]['background-size'] = 'cover'
   }
 
   if (j.Background.Blur === 'True') {
@@ -312,15 +367,49 @@ export function setStyle (style: string) {
 
   rules[PANEL]['border-width'] = px(j.Size.BorderWidth)
   rules[PANEL]['border-radius'] = px(j.Size.BorderRadius)
+
+  const halfMargin = px(Number(j.Size.Margin) / 2)
   rules[CANDIDATE_INNER].margin = px(j.Size.Margin)
-  rules[CANDIDATE_INNER]['border-radius'] = px(j.Size.HighlightRadius)
+
+  if (j.Size.HorizontalDividerWidth === '0') {
+    rules[VERTICAL_CANDIDATE_INNER] = {
+      'margin-top': halfMargin,
+      'margin-bottom': halfMargin
+    }
+    rules[VERTICAL_FIRST_CANDIDATE_INNER] = {
+      'margin-top': px(j.Size.Margin)
+    }
+    rules[VERTICAL_LAST_CANDIDATE_INNER] = {
+      'margin-bottom': px(j.Size.Margin)
+    }
+  }
+  // Unconditional since there is no vertical divider between candidates.
+  rules[HORIZONTAL_CANDIDATE_INNER] = {
+    'margin-left': halfMargin,
+    'margin-right': halfMargin
+  }
+  rules[HORIZONTAL_FIRST_CANDIDATE_INNER] = {
+    'margin-left': px(j.Size.Margin)
+  }
+  rules[HORIZONTAL_LAST_CANDIDATE_INNER] = {
+    'margin-right': px(j.Size.Margin)
+  }
+
+  rules[PAGING_OUTER].margin = px(j.Size.Margin)
+  rules[CANDIDATE_INNER]['border-radius'] = rules[PAGING_INNER]['border-radius'] = px(j.Size.HighlightRadius)
   rules[CANDIDATE_INNER]['padding-top'] = px(j.Size.TopPadding)
   rules[CANDIDATE_INNER]['padding-right'] = px(j.Size.RightPadding)
   rules[CANDIDATE_INNER]['padding-bottom'] = px(j.Size.BottomPadding)
   rules[CANDIDATE_INNER]['padding-left'] = px(j.Size.LeftPadding)
   rules[CANDIDATE_INNER].gap = px(j.Size.LabelTextGap)
   rules[PANEL_HORIZONTAL_DIVIDER] = {
-    'border-top-width': px(j.Size.HorizontalDividerWidth)
+    height: px(j.Size.HorizontalDividerWidth)
+  }
+  rules[PANEL_HORIZONTAL_DIVIDER_SIDE] = {
+    width: px(j.Size.Margin)
+  }
+  rules[PANEL_VERTICAL_DIVIDER_SIDE] = {
+    height: px(j.Size.Margin)
   }
 
   const basic = document.head.querySelector('#basic')

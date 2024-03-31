@@ -33,16 +33,21 @@ test('HTML structure', async ({ page }) => {
         <div class="hidden preedit"></div>
       </div>
       <div class="aux-down hidden"></div>
-      <div class="candidates">
-        <div class="candidate highlighted highlighted-original">
-          <div class="candidate-inner">
+      <div class="hoverables">
+        <div class="candidate candidate-first highlighted highlighted-original hoverable">
+          <div class="candidate-inner hoverable-inner">
             <div class="mark no-text"></div>
             <div class="label">1</div>
             <div class="text">页面结构</div>
           </div>
         </div>
-        <div class="candidate">
-          <div class="candidate-inner">
+        <div class="divider">
+          <div class="divider-side"></div>
+          <div class="divider-middle"></div>
+          <div class="divider-side"></div>
+        </div>
+        <div class="candidate candidate-last hoverable">
+          <div class="candidate-inner hoverable-inner">
             <div class="label">2</div>
             <div class="text">测试</div>
           </div>
