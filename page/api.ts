@@ -79,11 +79,8 @@ function setCandidates (cands: string[], labels: string[], highlighted: number, 
       candidate.classList.add('candidate-last')
     }
 
-    const label = div('label')
-    label.innerHTML = labels[i]
-    const text = div('text')
-    text.innerHTML = cands[i]
     const candidateInner = div('candidate-inner', 'hoverable-inner')
+
     // Render placeholder for vertical non-highlighted candidates
     if (hoverables.classList.contains('vertical') || i === highlighted) {
       const mark = div('mark')
@@ -94,7 +91,17 @@ function setCandidates (cands: string[], labels: string[], highlighted: number, 
       }
       candidateInner.append(mark)
     }
-    candidateInner.append(label, text)
+
+    if (labels[i]) {
+      const label = div('label')
+      label.innerHTML = labels[i]
+      candidateInner.append(label)
+    }
+
+    const text = div('text')
+    text.innerHTML = cands[i]
+    candidateInner.append(text)
+
     candidate.append(candidateInner)
     hoverables.append(candidate)
   }
