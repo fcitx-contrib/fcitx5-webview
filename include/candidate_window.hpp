@@ -58,12 +58,21 @@ class CandidateWindow {
         page_callback = callback;
     }
 
+    void set_paging_buttons(bool pageable, bool has_prev, bool has_next) {
+        pageable_ = pageable;
+        has_prev_ = has_prev;
+        has_next_ = has_next;
+    }
+
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(size_t index)> select_callback = [](size_t) {};
     std::function<void(bool next)> page_callback = [](bool) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";
+    bool pageable_ = false;
+    bool has_prev_ = false;
+    bool has_next_ = false;
 };
 } // namespace candidate_window
 #endif

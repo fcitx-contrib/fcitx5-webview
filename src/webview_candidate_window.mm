@@ -201,7 +201,8 @@ void WebviewCandidateWindow::set_candidates(
     std::transform(labels.begin(), labels.end(),
                    std::back_inserter(escaped_labels), escape_html);
     invoke_js("setCandidates", escaped_candidates, escaped_labels, highlighted,
-              escape_html(highlight_mark_text_));
+              escape_html(highlight_mark_text_), pageable_, has_prev_,
+              has_next_);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {

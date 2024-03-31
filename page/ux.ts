@@ -1,6 +1,6 @@
 import {
   panel,
-  candidates
+  hoverables
 } from './selector'
 
 let pressed = false
@@ -87,14 +87,20 @@ document.addEventListener('mouseup', e => {
     return
   }
   let target = e.target as Element
-  if (target === candidates || !candidates.contains(target)) {
+  if (target === hoverables || !hoverables.contains(target)) {
     return
   }
-  while (target.parentElement !== candidates) {
+  while (target.parentElement !== hoverables) {
+    if (target.classList.contains('prev')) {
+      return window._page(false)
+    } else if (target.classList.contains('next')) {
+      return window._page(true)
+    }
     target = target.parentElement!
   }
-  for (let i = 0; i < candidates.childElementCount; ++i) {
-    if (candidates.children[i] === target) {
+  const allCandidates = hoverables.querySelectorAll('.candidate')
+  for (let i = 0; i < allCandidates.length; ++i) {
+    if (allCandidates[i] === target) {
       return window._select(i)
     }
   }
