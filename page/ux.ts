@@ -18,15 +18,22 @@ type ShadowBox = {
 }
 
 export function resize (dx: number, dy: number, dragging: boolean) {
-  const {
-    shadowTop,
-    shadowRight,
-    shadowBottom,
-    shadowLeft,
-    fullWidth,
-    fullHeight
-  } = getBoundingRectWithShadow(panel)
-  window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, dragging)
+  function adaptWindowSize () {
+    const {
+      shadowTop,
+      shadowRight,
+      shadowBottom,
+      shadowLeft,
+      fullWidth,
+      fullHeight
+    } = getBoundingRectWithShadow(panel)
+    window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, dragging)
+  }
+  adaptWindowSize()
+  if (!dragging) {
+    // Sometimes getBoundingClientRect is called when the element is not fully rendered.
+    window.requestAnimationFrame(adaptWindowSize)
+  }
 }
 
 function getBoundingRectWithShadow (element: Element): ShadowBox {
