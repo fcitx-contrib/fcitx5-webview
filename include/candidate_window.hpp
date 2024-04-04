@@ -34,6 +34,7 @@ class CandidateWindow {
                                     const formatted<std::string> &auxDown) = 0;
     virtual void set_candidates(const std::vector<std::string> &candidates,
                                 const std::vector<std::string> &labels,
+                                const std::vector<std::string> &comments,
                                 int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;

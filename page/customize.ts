@@ -14,10 +14,12 @@ type LIGHT_MODE = {
   HighlightTextColor: string
   HighlightTextPressColor: string
   HighlightLabelColor: string
+  HighlightCommentColor: string
   HighlightMarkColor: string
   PanelColor: string
   TextColor: string
   LabelColor: string
+  CommentColor: string
   PagingButtonColor: string
   DisabledPagingButtonColor: string
   PreeditColor: string
@@ -43,6 +45,8 @@ type STYLE_JSON = {
     TextFontSize: string
     LabelFontFamily: FONT_FAMILY
     LabelFontSize: string
+    CommentFontFamily: FONT_FAMILY
+    CommentFontSize: string
     PreeditFontFamily: FONT_FAMILY
     PreeditFontSize: string
   }
@@ -79,6 +83,7 @@ const PANEL_VERTICAL_DIVIDER_SIDE = `${PANEL} .hoverables.horizontal .divider-pa
 const HOVERABLES = `${PANEL} .hoverables`
 const LABEL = `${PANEL} .label`
 const TEXT = `${PANEL} .text`
+const COMMENT = `${PANEL} .comment`
 const PREEDIT = `${PANEL} .preedit`
 const CURSOR_NO_TEXT = `${PANEL} .cursor.no-text`
 const CANDIDATE_INNER = `${PANEL} .candidate-inner`
@@ -104,11 +109,13 @@ const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .hoverable:not(.highlighted):act
 const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .text`
 const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .candidate:active .candidate-inner .text`
 const LABEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .label`
+const COMMENT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .comment`
 const TEXT_LIGHT = `${PANEL_LIGHT} .text`
 const LABEL_LIGHT = `${PANEL_LIGHT} .label`
+const COMMENT_LIGHT = `${PANEL_LIGHT} .comment`
 const PAGING_BUTTON_LIGHT = `${PANEL_LIGHT} .paging .hoverable-inner svg`
 const PAGING_BUTTON_DISABLED_LIGHT = `${PANEL_LIGHT} .paging svg`
-const PREEDIT_LIGHT = `${PANEL_LIGHT} .preedit`
+const PREEDIT_LIGHT = `${PANEL_LIGHT} :is(.preedit, .aux-up, .aux-down)`
 const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} .header`
 const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .hoverables :is(.candidate, .paging)`
 const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .hoverables .divider .divider-middle`
@@ -125,8 +132,10 @@ const PANEL_DARK_OTHER_PRESS = lightToDark(PANEL_LIGHT_OTHER_PRESS)
 const TEXT_DARK_HIGHLIGHT = lightToDark(TEXT_LIGHT_HIGHLIGHT)
 const TEXT_DARK_PRESS = lightToDark(TEXT_LIGHT_PRESS)
 const LABEL_DARK_HIGHLIGHT = lightToDark(LABEL_LIGHT_HIGHLIGHT)
+const COMMENT_DARK_HIGHLIGHT = lightToDark(COMMENT_LIGHT_HIGHLIGHT)
 const TEXT_DARK = lightToDark(TEXT_LIGHT)
 const LABEL_DARK = lightToDark(LABEL_LIGHT)
+const COMMENT_DARK = lightToDark(COMMENT_LIGHT)
 const PAGING_BUTTON_DARK = lightToDark(PAGING_BUTTON_LIGHT)
 const PAGING_BUTTON_DISABLED_DARK = lightToDark(PAGING_BUTTON_DISABLED_LIGHT)
 const PREEDIT_DARK = lightToDark(PREEDIT_LIGHT)
@@ -157,6 +166,7 @@ export function setStyle (style: string) {
   rules[HOVERABLES] = {}
   rules[TEXT] = {}
   rules[LABEL] = {}
+  rules[COMMENT] = {}
   rules[PREEDIT] = {}
   rules[CURSOR_NO_TEXT] = {}
   rules[HIGHLIGHT_MARK] = {}
@@ -186,6 +196,9 @@ export function setStyle (style: string) {
     rules[LABEL_LIGHT_HIGHLIGHT] = {
       color: j.LightMode.HighlightLabelColor
     }
+    rules[COMMENT_LIGHT_HIGHLIGHT] = {
+      color: j.LightMode.HighlightCommentColor
+    }
     rules[HEADER_LIGHT_BACKGROUND] = {
       'background-color': j.LightMode.PanelColor
     }
@@ -198,6 +211,9 @@ export function setStyle (style: string) {
     }
     rules[LABEL_LIGHT] = {
       color: j.LightMode.LabelColor
+    }
+    rules[COMMENT_LIGHT] = {
+      color: j.LightMode.CommentColor
     }
     rules[PAGING_BUTTON_LIGHT] = {
       color: j.LightMode.PagingButtonColor
@@ -242,10 +258,12 @@ export function setStyle (style: string) {
         TEXT_LIGHT_HIGHLIGHT,
         TEXT_LIGHT_PRESS,
         LABEL_LIGHT_HIGHLIGHT,
+        COMMENT_LIGHT_HIGHLIGHT,
         HEADER_LIGHT_BACKGROUND,
         HOVERABLES_LIGHT_BACKGROUND,
         TEXT_LIGHT,
         LABEL_LIGHT,
+        COMMENT_LIGHT,
         PAGING_BUTTON_LIGHT,
         PAGING_BUTTON_DISABLED_LIGHT,
         PREEDIT_LIGHT,
@@ -283,6 +301,9 @@ export function setStyle (style: string) {
       rules[LABEL_DARK_HIGHLIGHT] = {
         color: j.DarkMode.HighlightLabelColor
       }
+      rules[COMMENT_DARK_HIGHLIGHT] = {
+        color: j.DarkMode.HighlightCommentColor
+      }
       rules[HEADER_DARK_BACKGROUND] = {
         'background-color': j.DarkMode.PanelColor
       }
@@ -294,6 +315,9 @@ export function setStyle (style: string) {
       }
       rules[LABEL_DARK] = {
         color: j.DarkMode.LabelColor
+      }
+      rules[COMMENT_DARK] = {
+        color: j.DarkMode.CommentColor
       }
       rules[PAGING_BUTTON_DARK] = {
         color: j.DarkMode.PagingButtonColor
@@ -354,6 +378,9 @@ export function setStyle (style: string) {
 
   setFontFamily(rules[LABEL], j.Font.LabelFontFamily)
   rules[LABEL]['font-size'] = px(j.Font.LabelFontSize)
+
+  setFontFamily(rules[COMMENT], j.Font.CommentFontFamily)
+  rules[COMMENT]['font-size'] = px(j.Font.CommentFontSize)
 
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
   rules[PREEDIT]['font-size'] = rules[PREEDIT]['line-height'] = px(j.Font.PreeditFontSize)

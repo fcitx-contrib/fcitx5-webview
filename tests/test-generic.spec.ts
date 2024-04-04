@@ -20,7 +20,7 @@ test('HTML structure', async ({ page }) => {
       document.querySelector(klass)?.classList.remove('blur')
     }
   })
-  await setCandidates(page, ['页面结构', '测试'], ['1', '2'], 0)
+  await setCandidates(page, ['页面结构', '测试'], ['1', '2'], ['c', ''], 0)
 
   const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
     .replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
@@ -39,6 +39,7 @@ test('HTML structure', async ({ page }) => {
             <div class="mark no-text"></div>
             <div class="label">1</div>
             <div class="text">页面结构</div>
+            <div class="comment">c</div>
           </div>
         </div>
         <div class="divider">
@@ -62,7 +63,7 @@ test('HTML structure', async ({ page }) => {
 
 test('Select candidate', async ({ page }) => {
   await init(page)
-  await setCandidates(page, ['点击', '候选词'], ['1', '2'], 0)
+  await setCandidates(page, ['点击', '候选词'], ['1', '2'], ['', ''], 0)
 
   await candidate(page, 1).click()
   const cppCalls = await getCppCalls(page)
@@ -71,7 +72,7 @@ test('Select candidate', async ({ page }) => {
 
 test('Drag should not select candidate', async ({ page }) => {
   await init(page)
-  await setCandidates(page, ['拖动', '不选词'], ['1', '2'], 0)
+  await setCandidates(page, ['拖动', '不选词'], ['1', '2'], ['', ''], 0)
 
   const box = await getBox(candidate(page, 0))
   const centerX = box.x + box.width / 2
@@ -87,7 +88,7 @@ test('Drag should not select candidate', async ({ page }) => {
 
 test('Set layout', async ({ page }) => {
   await init(page)
-  await setCandidates(page, ['横', '竖', '分', '明'], ['1', '2', '3', '4'], 0)
+  await setCandidates(page, ['横', '竖', '分', '明'], ['1', '2', '3', '4'], ['', '', '', ''], 0)
 
   await setLayout(page, 1)
   const verticalBox = await getBox(panel(page))
@@ -104,7 +105,7 @@ test('Set layout', async ({ page }) => {
   expect(horizontalBox).toMatchObject({
     x: 25, y: 25
   })
-  expect(horizontalBox.width).toBeGreaterThan(176)
+  expect(horizontalBox.width).toBeGreaterThan(170)
   expect(horizontalBox.width).toBeLessThan(186)
   expect(horizontalBox.height).toBeGreaterThan(27)
   expect(horizontalBox.height).toBeLessThan(37)

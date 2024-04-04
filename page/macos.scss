@@ -6,12 +6,14 @@ $panel-color-light: rgba(240, 240, 240, $panel-alpha);
 $panel-border-color-light: rgb(0 0 0 / 17.5%);
 $vertical-border-color-light: rgba(224, 224, 224, $panel-alpha);
 $text-color-light: rgb(0 0 0 / 70%);
+$label-color-light: rgb(128 128 128);
 
 /* dark */
 $panel-color-dark: rgba(60, 60, 60, $panel-alpha);
 $panel-border-color-dark: rgb(0 0 0 / 47.5%);
 $vertical-border-color-dark: rgba(85, 85, 85, $panel-alpha);
 $text-color-dark: rgb(255 255 255 / 90%);
+$label-color-dark: rgb(124 124 124);
 
 /* accent color */
 $light-blue: rgb(0 90 216);
@@ -80,6 +82,10 @@ $dark-graphite: rgb(105 105 105);
       height: 100%;
     }
   }
+
+  .label, .comment {
+    font-size: 12px;
+  }
 }
 
 .macos.light {
@@ -93,8 +99,15 @@ $dark-graphite: rgb(105 105 105);
 
   /* stylelint-disable-next-line no-descending-specificity */
   .candidate, .header {
-    color: $text-color-light;
     background-color: $panel-color-light;
+  }
+
+  .text, .header {
+    color: $text-color-light;
+  }
+
+  .label, .comment {
+    color: $label-color-light;
   }
 
   .paging {
@@ -104,10 +117,6 @@ $dark-graphite: rgb(105 105 105);
     .hoverable-inner {
       color: $text-color-light; // enabled
     }
-  }
-
-  .candidate.highlighted {
-    color: white;
   }
 
   &.blue .hoverable.highlighted .hoverable-inner {
@@ -164,8 +173,15 @@ $dark-graphite: rgb(105 105 105);
 
   /* stylelint-disable-next-line no-descending-specificity */
   .candidate, .header {
-    color: $text-color-dark;
     background-color: $panel-color-dark;
+  }
+
+  .text, .header {
+    color: $text-color-dark;
+  }
+
+  .label, .comment {
+    color: $label-color-dark;
   }
 
   .paging {
@@ -176,11 +192,6 @@ $dark-graphite: rgb(105 105 105);
     .hoverable-inner {
       color: $text-color-dark; // enabled
     }
-  }
-
-  /* stylelint-disable-next-line no-descending-specificity */
-  .candidate.highlighted {
-    color: white;
   }
 
   &.blue .hoverable.highlighted .hoverable-inner {
@@ -222,6 +233,14 @@ $dark-graphite: rgb(105 105 105);
 
     .divider-middle {
       background-color: $vertical-border-color-dark;
+    }
+  }
+}
+
+.macos.light, .macos.dark {
+  .highlighted {
+    .text, .label, .comment {
+      color: white;
     }
   }
 }
