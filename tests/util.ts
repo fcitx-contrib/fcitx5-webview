@@ -23,9 +23,9 @@ export async function init (page: Page) {
   })
 }
 
-export function setCandidates (page: Page, cands: string[], labels: string[], highlighted: number) {
-  return page.evaluate(({ cands, labels, highlighted }) =>
-    window.setCandidates(cands, labels, highlighted, '', false, false, false), { cands, labels, highlighted })
+export function setCandidates (page: Page, cands: string[], labels: string[], comments: string[], highlighted: number) {
+  return page.evaluate(({ cands, labels, comments, highlighted }) =>
+    window.setCandidates(cands, labels, comments, highlighted, '', false, false, false), { cands, labels, comments, highlighted })
 }
 
 export function setLayout (page: Page, layout: 0 | 1) {

@@ -191,18 +191,23 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 
 void WebviewCandidateWindow::set_candidates(
     const std::vector<std::string> &candidates,
-    const std::vector<std::string> &labels, int highlighted) {
+    const std::vector<std::string> &labels,
+    const std::vector<std::string> &comments, int highlighted) {
     std::vector<std::string> escaped_candidates;
     std::vector<std::string> escaped_labels;
+    std::vector<std::string> escaped_comments;
     escaped_candidates.reserve(candidates.size());
     std::transform(candidates.begin(), candidates.end(),
                    std::back_inserter(escaped_candidates), escape_html);
     escaped_labels.reserve(labels.size());
     std::transform(labels.begin(), labels.end(),
                    std::back_inserter(escaped_labels), escape_html);
-    invoke_js("setCandidates", escaped_candidates, escaped_labels, highlighted,
-              escape_html(highlight_mark_text_), pageable_, has_prev_,
-              has_next_);
+    escaped_comments.reserve(comments.size());
+    std::transform(comments.begin(), comments.end(),
+                   std::back_inserter(escaped_comments), escape_html);
+    invoke_js("setCandidates", escaped_candidates, escaped_labels,
+              escaped_comments, highlighted, escape_html(highlight_mark_text_),
+              pageable_, has_prev_, has_next_);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {
