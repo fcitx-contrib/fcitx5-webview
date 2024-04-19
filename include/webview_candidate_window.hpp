@@ -34,7 +34,7 @@ class WebviewCandidateWindow : public CandidateWindow {
 
   private:
     void set_transparent_background();
-    webview::webview w_;
+    std::shared_ptr<webview::webview> w_;
     void *listener_;
     double cursor_x_ = 0;
     double cursor_y_ = 0;
@@ -57,8 +57,11 @@ class WebviewCandidateWindow : public CandidateWindow {
             std::cerr << ss.str() << "\n";
         }
         auto s = ss.str();
+        std::weak_ptr<webview::webview> weak_w = w_;
         dispatch_async(dispatch_get_main_queue(), ^{
-          w_.eval(s);
+          if (auto w = weak_w.lock()) {
+              w_->eval(s);
+          }
         });
     }
 
@@ -82,7 +85,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     template <typename F> inline void bind(const std::string &name, F f) {
         using Ret = typename function_traits<F>::return_type;
         using ArgsTp = typename function_traits<F>::args_tuple;
-        w_.bind(name, [=](std::string args_json) -> std::string {
+        w_->bind(name, [=](std::string args_json) -> std::string {
             auto j = nlohmann::json::parse(args_json);
             ArgsTp args;
             if (std::tuple_size<ArgsTp>() > j.size()) {
