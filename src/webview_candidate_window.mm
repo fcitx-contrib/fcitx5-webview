@@ -80,13 +80,14 @@ NSRect getNearestScreenFrame(double x, double y) {
 }
 
 WebviewCandidateWindow::WebviewCandidateWindow()
-    : w_(1, [[HoverableWindow alloc]
-                initWithContentRect:NSMakeRect(0, 0, 400, 300)
-                          styleMask:NSWindowStyleMaskBorderless
-                            backing:NSBackingStoreBuffered
-                              defer:NO]),
+    : w_(std::make_shared<webview::webview>(
+          1, [[HoverableWindow alloc]
+                 initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                           styleMask:NSWindowStyleMaskBorderless
+                             backing:NSBackingStoreBuffered
+                               defer:NO])),
       listener_([[NotificationListener alloc] init]) {
-    [static_cast<NSWindow *>(w_.window()) setLevel:NSPopUpMenuWindowLevel];
+    [static_cast<NSWindow *>(w_->window()) setLevel:NSPopUpMenuWindowLevel];
     set_transparent_background();
 
     auto listener = static_cast<NotificationListener *>(listener_);
@@ -132,7 +133,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
             }
         }
         hidden_ = false;
-        NSWindow *window = static_cast<NSWindow *>(w_.window());
+        NSWindow *window = static_cast<NSWindow *>(w_->window());
         [window setFrame:NSMakeRect(x_, y_, width, height)
                  display:YES
                  animate:NO];
@@ -148,20 +149,20 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
-    w_.set_html(html_template.c_str());
+    w_->set_html(html_template.c_str());
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {
-    [(id)w_.window() close]; // By default NSWindow is released on close.
+    [(id)w_->window() close]; // By default NSWindow is released on close.
     [static_cast<NotificationListener *>(listener_) release];
 }
 
 void WebviewCandidateWindow::set_transparent_background() {
     // Transparent NSWindow
-    [static_cast<NSWindow *>(w_.window())
+    [static_cast<NSWindow *>(w_->window())
         setBackgroundColor:[NSColor colorWithRed:0 green:0 blue:0 alpha:0]];
     // Transparent WKWebView
-    WKWebView *webView = static_cast<WKWebView *>(w_.widget());
+    WKWebView *webView = static_cast<WKWebView *>(w_->widget());
     [webView setValue:@NO forKey:@"drawsBackground"];
     [webView setUnderPageBackgroundColor:[NSColor clearColor]];
 }
@@ -232,7 +233,7 @@ void WebviewCandidateWindow::show(double x, double y) {
 }
 
 void WebviewCandidateWindow::hide() {
-    auto window = static_cast<NSWindow *>(w_.window());
+    auto window = static_cast<NSWindow *>(w_->window());
     [window orderBack:nil];
     [window setIsVisible:NO];
     hidden_ = true;
