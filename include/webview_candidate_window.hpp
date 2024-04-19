@@ -60,7 +60,7 @@ class WebviewCandidateWindow : public CandidateWindow {
         std::weak_ptr<webview::webview> weak_w = w_;
         dispatch_async(dispatch_get_main_queue(), ^{
           if (auto w = weak_w.lock()) {
-              w_->eval(s);
+              w->eval(s);
           }
         });
     }
