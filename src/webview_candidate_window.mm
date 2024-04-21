@@ -36,44 +36,19 @@
 
 namespace candidate_window {
 
-NSPoint closestPointInRect(NSRect rect, NSPoint point) {
-    NSPoint closest;
-
-    if (point.x < NSMinX(rect)) {
-        closest.x = NSMinX(rect);
-    } else if (point.x > NSMaxX(rect)) {
-        closest.x = NSMaxX(rect);
-    } else {
-        closest.x = point.x;
-    }
-
-    if (point.y < NSMinY(rect)) {
-        closest.y = NSMinY(rect);
-    } else if (point.y > NSMaxY(rect)) {
-        closest.y = NSMaxY(rect);
-    } else {
-        closest.y = point.y;
-    }
-
-    return closest;
-}
-
-double manhattanDistance(NSRect rect, NSPoint point) {
-    NSPoint closest = closestPointInRect(rect, point);
-    return fabs(point.x - closest.x) + fabs(point.y - closest.y);
-}
-
 NSRect getNearestScreenFrame(double x, double y) {
+    // mainScreen is not where (0,0) is in, but screen of focused window.
     NSRect frame = [NSScreen mainScreen].frame;
     NSPoint point = NSMakePoint(x, y);
-    double dist = manhattanDistance(frame, point);
     NSArray *screens = [NSScreen screens];
     for (NSUInteger i = 0; i < screens.count; ++i) {
         NSRect rect = [screens[i] frame];
-        double newDist = manhattanDistance(rect, point);
-        if (newDist < dist) {
-            dist = newDist;
+        // In Firefox Google Docs, reported coordicates may be outside any
+        // screen, so distance-based selection is worse than point-in-screen
+        // check as fallback is mainScreen.
+        if (NSPointInRect(point, rect)) {
             frame = rect;
+            break;
         }
     }
     return frame;
@@ -110,25 +85,28 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         double right = NSMaxX(frame);
         double top = NSMaxY(frame);
         double bottom = NSMinY(frame);
+        // Yes, there is no guarantee that cursor is within the screen.
+        double adjusted_x = std::min(std::max(cursor_x_, left), right);
+        double adjusted_y = std::min(std::max(cursor_y_, bottom), top);
 
         if (dragging) {
             x_ += dx;
             y_ += dy;
         } else {
-            x_ = cursor_x_ - shadow_left;
+            x_ = adjusted_x - shadow_left;
             if (x_ + (width - shadow_right) > right) {
                 x_ = right - (width - shadow_right);
             }
             x_ = std::max<double>(x_, left - shadow_left);
             if ((height - shadow_top - shadow_bottom) + gap >
-                    cursor_y_ - bottom         // No enough space underneath
+                    adjusted_y - bottom        // No enough space underneath
                 || (!hidden_ && was_above_)) { // It was above, avoid flicker
                 y_ = std::max<double>(
-                    cursor_y_ + preedit_height + gap - shadow_bottom, bottom);
+                    adjusted_y + preedit_height + gap - shadow_bottom, bottom);
                 y_ = std::min<double>(y_, top - (height - shadow_top));
                 was_above_ = true;
             } else {
-                y_ = cursor_y_ - gap - (height - shadow_top);
+                y_ = adjusted_y - gap - (height - shadow_top);
                 was_above_ = false;
             }
         }
