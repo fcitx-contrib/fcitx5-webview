@@ -1,5 +1,6 @@
 import {
   panel,
+  contextmenu,
   hoverables
 } from './selector'
 
@@ -42,6 +43,13 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
   const elementYHi = rect.y + rect.height
   let xHi = elementXHi
   let yHi = elementYHi
+
+  const contextmenuRect = contextmenu.getBoundingClientRect()
+  const contextmenuXHi = contextmenuRect.x + contextmenuRect.width
+  const contextmenuYHi = contextmenuRect.y + contextmenuRect.height
+  if (contextmenuXHi > xHi) xHi = contextmenuXHi
+  if (contextmenuYHi > yHi) yHi = contextmenuYHi
+
   const vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
   // The format of computed style is 'rgb(255, 0, 0) 10px 5px 5px 0px, rgb(255, 0, 0) 10px 5px 5px 0px'
   // Therefore, vals has exactly (7*n) elements, and vals[7*i] will be NaN.
@@ -72,14 +80,35 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
   }
 }
 
+function isInsideHoverables (target: Element) {
+  return target !== hoverables && hoverables.contains(target)
+}
+
+function getCandidateIndex (target: Element) {
+  const allCandidates = hoverables.querySelectorAll('.candidate')
+  for (let i = 0; i < allCandidates.length; ++i) {
+    if (allCandidates[i] === target) {
+      return i
+    }
+  }
+  return -1
+}
+
+function hideContextmenu () {
+  contextmenu.innerHTML = ''
+}
+
 document.addEventListener('mousedown', e => {
+  if (e.button !== 0) {
+    return
+  }
   pressed = true
   startX = e.clientX
   startY = e.clientY
 })
 
 document.addEventListener('mousemove', e => {
-  if (!pressed) {
+  if (e.button !== 0 || !pressed) {
     return
   }
   dragging = true
@@ -88,13 +117,16 @@ document.addEventListener('mousemove', e => {
 })
 
 document.addEventListener('mouseup', e => {
+  if (e.button !== 0) {
+    return
+  }
   pressed = false
   if (dragging) {
     dragging = false
     return
   }
   let target = e.target as Element
-  if (target === hoverables || !hoverables.contains(target)) {
+  if (!isInsideHoverables(target)) {
     return
   }
   while (target.parentElement !== hoverables) {
@@ -105,11 +137,29 @@ document.addEventListener('mouseup', e => {
     }
     target = target.parentElement!
   }
-  const allCandidates = hoverables.querySelectorAll('.candidate')
-  for (let i = 0; i < allCandidates.length; ++i) {
-    if (allCandidates[i] === target) {
-      return window._select(i)
-    }
+  const i = getCandidateIndex(target)
+  if (i >= 0) {
+    return window._select(i)
+  }
+})
+
+document.addEventListener('contextmenu', e => {
+  e.preventDefault()
+  let target = e.target as Element
+  if (!isInsideHoverables(target)) {
+    return
+  }
+  while (target.parentElement !== hoverables) {
+    target = target.parentElement!
+  }
+  const i = getCandidateIndex(target)
+  if (i >= 0) {
+    contextmenu.innerHTML = '<div>删词</div>'
+    contextmenu.style.top = `${e.clientY}px`
+    contextmenu.style.left = `${e.clientX}px`
+    resize(0, 0, false)
+  } else {
+    hideContextmenu()
   }
 })
 
