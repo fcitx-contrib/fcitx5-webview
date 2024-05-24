@@ -106,4 +106,6 @@ body {
 .contextmenu {
   position: absolute;
   z-index: 1000;
+  display: none;
+  overflow: hidden;
 }

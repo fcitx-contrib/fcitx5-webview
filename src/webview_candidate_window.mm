@@ -77,6 +77,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     bind("_resize", [this](double dx, double dy, double shadow_top,
                            double shadow_right, double shadow_bottom,
                            double shadow_left, double width, double height,
+                           double enlarged_width, double enlarged_height,
                            bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
@@ -112,7 +113,11 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         }
         hidden_ = false;
         NSWindow *window = static_cast<NSWindow *>(w_->window());
-        [window setFrame:NSMakeRect(x_, y_, width, height)
+        // contextmenu may enlarge window but we don't want layout shift.
+        // Considering right click then drag, we don't want y -=
+        // (enlarged_height - height).
+        [window setFrame:NSMakeRect(x_, y_ - (enlarged_height - height),
+                                    enlarged_width, enlarged_height)
                  display:YES
                  animate:NO];
         [window orderFront:nil];

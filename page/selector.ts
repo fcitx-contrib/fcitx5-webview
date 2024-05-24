@@ -1,3 +1,4 @@
+export const theme = document.querySelector('#theme')!
 export const panel = document.querySelector('.panel')!
 export const hoverables = panel.querySelector('.hoverables')!
 export const preedit = document.querySelector('.preedit')!

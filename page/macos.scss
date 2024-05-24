@@ -34,14 +34,21 @@ $light-graphite: rgb(128 128 128);
 $dark-graphite: rgb(105 105 105);
 
 .macos {
-  &.panel {
+  .panel, .contextmenu {
     border-width: 1px;
     border-style: solid;
     border-radius: 6px;
     background-clip: padding-box; /* make border alpha and content alpha independent */
     box-shadow: 0 10px 20px rgb(0 0 0 / 14%),
                 0 0 25px rgb(0 0 0 / 12%);
-    transform: translate(25px, 25px);
+  }
+
+  .panel {
+    transform: translate(25px, 25px); /* leave top and left for shadow */
+  }
+
+  .contextmenu {
+    backdrop-filter: blur(16px);
   }
 
   .cursor.no-text {
@@ -51,11 +58,15 @@ $dark-graphite: rgb(105 105 105);
     margin-right: 1px;
   }
 
-  .candidate-inner, .preedit, .aux-up, .aux-down {
+  .candidate-inner, .preedit, .aux-up, .aux-down, .menu-item {
     min-height: 24px; /* compromise to 🀄's height */
     min-width: 16px;
     padding: 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
     background-clip: padding-box;
+  }
+
+  .menu-item:hover {
+    color: white;
   }
 
   /* Use a dedicated div because
@@ -88,7 +99,7 @@ $dark-graphite: rgb(105 105 105);
 }
 
 .macos.light {
-  &.panel {
+  .panel, .contextmenu {
     border-color: $panel-border-color-light;
   }
 
@@ -97,8 +108,12 @@ $dark-graphite: rgb(105 105 105);
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .header {
+  .candidate, .header, .contextmenu {
     background-color: $panel-color-light;
+  }
+
+  .contextmenu {
+    color: black;
   }
 
   .text, .header {
@@ -118,36 +133,52 @@ $dark-graphite: rgb(105 105 105);
     }
   }
 
-  &.blue .hoverable.highlighted .hoverable-inner {
-    background-color: $light-blue;
+  &.blue {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-blue;
+    }
   }
 
-  &.purple .hoverable.highlighted .hoverable-inner {
-    background-color: $light-purple;
+  &.purple {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-purple;
+    }
   }
 
-  &.pink .hoverable.highlighted .hoverable-inner {
-    background-color: $light-pink;
+  &.pink {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-pink;
+    }
   }
 
-  &.red .hoverable.highlighted .hoverable-inner {
-    background-color: $light-red;
+  &.red {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-red;
+    }
   }
 
-  &.orange .hoverable.highlighted .hoverable-inner {
-    background-color: $light-orange;
+  &.orange {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-orange;
+    }
   }
 
-  &.yellow .hoverable.highlighted .hoverable-inner {
-    background-color: $light-yellow;
+  &.yellow {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-yellow;
+    }
   }
 
-  &.green .hoverable.highlighted .hoverable-inner {
-    background-color: $light-green;
+  &.green {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-green;
+    }
   }
 
-  &.graphite .hoverable.highlighted .hoverable-inner {
-    background-color: $light-graphite;
+  &.graphite {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $light-graphite;
+    }
   }
 
   .hoverables .divider {
@@ -162,7 +193,7 @@ $dark-graphite: rgb(105 105 105);
 }
 
 .macos.dark {
-  &.panel {
+  .panel, .contextmenu {
     border-color: $panel-border-color-dark;
   }
 
@@ -171,8 +202,12 @@ $dark-graphite: rgb(105 105 105);
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .header {
+  .candidate, .header, .contextmenu {
     background-color: $panel-color-dark;
+  }
+
+  .contextmenu {
+    color: white;
   }
 
   .text, .header {
@@ -193,36 +228,52 @@ $dark-graphite: rgb(105 105 105);
     }
   }
 
-  &.blue .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-blue;
+  &.blue {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-blue;
+    }
   }
 
-  &.purple .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-purple;
+  &.purple {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-purple;
+    }
   }
 
-  &.pink .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-pink;
+  &.pink {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-pink;
+    }
   }
 
-  &.red .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-red;
+  &.red {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-red;
+    }
   }
 
-  &.orange .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-orange;
+  &.orange {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-orange;
+    }
   }
 
-  &.yellow .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-yellow;
+  &.yellow {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-yellow;
+    }
   }
 
-  &.green .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-green;
+  &.green {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-green;
+    }
   }
 
-  &.graphite .hoverable.highlighted .hoverable-inner {
-    background-color: $dark-graphite;
+  &.graphite {
+    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+      background-color: $dark-graphite;
+    }
   }
 
   .hoverables .divider {

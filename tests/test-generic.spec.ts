@@ -5,6 +5,7 @@ import {
 import {
   setCandidates,
   setLayout,
+  theme,
   panel,
   candidate,
   getBox,
@@ -15,47 +16,50 @@ import {
 test('HTML structure', async ({ page }) => {
   await init(page)
   await page.evaluate(() => {
-    document.querySelector('.panel')?.classList.remove('macos')
+    document.querySelector('#theme')?.classList.remove('macos')
     for (const klass of ['.panel-blur-outer', '.panel-blur-inner']) {
       document.querySelector(klass)?.classList.remove('blur')
     }
   })
   await setCandidates(page, ['页面结构', '测试'], ['1', '2'], ['c', ''], 0)
 
-  const actual = (await panel(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
+  const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
     .replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
-<div class="basic blue dark panel">
-  <div class="panel-blur-outer">
-    <div class="panel-blur-inner">
-      <div class="header">
-        <div class="aux-up hidden"></div>
-        <div class="hidden preedit"></div>
-      </div>
-      <div class="aux-down hidden"></div>
-      <div class="hoverables">
-        <div class="candidate candidate-first highlighted highlighted-original hoverable">
-          <div class="candidate-inner hoverable-inner">
-            <div class="mark no-text"></div>
-            <div class="label">1</div>
-            <div class="text">页面结构</div>
-            <div class="comment">c</div>
+<div id="theme" class="basic blue dark">
+  <div class="panel">
+    <div class="panel-blur-outer">
+      <div class="panel-blur-inner">
+        <div class="header">
+          <div class="aux-up hidden"></div>
+          <div class="hidden preedit"></div>
+        </div>
+        <div class="aux-down hidden"></div>
+        <div class="hoverables">
+          <div class="candidate candidate-first highlighted highlighted-original hoverable">
+            <div class="candidate-inner hoverable-inner">
+              <div class="mark no-text"></div>
+              <div class="label">1</div>
+              <div class="text">页面结构</div>
+              <div class="comment">c</div>
+            </div>
           </div>
-        </div>
-        <div class="divider">
-          <div class="divider-side"></div>
-          <div class="divider-middle"></div>
-          <div class="divider-side"></div>
-        </div>
-        <div class="candidate candidate-last hoverable">
-          <div class="candidate-inner hoverable-inner">
-            <div class="label">2</div>
-            <div class="text">测试</div>
+          <div class="divider">
+            <div class="divider-side"></div>
+            <div class="divider-middle"></div>
+            <div class="divider-side"></div>
+          </div>
+          <div class="candidate candidate-last hoverable">
+            <div class="candidate-inner hoverable-inner">
+              <div class="label">2</div>
+              <div class="text">测试</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="contextmenu"></div>
 </div>
 `.replaceAll(/\n */g, '')
   expect(actual).toEqual(expected)

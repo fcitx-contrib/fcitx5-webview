@@ -5,6 +5,7 @@ import {
   auxDown
 } from './selector'
 import {
+  hideContextmenu,
   getHoverBehavior,
   resize
 } from './ux'
@@ -157,6 +158,7 @@ function updateElement (element: Element, innerHTML: string) {
 }
 
 function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) {
+  hideContextmenu()
   updateElement(preedit, preeditHTML)
   updateElement(auxUp, auxUpHTML)
   updateElement(auxDown, auxDownHTML)

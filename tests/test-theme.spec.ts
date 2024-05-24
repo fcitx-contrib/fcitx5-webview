@@ -3,7 +3,7 @@ import {
   expect
 } from '@playwright/test'
 import {
-  panel,
+  theme,
   init
 } from './util'
 
@@ -24,6 +24,6 @@ test('Set accent color', async ({ page }) => {
 
   for (const [value, color] of cases) {
     await page.evaluate(value => window.setAccentColor(value), value)
-    await expect(panel(page)).toHaveClass(new RegExp(color))
+    await expect(theme(page)).toHaveClass(new RegExp(color))
   }
 })

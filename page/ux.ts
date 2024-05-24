@@ -1,4 +1,5 @@
 import {
+  theme,
   panel,
   contextmenu,
   hoverables
@@ -18,8 +19,8 @@ type ShadowBox = {
   fullHeight: number
 }
 
-export function resize (dx: number, dy: number, dragging: boolean) {
-  function adaptWindowSize () {
+export function resize (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
+  function adaptWindowSize (reserveSpaceForContextmenu: boolean) {
     const {
       shadowTop,
       shadowRight,
@@ -28,12 +29,33 @@ export function resize (dx: number, dy: number, dragging: boolean) {
       fullWidth,
       fullHeight
     } = getBoundingRectWithShadow(panel)
-    window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, dragging)
+
+    // HACK: enlarge then shrink.
+    let enlargedWidth = fullWidth
+    let enlargedHeight = fullHeight
+    if (reserveSpaceForContextmenu) {
+      enlargedWidth += 100
+      enlargedHeight += 100
+    } else if (contextmenu.style.display === 'block') {
+      const {
+        fullWidth: xHi,
+        fullHeight: yHi
+      } = getBoundingRectWithShadow(contextmenu)
+      enlargedWidth = Math.max(xHi, enlargedWidth)
+      enlargedHeight = Math.max(yHi, enlargedHeight)
+    }
+
+    window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, enlargedWidth, enlargedHeight, dragging)
   }
-  adaptWindowSize()
+  adaptWindowSize(hasContextmenu)
   if (!dragging) {
     // Sometimes getBoundingClientRect is called when the element is not fully rendered.
-    window.requestAnimationFrame(adaptWindowSize)
+    window.requestAnimationFrame(() => {
+      adaptWindowSize(hasContextmenu)
+      if (hasContextmenu) {
+        adaptWindowSize(false)
+      }
+    })
   }
 }
 
@@ -43,12 +65,6 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
   const elementYHi = rect.y + rect.height
   let xHi = elementXHi
   let yHi = elementYHi
-
-  const contextmenuRect = contextmenu.getBoundingClientRect()
-  const contextmenuXHi = contextmenuRect.x + contextmenuRect.width
-  const contextmenuYHi = contextmenuRect.y + contextmenuRect.height
-  if (contextmenuXHi > xHi) xHi = contextmenuXHi
-  if (contextmenuYHi > yHi) yHi = contextmenuYHi
 
   const vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
   // The format of computed style is 'rgb(255, 0, 0) 10px 5px 5px 0px, rgb(255, 0, 0) 10px 5px 5px 0px'
@@ -94,8 +110,9 @@ function getCandidateIndex (target: Element) {
   return -1
 }
 
-function hideContextmenu () {
+export function hideContextmenu () {
   contextmenu.innerHTML = ''
+  contextmenu.style.display = 'none'
 }
 
 document.addEventListener('mousedown', e => {
@@ -111,9 +128,10 @@ document.addEventListener('mousemove', e => {
   if (e.button !== 0 || !pressed) {
     return
   }
+  hideContextmenu()
   dragging = true
   // minus because macOS has bottom-left (0, 0)
-  resize(e.clientX - startX, -(e.clientY - startY), true)
+  resize(e.clientX - startX, -(e.clientY - startY), true, false)
 })
 
 document.addEventListener('mouseup', e => {
@@ -154,10 +172,11 @@ document.addEventListener('contextmenu', e => {
   }
   const i = getCandidateIndex(target)
   if (i >= 0) {
-    contextmenu.innerHTML = '<div>删词</div>'
+    contextmenu.innerHTML = '<div class="menu-item">删词</div>'
     contextmenu.style.top = `${e.clientY}px`
     contextmenu.style.left = `${e.clientX}px`
-    resize(0, 0, false)
+    contextmenu.style.display = 'block'
+    resize(0, 0, false, true)
   } else {
     hideContextmenu()
   }
@@ -173,7 +192,7 @@ let blurSwitch = false
 const panelBlurOuter = document.querySelector('.panel-blur-outer')!
 const panelBlurInner = document.querySelector('.panel-blur-inner')!
 function redrawBlur () {
-  if (!blurEnabled || !panel.classList.contains('macos')) {
+  if (!blurEnabled || !theme.classList.contains('macos')) {
     return
   }
   if (blurSwitch) {
