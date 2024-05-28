@@ -19,12 +19,17 @@ int main(int argc, const char *argv[]) {
         candidateWindow->set_page_callback([](bool next) {
             std::cout << (next ? "next" : "prev") << " page" << std::endl;
         });
+        candidateWindow->set_action_callback([](size_t index, int id) {
+            std::cout << "action " << id << " on " << index << std::endl;
+        });
         auto t = std::thread([&] {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             candidateWindow->set_layout(candidate_window::layout_t::vertical);
             candidateWindow->set_paging_buttons(true, false, true);
-            candidateWindow->set_candidates({"<h1>防注入</h1>", "候选词"},
-                                            {"1", "2"}, {"注释", ""}, 0);
+            candidateWindow->set_candidates(
+                {{"<h1>防注入</h1>", "1", "注释"},
+                 {"候选词", "2", "", {{1, "删词"}, {2, "置顶"}}}},
+                0);
             candidateWindow->set_theme(candidate_window::theme_t::light);
             candidateWindow->show(100, 200);
         });

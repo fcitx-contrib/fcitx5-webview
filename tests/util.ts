@@ -10,9 +10,9 @@ export async function init (page: Page) {
   await page.evaluate(() => {
     window.setTheme(2)
     window.cppCalls = []
-    window._resize = (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, dragging: boolean) => {
+    window._resize = (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, enlargedWidth: number, enlargedHeight: number, dragging: boolean) => {
       window.cppCalls.push({
-        resize: [dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, dragging]
+        resize: [dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, enlargedWidth, enlargedHeight, dragging]
       })
     }
     window._select = (index: number) => {
@@ -20,17 +20,26 @@ export async function init (page: Page) {
         select: index
       })
     }
+    window._action = (index: number, id: number) => {
+      window.cppCalls.push({
+        action: [index, id]
+      })
+    }
   })
 }
 
-export function setCandidates (page: Page, cands: string[], labels: string[], comments: string[], highlighted: number) {
-  return page.evaluate(({ cands, labels, comments, highlighted }) =>
-    window.setCandidates(cands, labels, comments, highlighted, '', false, false, false), { cands, labels, comments, highlighted })
+export function setCandidates (page: Page, cands: Candidate[], highlighted: number) {
+  return page.evaluate(({ cands, highlighted }) =>
+    window.setCandidates(cands, highlighted, '', false, false, false), { cands, highlighted })
 }
 
 export function setLayout (page: Page, layout: 0 | 1) {
   return page.evaluate(({ layout }) =>
     window.setLayout(layout), { layout })
+}
+
+export function theme (page: Page) {
+  return page.locator('#theme')
 }
 
 export function panel (page: Page) {

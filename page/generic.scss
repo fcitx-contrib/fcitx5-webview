@@ -5,6 +5,7 @@ body {
   width: 1920px; /* big enough, disregard window size */
   height: 1080px;
   user-select: none; /* disable text select */
+  font-family: sans-serif;
 }
 
 .panel {
@@ -100,4 +101,16 @@ body {
 
 .blur {
   backdrop-filter: blur(16px); /* blur background */
+}
+
+.contextmenu {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
 }

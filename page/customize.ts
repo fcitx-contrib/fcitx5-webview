@@ -75,7 +75,7 @@ function lightToDark (light: string) {
   return light.replace(PANEL_LIGHT, PANEL_DARK)
 }
 
-const PANEL = '.panel.basic'
+const PANEL = '.basic .panel'
 const PANEL_HORIZONTAL_DIVIDER = `${PANEL} .hoverables.vertical .divider`
 const PANEL_HORIZONTAL_DIVIDER_SIDE = `${PANEL} .hoverables.vertical .divider-side`
 // left of prev paging button, same with MSPY
@@ -100,7 +100,7 @@ const PAGING_INNER = `${PANEL} .paging-inner`
 const HIGHLIGHT_MARK = `${PANEL} .highlighted .mark`
 const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .highlighted-original .mark`
 
-const PANEL_LIGHT = `${PANEL}.light`
+const PANEL_LIGHT = `.light${PANEL}`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .hoverable.highlighted .hoverable-inner`
 const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .hoverable.highlighted:hover .hoverable-inner`
 const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .hoverable.highlighted:active .hoverable-inner`
@@ -123,7 +123,7 @@ const PANEL_LIGHT_DIVIDER_SIDE = `${PANEL_LIGHT} .hoverables .divider .divider-s
 const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .cursor.no-text`
 const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .highlighted .mark`
 
-const PANEL_DARK = `${PANEL}.dark`
+const PANEL_DARK = `.dark${PANEL}`
 const PANEL_DARK_HIGHLIGHT = lightToDark(PANEL_LIGHT_HIGHLIGHT)
 const PANEL_DARK_HIGHLIGHT_HOVER = lightToDark(PANEL_LIGHT_HIGHLIGHT_HOVER)
 const PANEL_DARK_HIGHLIGHT_PRESS = lightToDark(PANEL_LIGHT_HIGHLIGHT_PRESS)

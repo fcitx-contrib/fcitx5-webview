@@ -1,5 +1,5 @@
 import {
-  panel
+  theme
 } from './selector'
 
 const darkMQL = window.matchMedia('(prefers-color-scheme: dark)')
@@ -7,13 +7,13 @@ let isSystemDark = darkMQL.matches
 let followSystemTheme = true
 
 function setLightTheme () {
-  panel.classList.remove('dark')
-  panel.classList.add('light')
+  theme.classList.remove('dark')
+  theme.classList.add('light')
 }
 
 function setDarkTheme () {
-  panel.classList.remove('light')
-  panel.classList.add('dark')
+  theme.classList.remove('light')
+  theme.classList.add('dark')
 }
 
 function systemThemeHandler () {
@@ -66,12 +66,12 @@ type ACCENT_COLOR = keyof typeof accentColorMap
 let accentColor: ACCENT_COLOR = 'null'
 
 export function setAccentColor (color: number | null) {
-  panel.classList.remove(accentColorMap[accentColor])
+  theme.classList.remove(accentColorMap[accentColor])
   const key = String(color)
   if (key in accentColorMap) {
     accentColor = key as ACCENT_COLOR
   } else {
     accentColor = '4'
   }
-  panel.classList.add(accentColorMap[accentColor])
+  theme.classList.add(accentColorMap[accentColor])
 }

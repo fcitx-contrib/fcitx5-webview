@@ -36,6 +36,22 @@
 
 namespace candidate_window {
 
+void to_json(nlohmann::json &j, const CandidateAction &a) {
+    j = nlohmann::json{{"id", a.id}, {"text", a.text}};
+}
+
+void to_json(nlohmann::json &j, const Candidate &c) {
+    j = nlohmann::json{{"text", c.text},
+                       {"label", c.label},
+                       {"comment", c.comment},
+                       {"actions", c.actions}};
+}
+
+Candidate escape_candidate(const Candidate &c) {
+    return Candidate{escape_html(c.text), escape_html(c.label),
+                     escape_html(c.comment), c.actions};
+}
+
 NSRect getNearestScreenFrame(double x, double y) {
     // mainScreen is not where (0,0) is in, but screen of focused window.
     NSRect frame = [NSScreen mainScreen].frame;
@@ -77,6 +93,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     bind("_resize", [this](double dx, double dy, double shadow_top,
                            double shadow_right, double shadow_bottom,
                            double shadow_left, double width, double height,
+                           double enlarged_width, double enlarged_height,
                            bool dragging) {
         const int gap = 4;
         const int preedit_height = 24;
@@ -112,7 +129,11 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         }
         hidden_ = false;
         NSWindow *window = static_cast<NSWindow *>(w_->window());
-        [window setFrame:NSMakeRect(x_, y_, width, height)
+        // contextmenu may enlarge window but we don't want layout shift.
+        // Considering right click then drag, we don't want y -=
+        // (enlarged_height - height).
+        [window setFrame:NSMakeRect(x_, y_ - (enlarged_height - height),
+                                    enlarged_width, enlarged_height)
                  display:YES
                  animate:NO];
         [window orderFront:nil];
@@ -122,6 +143,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     bind("_select", [this](size_t i) { select_callback(i); });
 
     bind("_page", [this](bool next) { page_callback(next); });
+
+    bind("_action", [this](size_t i, int id) { action_callback(i, id); });
 
     bind("_onload", [this]() { init_callback(); });
 
@@ -169,24 +192,14 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 }
 
 void WebviewCandidateWindow::set_candidates(
-    const std::vector<std::string> &candidates,
-    const std::vector<std::string> &labels,
-    const std::vector<std::string> &comments, int highlighted) {
-    std::vector<std::string> escaped_candidates;
-    std::vector<std::string> escaped_labels;
-    std::vector<std::string> escaped_comments;
+    const std::vector<Candidate> &candidates, int highlighted) {
+    std::vector<Candidate> escaped_candidates;
     escaped_candidates.reserve(candidates.size());
     std::transform(candidates.begin(), candidates.end(),
-                   std::back_inserter(escaped_candidates), escape_html);
-    escaped_labels.reserve(labels.size());
-    std::transform(labels.begin(), labels.end(),
-                   std::back_inserter(escaped_labels), escape_html);
-    escaped_comments.reserve(comments.size());
-    std::transform(comments.begin(), comments.end(),
-                   std::back_inserter(escaped_comments), escape_html);
-    invoke_js("setCandidates", escaped_candidates, escaped_labels,
-              escaped_comments, highlighted, escape_html(highlight_mark_text_),
-              pageable_, has_prev_, has_next_);
+                   std::back_inserter(escaped_candidates), escape_candidate);
+    invoke_js("setCandidates", escaped_candidates, highlighted,
+              escape_html(highlight_mark_text_), pageable_, has_prev_,
+              has_next_);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {

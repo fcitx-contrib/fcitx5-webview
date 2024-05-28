@@ -5,6 +5,9 @@ import {
   auxDown
 } from './selector'
 import {
+  div,
+  setActions,
+  hideContextmenu,
   getHoverBehavior,
   resize
 } from './ux'
@@ -15,12 +18,6 @@ import {
 import { setStyle } from './customize'
 
 window._onload && window._onload()
-
-function div (...classList: string[]) {
-  const element = document.createElement('div')
-  element.classList.add(...classList)
-  return element
-}
 
 function divider (paging: boolean = false) {
   const e = div('divider')
@@ -63,7 +60,7 @@ const common = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.
 const caretLeft = common.replace('{}', 'M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z')
 const caretRight = common.replace('{}', 'M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z')
 
-function setCandidates (cands: string[], labels: string[], comments: string[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean) {
+function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean) {
   hoverables.innerHTML = ''
   for (let i = 0; i < cands.length; ++i) {
     const candidate = div('candidate', 'hoverable')
@@ -92,25 +89,28 @@ function setCandidates (cands: string[], labels: string[], comments: string[], h
       candidateInner.append(mark)
     }
 
-    if (labels[i]) {
+    if (cands[i].label) {
       const label = div('label')
-      label.innerHTML = labels[i]
+      label.innerHTML = cands[i].label
       candidateInner.append(label)
     }
 
     const text = div('text')
-    text.innerHTML = cands[i]
+    text.innerHTML = cands[i].text
     candidateInner.append(text)
 
-    if (comments[i]) {
+    if (cands[i].comment) {
       const comment = div('comment')
-      comment.innerHTML = comments[i]
+      comment.innerHTML = cands[i].comment
       candidateInner.append(comment)
     }
 
     candidate.append(candidateInner)
     hoverables.append(candidate)
   }
+
+  setActions(cands.map(c => c.actions))
+
   if (pageable) {
     hoverables.append(divider(true))
 
@@ -157,6 +157,7 @@ function updateElement (element: Element, innerHTML: string) {
 }
 
 function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) {
+  hideContextmenu()
   updateElement(preedit, preeditHTML)
   updateElement(auxUp, auxUpHTML)
   updateElement(auxDown, auxDownHTML)

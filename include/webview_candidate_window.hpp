@@ -19,9 +19,7 @@ class WebviewCandidateWindow : public CandidateWindow {
                             int preedit_cursor,
                             const formatted<std::string> &auxUp,
                             const formatted<std::string> &auxDown) override;
-    void set_candidates(const std::vector<std::string> &candidates,
-                        const std::vector<std::string> &labels,
-                        const std::vector<std::string> &comments,
+    void set_candidates(const std::vector<Candidate> &candidates,
                         int highlighted) override;
     void set_highlight_callback(std::function<void(size_t index)>) override {}
     void set_theme(theme_t theme) override;

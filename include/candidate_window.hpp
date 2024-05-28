@@ -23,6 +23,18 @@ template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
 enum theme_t { system = 0, light = 1, dark = 2 };
 
+struct CandidateAction {
+    int id;
+    std::string text;
+};
+
+struct Candidate {
+    std::string text;
+    std::string label;
+    std::string comment;
+    std::vector<CandidateAction> actions;
+};
+
 class CandidateWindow {
   public:
     virtual ~CandidateWindow() = default;
@@ -32,9 +44,7 @@ class CandidateWindow {
                                     int preedit_cursor,
                                     const formatted<std::string> &auxUp,
                                     const formatted<std::string> &auxDown) = 0;
-    virtual void set_candidates(const std::vector<std::string> &candidates,
-                                const std::vector<std::string> &labels,
-                                const std::vector<std::string> &comments,
+    virtual void set_candidates(const std::vector<Candidate> &candidates,
                                 int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;
@@ -65,10 +75,16 @@ class CandidateWindow {
         has_next_ = has_next;
     }
 
+    void
+    set_action_callback(std::function<void(size_t index, int id)> callback) {
+        action_callback = callback;
+    }
+
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(size_t index)> select_callback = [](size_t) {};
     std::function<void(bool next)> page_callback = [](bool) {};
+    std::function<void(size_t index, int id)> action_callback = [](int, int) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";
     bool pageable_ = false;
