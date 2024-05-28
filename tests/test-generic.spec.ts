@@ -21,7 +21,9 @@ test('HTML structure', async ({ page }) => {
       document.querySelector(klass)?.classList.remove('blur')
     }
   })
-  await setCandidates(page, ['页面结构', '测试'], ['1', '2'], ['c', ''], 0)
+  await setCandidates(page, [
+    { text: '页面结构', label: '1', comment: 'c' },
+    { text: '测试', label: '2', comment: '' }], 0)
 
   const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
     .replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
@@ -67,7 +69,9 @@ test('HTML structure', async ({ page }) => {
 
 test('Select candidate', async ({ page }) => {
   await init(page)
-  await setCandidates(page, ['点击', '候选词'], ['1', '2'], ['', ''], 0)
+  await setCandidates(page, [
+    { text: '点击', label: '1', comment: '' },
+    { text: '候选词', label: '2', comment: '' }], 0)
 
   await candidate(page, 1).click()
   const cppCalls = await getCppCalls(page)
@@ -76,7 +80,9 @@ test('Select candidate', async ({ page }) => {
 
 test('Drag should not select candidate', async ({ page }) => {
   await init(page)
-  await setCandidates(page, ['拖动', '不选词'], ['1', '2'], ['', ''], 0)
+  await setCandidates(page, [
+    { text: '拖动', label: '1', comment: '' },
+    { text: '不选词', label: '2', comment: '' }], 0)
 
   const box = await getBox(candidate(page, 0))
   const centerX = box.x + box.width / 2
@@ -92,7 +98,11 @@ test('Drag should not select candidate', async ({ page }) => {
 
 test('Set layout', async ({ page }) => {
   await init(page)
-  await setCandidates(page, ['横', '竖', '分', '明'], ['1', '2', '3', '4'], ['', '', '', ''], 0)
+  await setCandidates(page, [
+    { text: '横', label: '1', comment: '' },
+    { text: '竖', label: '1', comment: '' },
+    { text: '分', label: '1', comment: '' },
+    { text: '明', label: '1', comment: '' }], 0)
 
   await setLayout(page, 1)
   const verticalBox = await getBox(panel(page))

@@ -23,6 +23,12 @@ template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
 enum theme_t { system = 0, light = 1, dark = 2 };
 
+struct Candidate {
+    std::string text;
+    std::string label;
+    std::string comment;
+};
+
 class CandidateWindow {
   public:
     virtual ~CandidateWindow() = default;
@@ -32,9 +38,7 @@ class CandidateWindow {
                                     int preedit_cursor,
                                     const formatted<std::string> &auxUp,
                                     const formatted<std::string> &auxDown) = 0;
-    virtual void set_candidates(const std::vector<std::string> &candidates,
-                                const std::vector<std::string> &labels,
-                                const std::vector<std::string> &comments,
+    virtual void set_candidates(const std::vector<Candidate> &candidates,
                                 int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;

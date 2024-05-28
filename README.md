@@ -30,13 +30,16 @@ _page = console.log
 _resize = console.log
 
 // Show candidates with labels, and highlight the first one.
-setCandidates(["虚假的", "🀄", "candidates"], ["1", "2", "3"], ["comment", "", ""], 0, "")
+setCandidates([
+  { text: "虚假的", label: "1", comment: "comment" },
+  { text: "🀄", label: "2", comment: "" },
+  { text: "candidates", label: "3", comment: "" }], 0, "")
 
 // Set vertical layout. 0 means horizontal.
 setLayout(1)
 
 // Show aux-up.
-setCandidates([], [], [], -1)
+setCandidates([], -1)
 updateInputPanel("", "A", "")
 
 // Set theme to 0=system (default), 1=light or 2=dark.

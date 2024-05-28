@@ -36,6 +36,16 @@
 
 namespace candidate_window {
 
+void to_json(nlohmann::json &j, const Candidate &c) {
+    j = nlohmann::json{
+        {"text", c.text}, {"label", c.label}, {"comment", c.comment}};
+}
+
+Candidate escape_candidate(const Candidate &c) {
+    return Candidate{escape_html(c.text), escape_html(c.label),
+                     escape_html(c.comment)};
+}
+
 NSRect getNearestScreenFrame(double x, double y) {
     // mainScreen is not where (0,0) is in, but screen of focused window.
     NSRect frame = [NSScreen mainScreen].frame;
@@ -174,24 +184,14 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 }
 
 void WebviewCandidateWindow::set_candidates(
-    const std::vector<std::string> &candidates,
-    const std::vector<std::string> &labels,
-    const std::vector<std::string> &comments, int highlighted) {
-    std::vector<std::string> escaped_candidates;
-    std::vector<std::string> escaped_labels;
-    std::vector<std::string> escaped_comments;
+    const std::vector<Candidate> &candidates, int highlighted) {
+    std::vector<Candidate> escaped_candidates;
     escaped_candidates.reserve(candidates.size());
     std::transform(candidates.begin(), candidates.end(),
-                   std::back_inserter(escaped_candidates), escape_html);
-    escaped_labels.reserve(labels.size());
-    std::transform(labels.begin(), labels.end(),
-                   std::back_inserter(escaped_labels), escape_html);
-    escaped_comments.reserve(comments.size());
-    std::transform(comments.begin(), comments.end(),
-                   std::back_inserter(escaped_comments), escape_html);
-    invoke_js("setCandidates", escaped_candidates, escaped_labels,
-              escaped_comments, highlighted, escape_html(highlight_mark_text_),
-              pageable_, has_prev_, has_next_);
+                   std::back_inserter(escaped_candidates), escape_candidate);
+    invoke_js("setCandidates", escaped_candidates, highlighted,
+              escape_html(highlight_mark_text_), pageable_, has_prev_,
+              has_next_);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {
