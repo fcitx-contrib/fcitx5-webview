@@ -5,6 +5,8 @@ import {
   auxDown
 } from './selector'
 import {
+  div,
+  setActions,
   hideContextmenu,
   getHoverBehavior,
   resize
@@ -16,12 +18,6 @@ import {
 import { setStyle } from './customize'
 
 window._onload && window._onload()
-
-function div (...classList: string[]) {
-  const element = document.createElement('div')
-  element.classList.add(...classList)
-  return element
-}
 
 function divider (paging: boolean = false) {
   const e = div('divider')
@@ -112,6 +108,9 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     candidate.append(candidateInner)
     hoverables.append(candidate)
   }
+
+  setActions(cands.map(c => c.actions))
+
   if (pageable) {
     hoverables.append(divider(true))
 

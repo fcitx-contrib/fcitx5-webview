@@ -1,8 +1,14 @@
 declare global {
+  type CandidateAction = {
+    id: number
+    text: string
+  }
+
   type Candidate = {
     text: string
     label: string
     comment: string
+    actions: CandidateAction[]
   }
 
   interface Window {

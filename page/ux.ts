@@ -96,6 +96,12 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
   }
 }
 
+export function div (...classList: string[]) {
+  const element = document.createElement('div')
+  element.classList.add(...classList)
+  return element
+}
+
 function isInsideHoverables (target: Element) {
   return target !== hoverables && hoverables.contains(target)
 }
@@ -161,8 +167,13 @@ document.addEventListener('mouseup', e => {
   }
 })
 
+let actions: CandidateAction[][] = []
+export function setActions (newActions: CandidateAction[][]) {
+  actions = newActions
+}
+
 document.addEventListener('contextmenu', e => {
-  e.preventDefault()
+  // e.preventDefault()
   let target = e.target as Element
   if (!isInsideHoverables(target)) {
     return
@@ -171,8 +182,17 @@ document.addEventListener('contextmenu', e => {
     target = target.parentElement!
   }
   const i = getCandidateIndex(target)
-  if (i >= 0) {
-    contextmenu.innerHTML = '<div class="menu-item">删词</div>'
+  if (i >= 0 && actions[i].length > 0) {
+    contextmenu.innerHTML = ''
+    for (const action of actions[i]) {
+      const item = div('menu-item')
+      item.innerHTML = action.text
+      // item.addEventListener('click', () => {
+      //   window._select(action.id)
+      //   hideContextmenu()
+      // })
+      contextmenu.appendChild(item)
+    }
     contextmenu.style.top = `${e.clientY}px`
     contextmenu.style.left = `${e.clientX}px`
     contextmenu.style.display = 'block'

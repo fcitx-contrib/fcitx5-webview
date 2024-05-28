@@ -23,10 +23,16 @@ template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
 enum theme_t { system = 0, light = 1, dark = 2 };
 
+struct CandidateAction {
+    int id;
+    std::string text;
+};
+
 struct Candidate {
     std::string text;
     std::string label;
     std::string comment;
+    std::vector<CandidateAction> actions;
 };
 
 class CandidateWindow {

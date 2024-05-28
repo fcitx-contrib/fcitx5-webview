@@ -36,14 +36,20 @@
 
 namespace candidate_window {
 
+void to_json(nlohmann::json &j, const CandidateAction &a) {
+    j = nlohmann::json{{"id", a.id}, {"text", a.text}};
+}
+
 void to_json(nlohmann::json &j, const Candidate &c) {
-    j = nlohmann::json{
-        {"text", c.text}, {"label", c.label}, {"comment", c.comment}};
+    j = nlohmann::json{{"text", c.text},
+                       {"label", c.label},
+                       {"comment", c.comment},
+                       {"actions", c.actions}};
 }
 
 Candidate escape_candidate(const Candidate &c) {
     return Candidate{escape_html(c.text), escape_html(c.label),
-                     escape_html(c.comment)};
+                     escape_html(c.comment), c.actions};
 }
 
 NSRect getNearestScreenFrame(double x, double y) {
