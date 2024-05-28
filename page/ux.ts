@@ -173,7 +173,7 @@ export function setActions (newActions: CandidateAction[][]) {
 }
 
 document.addEventListener('contextmenu', e => {
-  // e.preventDefault()
+  e.preventDefault()
   let target = e.target as Element
   if (!isInsideHoverables(target)) {
     return
@@ -187,10 +187,10 @@ document.addEventListener('contextmenu', e => {
     for (const action of actions[i]) {
       const item = div('menu-item')
       item.innerHTML = action.text
-      // item.addEventListener('click', () => {
-      //   window._select(action.id)
-      //   hideContextmenu()
-      // })
+      item.addEventListener('click', () => {
+        window._action(i, action.id)
+        hideContextmenu()
+      })
       contextmenu.appendChild(item)
     }
     contextmenu.style.top = `${e.clientY}px`

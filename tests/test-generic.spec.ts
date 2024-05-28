@@ -78,6 +78,17 @@ test('Select candidate', async ({ page }) => {
   expect(cppCalls).toEqual([{ select: 1 }])
 })
 
+test('Candidate action', async ({ page }) => {
+  await init(page)
+  await setCandidates(page, [
+    { text: '可遗忘', label: '1', comment: '', actions: [{ id: 1, text: '忘记' }] }], 0)
+
+  await candidate(page, 0).click({ button: 'right' })
+  await page.getByText('忘记').click()
+  const cppCalls = await getCppCalls(page)
+  expect(cppCalls[cppCalls.length - 1]).toEqual({ action: [0, 1] })
+})
+
 test('Drag should not select candidate', async ({ page }) => {
   await init(page)
   await setCandidates(page, [

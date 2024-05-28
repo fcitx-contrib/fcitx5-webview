@@ -144,6 +144,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_page", [this](bool next) { page_callback(next); });
 
+    bind("_action", [this](size_t i, int id) { action_callback(i, id); });
+
     bind("_onload", [this]() { init_callback(); });
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),

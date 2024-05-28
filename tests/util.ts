@@ -20,6 +20,11 @@ export async function init (page: Page) {
         select: index
       })
     }
+    window._action = (index: number, id: number) => {
+      window.cppCalls.push({
+        action: [index, id]
+      })
+    }
   })
 }
 

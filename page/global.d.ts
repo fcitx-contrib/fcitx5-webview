@@ -16,6 +16,7 @@ declare global {
     _onload?: () => void
     _select: (index: number) => void
     _page: (next: boolean) => void
+    _action: (index: number, id: number) => void
     _resize: (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, enlargedWidth: number, enlargedHeight: number, dragging: boolean) => void
 
     // JavaScript APIs that webview_candidate_window.mm calls

@@ -75,10 +75,16 @@ class CandidateWindow {
         has_next_ = has_next;
     }
 
+    void
+    set_action_callback(std::function<void(size_t index, int id)> callback) {
+        action_callback = callback;
+    }
+
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(size_t index)> select_callback = [](size_t) {};
     std::function<void(bool next)> page_callback = [](bool) {};
+    std::function<void(size_t index, int id)> action_callback = [](int, int) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";
     bool pageable_ = false;
