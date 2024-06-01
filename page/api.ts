@@ -16,7 +16,9 @@ import {
   setAccentColor
 } from './theme'
 import { setStyle } from './customize'
+import { fcitxLog } from './log'
 
+window.fcitxLog = fcitxLog
 window._onload && window._onload()
 
 function escapeWS (s: string) {

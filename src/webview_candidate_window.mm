@@ -3,6 +3,7 @@
 #include "utility.hpp"
 #import <WebKit/WKWebView.h>
 #include <algorithm>
+#include <iostream>
 #include <sstream>
 
 @interface NotificationListener : NSObject
@@ -147,6 +148,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     bind("_action", [this](size_t i, int id) { action_callback(i, id); });
 
     bind("_onload", [this]() { init_callback(); });
+
+    bind("_log", [](std::string s) { std::cerr << s; });
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);

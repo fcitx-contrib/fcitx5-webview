@@ -29,6 +29,7 @@ _select = console.log
 _page = console.log
 _resize = console.log
 _action = console.log
+_log = console.log
 
 // Show candidates with labels, and highlight the first one.
 setCandidates([

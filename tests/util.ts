@@ -25,6 +25,7 @@ export async function init (page: Page) {
         action: [index, id]
       })
     }
+    window._log = () => {}
   })
 }
 

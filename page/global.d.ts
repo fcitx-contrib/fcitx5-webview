@@ -14,6 +14,7 @@ declare global {
   interface Window {
     // C++ APIs that api.ts calls
     _onload?: () => void
+    _log: (s: string) => void
     _select: (index: number) => void
     _page: (next: boolean) => void
     _action: (index: number, id: number) => void
@@ -27,6 +28,9 @@ declare global {
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null) => void
     setStyle: (style: string) => void
+
+    // Utility functions globally available
+    fcitxLog: (...args: unknown[]) => void
   }
 }
 
