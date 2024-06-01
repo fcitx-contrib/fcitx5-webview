@@ -28,12 +28,14 @@ Execute the following JavaScript code to show candidates and more:
 _select = console.log
 _page = console.log
 _resize = console.log
+_action = console.log
 
 // Show candidates with labels, and highlight the first one.
 setCandidates([
-  { text: "虚假的", label: "1", comment: "comment" },
-  { text: "🀄", label: "2", comment: "" },
-  { text: "candidates", label: "3", comment: "" }], 0, "")
+  { text: "虚假的", label: "1", comment: "comment", actions: [{ "id": 1, "text": "删词" }] },
+  { text: "🀄", label: "2", comment: "", actions: [] },
+  { text: "candidates", label: "3", comment: "", actions: [] }], 0, "",
+  true, true, false)
 
 // Set vertical layout. 0 means horizontal.
 setLayout(1)

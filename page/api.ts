@@ -19,6 +19,11 @@ import { setStyle } from './customize'
 
 window._onload && window._onload()
 
+function escapeWS (s: string) {
+  // XXX: &emsp; is broken in Safari
+  return s.replaceAll(' ', '&nbsp;').replaceAll('\n', '<br>').replaceAll('\t', '&emsp;')
+}
+
 function divider (paging: boolean = false) {
   const e = div('divider')
   // Is this divider between candidates and paging buttons?
@@ -91,17 +96,17 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
     if (cands[i].label) {
       const label = div('label')
-      label.innerHTML = cands[i].label
+      label.innerHTML = escapeWS(cands[i].label)
       candidateInner.append(label)
     }
 
     const text = div('text')
-    text.innerHTML = cands[i].text
+    text.innerHTML = escapeWS(cands[i].text)
     candidateInner.append(text)
 
     if (cands[i].comment) {
       const comment = div('comment')
-      comment.innerHTML = cands[i].comment
+      comment.innerHTML = escapeWS(cands[i].comment)
       candidateInner.append(comment)
     }
 
