@@ -49,8 +49,14 @@ void to_json(nlohmann::json &j, const Candidate &c) {
 }
 
 Candidate escape_candidate(const Candidate &c) {
+    std::vector<CandidateAction> escaped_actions;
+    escaped_actions.reserve(c.actions.size());
+    std::transform(c.actions.begin(), c.actions.end(),
+                   std::back_inserter(escaped_actions), [](const auto &a) {
+                       return CandidateAction{a.id, escape_html(a.text)};
+                   });
     return Candidate{escape_html(c.text), escape_html(c.label),
-                     escape_html(c.comment), c.actions};
+                     escape_html(c.comment), std::move(escaped_actions)};
 }
 
 NSRect getNearestScreenFrame(double x, double y) {
