@@ -48,8 +48,10 @@ body {
   }
 }
 
-.candidate {
-  /* When horizontal and there is multi-line candidate, make sure other candidates are vertical centered. */
+.horizontal .candidate {
+  /* When horizontal and there is multi-line candidate,
+  make sure other candidates are vertical centered.
+  Don't enable it for vertical. It will shrink highlight. */
   display: flex;
 }
 
