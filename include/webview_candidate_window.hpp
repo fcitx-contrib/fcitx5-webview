@@ -23,6 +23,7 @@ class WebviewCandidateWindow : public CandidateWindow {
                         int highlighted) override;
     void set_highlight_callback(std::function<void(size_t index)>) override {}
     void set_theme(theme_t theme) override;
+    void set_writing_mode(writing_mode_t mode) override;
     void set_style(const void *style) override;
     void show(double x, double y) override;
     void hide() override;
@@ -42,6 +43,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     bool was_above_ = false;
     bool accent_color_nil_ = false;
     int accent_color_ = 0;
+    layout_t layout_ = layout_t::horizontal;
+    writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
 
   private:
     /* Invoke a JavaScript function. */

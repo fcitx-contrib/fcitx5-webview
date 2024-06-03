@@ -52,16 +52,18 @@ $dark-graphite: rgb(105 105 105);
   }
 
   .cursor.no-text {
-    width: 1px;
-    height: 16px;
-    margin-left: 1px;
-    margin-right: 1px;
+    inline-size: 1px;
+    block-size: 16px;
+    margin-inline: 1px;
   }
 
   .candidate-inner, .preedit, .aux-up, .aux-down, .menu-item {
-    min-height: 24px; /* compromise to 🀄's height */
-    min-width: 16px;
-    padding: 3px 7px; /* combine min-height, min-width and padding to make aux-up a square for 小 and A */
+    min-block-size: 24px; /* compromise to 🀄's height */
+    min-inline-size: 16px;
+
+    /* combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
+    padding-block: 3px;
+    padding-inline: 7px;
     background-clip: padding-box;
   }
 
@@ -74,22 +76,22 @@ $dark-graphite: rgb(105 105 105);
    * 2. divider may not be full-length
    */
   .hoverables.vertical .divider {
-    height: 1px;
+    block-size: 1px;
 
     .divider-middle {
-      width: 100%;
+      inline-size: 100%;
     }
   }
 
   .hoverables.horizontal .divider {
-    width: 0;
+    inline-size: 0;
 
     &.divider-paging {
-      width: 1px;
+      inline-size: 1px;
     }
 
     .divider-middle {
-      height: 100%;
+      block-size: 100%;
     }
   }
 

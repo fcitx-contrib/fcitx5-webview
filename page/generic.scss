@@ -11,6 +11,14 @@ body {
 .panel {
   overflow: hidden; /* needed because of border-radius */
   display: inline-block; /* wrap content, not fill parent */
+
+  &.vertical-rl {
+    writing-mode: vertical-rl;
+  }
+
+  &.vertical-lr {
+    writing-mode: vertical-lr;
+  }
 }
 
 .preedit, .aux-up, .aux-down {
@@ -63,6 +71,11 @@ body {
   position: relative; /* for absolute position of mark */
 }
 
+.label {
+  /* Label is usually a single number. Will look ugly when all parts have vertical writing mode. */
+  writing-mode: horizontal-tb;
+}
+
 .paging {
   display: flex;
 }
@@ -90,16 +103,16 @@ body {
 
   &.no-text {
     position: absolute;
-    left: 0;
-    width: 3px;
+    inset-inline-start: 0;
+    inline-size: 3px;
     border-radius: 1.5px;
-    height: 16px;
+    block-size: 16px;
     background-color: white;
   }
 }
 
 .highlighted :active .mark.no-text {
-  height: 12px;
+  block-size: 12px;
 }
 
 .hidden {

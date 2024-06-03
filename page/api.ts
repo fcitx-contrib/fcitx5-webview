@@ -1,4 +1,5 @@
 import {
+  panel,
   hoverables,
   preedit,
   auxUp,
@@ -48,6 +49,21 @@ function setLayout (layout : 0 | 1) {
     case 1:
       hoverables.classList.remove('horizontal')
       hoverables.classList.add('vertical')
+  }
+}
+
+function setWritingMode (mode: 0 | 1 | 2) {
+  switch (mode) {
+    case 0:
+      panel.classList.remove('vertical-rl', 'vertical-lr')
+      break
+    case 1:
+      panel.classList.remove('vertical-lr')
+      panel.classList.add('vertical-rl')
+      break
+    case 2:
+      panel.classList.remove('vertical-rl')
+      panel.classList.add('vertical-lr')
   }
 }
 
@@ -193,3 +209,4 @@ window.resize = resize
 window.setTheme = setTheme
 window.setAccentColor = setAccentColor
 window.setStyle = setStyle
+window.setWritingMode = setWritingMode

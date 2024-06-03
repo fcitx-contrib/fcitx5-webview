@@ -28,6 +28,7 @@ declare global {
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null) => void
     setStyle: (style: string) => void
+    setWritingMode: (mode: 0 | 1 | 2) => void
 
     // Utility functions globally available
     fcitxLog: (...args: unknown[]) => void
