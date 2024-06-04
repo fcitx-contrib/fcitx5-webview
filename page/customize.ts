@@ -385,7 +385,7 @@ export function setStyle (style: string) {
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
   rules[PREEDIT]['font-size'] = rules[PREEDIT]['line-height'] = px(j.Font.PreeditFontSize)
   // Cursor height should be the same with preedit
-  rules[CURSOR_NO_TEXT].height = px(j.Font.PreeditFontSize)
+  rules[CURSOR_NO_TEXT]['block-size'] = px(j.Font.PreeditFontSize)
 
   setBlink(j.Cursor.Style === 'Blink')
 
@@ -400,43 +400,43 @@ export function setStyle (style: string) {
 
   if (j.Size.HorizontalDividerWidth === '0') {
     rules[VERTICAL_CANDIDATE_INNER] = {
-      'margin-top': halfMargin,
-      'margin-bottom': halfMargin
+      'margin-block-start': halfMargin,
+      'margin-block-end': halfMargin
     }
     rules[VERTICAL_FIRST_CANDIDATE_INNER] = {
-      'margin-top': px(j.Size.Margin)
+      'margin-block-start': px(j.Size.Margin)
     }
     rules[VERTICAL_LAST_CANDIDATE_INNER] = {
-      'margin-bottom': px(j.Size.Margin)
+      'margin-block-end': px(j.Size.Margin)
     }
   }
   // Unconditional since there is no vertical divider between candidates.
   rules[HORIZONTAL_CANDIDATE_INNER] = {
-    'margin-left': halfMargin,
-    'margin-right': halfMargin
+    'margin-inline-start': halfMargin,
+    'margin-inline-end': halfMargin
   }
   rules[HORIZONTAL_FIRST_CANDIDATE_INNER] = {
-    'margin-left': px(j.Size.Margin)
+    'margin-inline-start': px(j.Size.Margin)
   }
   rules[HORIZONTAL_LAST_CANDIDATE_INNER] = {
-    'margin-right': px(j.Size.Margin)
+    'margin-inline-end': px(j.Size.Margin)
   }
 
   rules[PAGING_OUTER].margin = px(j.Size.Margin)
   rules[CANDIDATE_INNER]['border-radius'] = rules[PAGING_INNER]['border-radius'] = px(j.Size.HighlightRadius)
-  rules[CANDIDATE_INNER]['padding-top'] = px(j.Size.TopPadding)
-  rules[CANDIDATE_INNER]['padding-right'] = px(j.Size.RightPadding)
-  rules[CANDIDATE_INNER]['padding-bottom'] = px(j.Size.BottomPadding)
-  rules[CANDIDATE_INNER]['padding-left'] = px(j.Size.LeftPadding)
+  rules[CANDIDATE_INNER]['padding-block-start'] = px(j.Size.TopPadding)
+  rules[CANDIDATE_INNER]['padding-inline-end'] = px(j.Size.RightPadding)
+  rules[CANDIDATE_INNER]['padding-block-end'] = px(j.Size.BottomPadding)
+  rules[CANDIDATE_INNER]['padding-inline-start'] = px(j.Size.LeftPadding)
   rules[CANDIDATE_INNER].gap = px(j.Size.LabelTextGap)
   rules[PANEL_HORIZONTAL_DIVIDER] = {
-    height: px(j.Size.HorizontalDividerWidth)
+    'block-size': px(j.Size.HorizontalDividerWidth)
   }
   rules[PANEL_HORIZONTAL_DIVIDER_SIDE] = {
-    width: px(j.Size.Margin)
+    'inline-size': px(j.Size.Margin)
   }
   rules[PANEL_VERTICAL_DIVIDER_SIDE] = {
-    height: px(j.Size.Margin)
+    'block-size': px(j.Size.Margin)
   }
 
   const basic = document.head.querySelector('#basic')

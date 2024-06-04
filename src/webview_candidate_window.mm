@@ -117,11 +117,18 @@ WebviewCandidateWindow::WebviewCandidateWindow()
             x_ += dx;
             y_ += dy;
         } else {
-            x_ = adjusted_x - shadow_left;
-            if (x_ + (width - shadow_right) > right) {
-                x_ = right - (width - shadow_right);
+            if (layout_ == layout_t::vertical &&
+                writing_mode_ == writing_mode_t::vertical_rl) {
+                // Right side of the window needs to align with the cursor as
+                // the first candidate is on the right.
+                x_ = adjusted_x - width + shadow_right;
+                x_ = std::max<double>(x_, left - shadow_left);
+                x_ = std::min<double>(x_, right - (width - shadow_right));
+            } else {
+                x_ = adjusted_x - shadow_left;
+                x_ = std::min<double>(x_, right - (width - shadow_right));
+                x_ = std::max<double>(x_, left - shadow_left);
             }
-            x_ = std::max<double>(x_, left - shadow_left);
             if ((height - shadow_top - shadow_bottom) + gap >
                     adjusted_y - bottom        // No enough space underneath
                 || (!hidden_ && was_above_)) { // It was above, avoid flicker
@@ -197,6 +204,7 @@ void WebviewCandidateWindow::set_accent_color() {
 }
 
 void WebviewCandidateWindow::set_layout(layout_t layout) {
+    layout_ = layout;
     invoke_js("setLayout", layout);
 }
 
@@ -213,6 +221,11 @@ void WebviewCandidateWindow::set_candidates(
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {
     invoke_js("setTheme", theme);
+}
+
+void WebviewCandidateWindow::set_writing_mode(writing_mode_t mode) {
+    writing_mode_ = mode;
+    invoke_js("setWritingMode", mode);
 }
 
 void WebviewCandidateWindow::set_style(const void *style) {

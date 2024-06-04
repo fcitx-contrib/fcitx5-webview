@@ -1,4 +1,5 @@
 import {
+  panel,
   hoverables,
   preedit,
   auxUp,
@@ -51,6 +52,25 @@ function setLayout (layout : 0 | 1) {
   }
 }
 
+// Used by setCandidates to rotate paging buttons
+let currentWritingMode = 0
+
+function setWritingMode (mode: 0 | 1 | 2) {
+  currentWritingMode = mode
+  switch (mode) {
+    case 0:
+      panel.classList.remove('vertical-rl', 'vertical-lr')
+      break
+    case 1:
+      panel.classList.remove('vertical-lr')
+      panel.classList.add('vertical-rl')
+      break
+    case 2:
+      panel.classList.remove('vertical-rl')
+      panel.classList.add('vertical-lr')
+  }
+}
+
 function moveHighlight (from: Element | null, to: Element | null) {
   from?.classList.remove('highlighted')
   to?.classList.add('highlighted')
@@ -66,6 +86,22 @@ function moveHighlight (from: Element | null, to: Element | null) {
 const common = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 192 512"><path d="{}" fill="currentColor"></path></svg>'
 const caretLeft = common.replace('{}', 'M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z')
 const caretRight = common.replace('{}', 'M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z')
+
+function caretPrevPage () {
+  if (currentWritingMode > 0) {
+    return '<div style="transform: rotate(90deg);">' + caretLeft + '</div>'
+  } else {
+    return caretLeft
+  }
+}
+
+function caretNextPage () {
+  if (currentWritingMode > 0) {
+    return '<div style="transform: rotate(90deg);">' + caretRight + '</div>'
+  } else {
+    return caretRight
+  }
+}
 
 function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean) {
   hoverables.innerHTML = ''
@@ -126,7 +162,7 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     if (hasPrev) {
       prevInner.classList.add('hoverable-inner')
     }
-    prevInner.innerHTML = caretLeft
+    prevInner.innerHTML = caretPrevPage()
     prev.appendChild(prevInner)
 
     const next = div('next', 'hoverable')
@@ -134,7 +170,7 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     if (hasNext) {
       nextInner.classList.add('hoverable-inner')
     }
-    nextInner.innerHTML = caretRight
+    nextInner.innerHTML = caretNextPage()
     next.appendChild(nextInner)
 
     const paging = div('paging')
@@ -193,3 +229,4 @@ window.resize = resize
 window.setTheme = setTheme
 window.setAccentColor = setAccentColor
 window.setStyle = setStyle
+window.setWritingMode = setWritingMode

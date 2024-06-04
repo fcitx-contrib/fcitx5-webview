@@ -23,6 +23,8 @@ template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
 enum theme_t { system = 0, light = 1, dark = 2 };
 
+enum writing_mode_t { horizontal_tb = 0, vertical_rl = 1, vertical_lr = 2 };
+
 struct CandidateAction {
     int id;
     std::string text;
@@ -48,6 +50,7 @@ class CandidateWindow {
                                 int highlighted) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;
+    virtual void set_writing_mode(writing_mode_t mode) = 0;
     virtual void set_style(const void *style) = 0;
     virtual void show(double x, double y) = 0;
     virtual void hide() = 0;
