@@ -1,6 +1,7 @@
 #include "webview_candidate_window.hpp"
 #include "html_template.hpp"
 #include "utility.hpp"
+#include <CoreGraphics/CoreGraphics.h>
 #import <WebKit/WKWebView.h>
 #include <algorithm>
 #include <iostream>
@@ -151,6 +152,14 @@ WebviewCandidateWindow::WebviewCandidateWindow()
                  display:YES
                  animate:NO];
         [window orderFront:nil];
+        // A User reported Bob.app called out by shortcut is above candidate
+        // window on M1. While I can't reproduce it on Intel, he tested this and
+        // belived it's fixed. This trick is learned from vChewing.
+        // CGShieldingWindowLevel returns 2147483628, while
+        // kCGPopUpMenuWindowLevel is 101 (same with window level without this).
+        [window setLevel:std::max<int>(CGShieldingWindowLevel(),
+                                       kCGPopUpMenuWindowLevel) +
+                         1];
         [window setIsVisible:YES];
     });
 
