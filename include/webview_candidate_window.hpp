@@ -30,6 +30,7 @@ class WebviewCandidateWindow : public CandidateWindow {
 
     void update_accent_color();
     void set_accent_color();
+    void copy_html();
 
   private:
     void set_transparent_background();

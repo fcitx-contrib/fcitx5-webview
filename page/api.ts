@@ -206,6 +206,11 @@ function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: 
   updateElement(auxDown, auxDownHTML)
 }
 
+function copyHTML () {
+  const html = document.documentElement.outerHTML
+  window._copyHTML(html)
+}
+
 hoverables.addEventListener('mouseleave', () => {
   const hoverBehavior = getHoverBehavior()
   if (hoverBehavior === 'Move') {
@@ -230,3 +235,4 @@ window.setTheme = setTheme
 window.setAccentColor = setAccentColor
 window.setStyle = setStyle
 window.setWritingMode = setWritingMode
+window.copyHTML = copyHTML

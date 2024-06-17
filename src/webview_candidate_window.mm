@@ -173,6 +173,13 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_log", [](std::string s) { std::cerr << s; });
 
+    bind("_copyHTML", [](std::string html) {
+        NSString *s = [NSString stringWithUTF8String:html.c_str()];
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard clearContents];
+        [pasteboard setString:s forType:NSPasteboardTypeString];
+    });
+
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
     w_->set_html(html_template.c_str());
@@ -326,5 +333,7 @@ void WebviewCandidateWindow::update_input_panel(
               formatted_to_html(preedit, cursor_text_, preedit_cursor),
               formatted_to_html(auxUp), formatted_to_html(auxDown));
 }
+
+void WebviewCandidateWindow::copy_html() { invoke_js("copyHTML"); }
 
 } // namespace candidate_window
