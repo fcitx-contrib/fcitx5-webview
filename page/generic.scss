@@ -78,6 +78,20 @@ body {
 
 .paging {
   display: flex;
+
+  &.arrow svg {
+    block-size: 12px;
+    inline-size: 12px;
+  }
+
+  &.triangle svg {
+    block-size: 16px;
+    inline-size: 16px;
+  }
+}
+
+:is(.vertical-rl, .vertical-lr) .paging svg {
+  transform: rotate(90deg);
 }
 
 /* When horizontal, paging is shorter than candidates, so need to centralize them. */
@@ -92,10 +106,6 @@ body {
   justify-content: center;
   width: 20px;
   height: 20px;
-
-  svg {
-    height: 16px;
-  }
 }
 
 .mark {
