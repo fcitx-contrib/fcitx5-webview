@@ -10,6 +10,7 @@ import {
   setActions,
   hideContextmenu,
   getHoverBehavior,
+  getPagingButtonsStyle,
   resize
 } from './ux'
 import {
@@ -52,22 +53,14 @@ function setLayout (layout : 0 | 1) {
   }
 }
 
-// Used by setCandidates to rotate paging buttons
-let currentWritingMode = 0
-
 function setWritingMode (mode: 0 | 1 | 2) {
-  currentWritingMode = mode
-  switch (mode) {
-    case 0:
-      panel.classList.remove('vertical-rl', 'vertical-lr')
-      break
-    case 1:
-      panel.classList.remove('vertical-lr')
-      panel.classList.add('vertical-rl')
-      break
-    case 2:
-      panel.classList.remove('vertical-rl')
-      panel.classList.add('vertical-lr')
+  const classes = ['horizontal-tb', 'vertical-rl', 'vertical-lr']
+  for (let i = 0; i < classes.length; ++i) {
+    if (mode === i) {
+      panel.classList.add(classes[i])
+    } else {
+      panel.classList.remove(classes[i])
+    }
   }
 }
 
@@ -81,27 +74,14 @@ function moveHighlight (from: Element | null, to: Element | null) {
   }
 }
 
-// font-awesome
 // Use 2 icons instead of flipping one to avoid 1-pixel shift bug.
-const common = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 192 512"><path d="{}" fill="currentColor"></path></svg>'
-const caretLeft = common.replace('{}', 'M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z')
-const caretRight = common.replace('{}', 'M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z')
-
-function caretPrevPage () {
-  if (currentWritingMode > 0) {
-    return '<div style="transform: rotate(90deg);">' + caretLeft + '</div>'
-  } else {
-    return caretLeft
-  }
-}
-
-function caretNextPage () {
-  if (currentWritingMode > 0) {
-    return '<div style="transform: rotate(90deg);">' + caretRight + '</div>'
-  } else {
-    return caretRight
-  }
-}
+const common = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{}"><path d="{}" fill="currentColor"></path></svg>'
+// font-awesome
+const caretLeft = common.replace('{}', '0 0 192 512').replace('{}', 'M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z')
+const caretRight = common.replace('{}', '0 0 192 512').replace('{}', 'M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z')
+// material
+const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z')
+const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
 function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean) {
   hoverables.innerHTML = ''
@@ -155,6 +135,7 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
   setActions(cands.map(c => c.actions))
 
   if (pageable) {
+    const isArrow = getPagingButtonsStyle() === 'Arrow'
     hoverables.append(divider(true))
 
     const prev = div('prev', 'hoverable')
@@ -162,7 +143,7 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     if (hasPrev) {
       prevInner.classList.add('hoverable-inner')
     }
-    prevInner.innerHTML = caretPrevPage()
+    prevInner.innerHTML = isArrow ? arrowBack : caretLeft
     prev.appendChild(prevInner)
 
     const next = div('next', 'hoverable')
@@ -170,10 +151,15 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     if (hasNext) {
       nextInner.classList.add('hoverable-inner')
     }
-    nextInner.innerHTML = caretNextPage()
+    nextInner.innerHTML = isArrow ? arrowForward : caretRight
     next.appendChild(nextInner)
 
     const paging = div('paging')
+    if (isArrow) {
+      paging.classList.add('arrow')
+    } else {
+      paging.classList.add('triangle')
+    }
     paging.appendChild(prev)
     paging.appendChild(next)
     hoverables.appendChild(paging)

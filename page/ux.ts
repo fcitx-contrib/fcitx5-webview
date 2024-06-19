@@ -258,3 +258,12 @@ export function setHoverBehavior (behavior: HOVER_BEHAVIOR) {
 export function getHoverBehavior () {
   return hoverBehavior
 }
+
+export type PAGING_BUTTONS_STYLE = 'None' | 'Arrow' | 'Triangle'
+let pagingButtonsStyle: PAGING_BUTTONS_STYLE = 'Arrow'
+export function setPagingButtonsStyle (style: PAGING_BUTTONS_STYLE) {
+  pagingButtonsStyle = style
+}
+export function getPagingButtonsStyle () {
+  return pagingButtonsStyle
+}

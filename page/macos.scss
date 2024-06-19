@@ -45,6 +45,21 @@ $dark-graphite: rgb(105 105 105);
 
   .panel {
     transform: translate(25px, 25px); /* leave top and left for shadow */
+
+    &:has(.horizontal .paging.arrow) {
+      border-start-end-radius: 15px;
+      border-end-end-radius: 15px;
+    }
+  }
+
+  .horizontal .paging.arrow {
+    flex-direction: column;
+    justify-content: center;
+
+    .paging-inner {
+      inline-size: 28px;
+      block-size: auto;
+    }
   }
 
   .contextmenu {
@@ -98,9 +113,22 @@ $dark-graphite: rgb(105 105 105);
   .label, .comment {
     font-size: 12px;
   }
+
+  .horizontal-tb .horizontal .paging.arrow svg {
+    transform: rotate(90deg);
+  }
+
+  .vertical-rl .horizontal .paging.arrow svg {
+    transform: rotate(180deg);
+  }
+
+  .vertical-lr .horizontal .paging.arrow svg {
+    transform: rotate(0deg);
+  }
 }
 
 .macos.light {
+  /* stylelint-disable-next-line no-descending-specificity */
   .panel, .contextmenu {
     border-color: $panel-border-color-light;
   }
@@ -195,6 +223,7 @@ $dark-graphite: rgb(105 105 105);
 }
 
 .macos.dark {
+  /* stylelint-disable-next-line no-descending-specificity */
   .panel, .contextmenu {
     border-color: $panel-border-color-dark;
   }

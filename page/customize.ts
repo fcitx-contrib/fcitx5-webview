@@ -1,6 +1,8 @@
 import {
   HOVER_BEHAVIOR,
   setHoverBehavior,
+  PAGING_BUTTONS_STYLE,
+  setPagingButtonsStyle,
   setBlur,
   setBlink
 } from './ux'
@@ -33,6 +35,9 @@ type STYLE_JSON = {
   LightMode: LIGHT_MODE,
   DarkMode: LIGHT_MODE & {
     SameWithLightMode: CONFIG_BOOL
+  }
+  Typography: {
+    PagingButtonsStyle: PAGING_BUTTONS_STYLE
   }
   Background: {
     ImageUrl: string
@@ -353,6 +358,8 @@ export function setStyle (style: string) {
       }
     }
   }
+
+  setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
 
   if (j.Background.ImageUrl) {
     // Background image should not affect aux
