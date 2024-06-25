@@ -31,7 +31,7 @@ export async function init (page: Page) {
 
 export function setCandidates (page: Page, cands: Candidate[], highlighted: number) {
   return page.evaluate(({ cands, highlighted }) =>
-    window.setCandidates(cands, highlighted, '', false, false, false), { cands, highlighted })
+    window.setCandidates(cands, highlighted, '', false, false, false, 0, false), { cands, highlighted })
 }
 
 export function setLayout (page: Page, layout: 0 | 1) {

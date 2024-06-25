@@ -167,6 +167,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_page", [this](bool next) { page_callback(next); });
 
+    bind("_scroll",
+         [this](int start, int length) { scroll_callback(start, length); });
+
     bind("_action", [this](size_t i, int id) { action_callback(i, id); });
 
     bind("_onload", [this]() { init_callback(); });
@@ -225,14 +228,19 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 }
 
 void WebviewCandidateWindow::set_candidates(
-    const std::vector<Candidate> &candidates, int highlighted) {
+    const std::vector<Candidate> &candidates, int highlighted,
+    scroll_state_t scroll_state, bool scroll_end) {
     std::vector<Candidate> escaped_candidates;
     escaped_candidates.reserve(candidates.size());
     std::transform(candidates.begin(), candidates.end(),
                    std::back_inserter(escaped_candidates), escape_candidate);
     invoke_js("setCandidates", escaped_candidates, highlighted,
               escape_html(highlight_mark_text_), pageable_, has_prev_,
-              has_next_);
+              has_next_, scroll_state, scroll_end);
+}
+
+void WebviewCandidateWindow::scroll_key_action(scroll_key_action_t action) {
+    invoke_js("scrollKeyAction", action);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {

@@ -46,7 +46,7 @@ $dark-graphite: rgb(105 105 105);
   .panel {
     transform: translate(25px, 25px); /* leave top and left for shadow */
 
-    &:has(.horizontal .paging.arrow) {
+    &:has(.horizontal .paging:is(.arrow, .scroll)) {
       border-start-end-radius: 15px;
       border-end-end-radius: 15px;
     }
@@ -60,6 +60,12 @@ $dark-graphite: rgb(105 105 105);
       inline-size: 28px;
       block-size: auto;
     }
+  }
+
+  .paging.scroll {
+    inline-size: 28px;
+    justify-content: center;
+    align-items: center;
   }
 
   .contextmenu {
@@ -220,6 +226,10 @@ $dark-graphite: rgb(105 105 105);
       background-color: $vertical-border-color-light;
     }
   }
+
+  .hoverables.horizontal-scroll .divider .divider-middle {
+    background-color: $panel-color-light;
+  }
 }
 
 .macos.dark {
@@ -312,9 +322,14 @@ $dark-graphite: rgb(105 105 105);
       background-color: $panel-color-dark;
     }
 
+    /* stylelint-disable-next-line no-descending-specificity */
     .divider-middle {
       background-color: $vertical-border-color-dark;
     }
+  }
+
+  .hoverables.horizontal-scroll .divider .divider-middle {
+    background-color: $panel-color-dark;
   }
 }
 

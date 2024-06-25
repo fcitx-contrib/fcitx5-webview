@@ -25,6 +25,25 @@ enum theme_t { system = 0, light = 1, dark = 2 };
 
 enum writing_mode_t { horizontal_tb = 0, vertical_rl = 1, vertical_lr = 2 };
 
+enum scroll_state_t { none = 0, ready = 1, scrolling = 2 };
+
+enum scroll_key_action_t {
+    one = 1,
+    two = 2,
+    three = 3,
+    four = 4,
+    five = 5,
+    six = 6,
+    up = 10,
+    down = 11,
+    left = 12,
+    right = 13,
+    home = 14,
+    end = 15,
+    expand = 16,
+    collapse = 17
+};
+
 struct CandidateAction {
     int id;
     std::string text;
@@ -47,7 +66,9 @@ class CandidateWindow {
                                     const formatted<std::string> &auxUp,
                                     const formatted<std::string> &auxDown) = 0;
     virtual void set_candidates(const std::vector<Candidate> &candidates,
-                                int highlighted) = 0;
+                                int highlighted, scroll_state_t scroll_state,
+                                bool scroll_end) = 0;
+    virtual void scroll_key_action(scroll_key_action_t action) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;
     virtual void set_writing_mode(writing_mode_t mode) = 0;
@@ -59,7 +80,7 @@ class CandidateWindow {
         init_callback = callback;
     }
 
-    void set_select_callback(std::function<void(size_t index)> callback) {
+    void set_select_callback(std::function<void(int index)> callback) {
         select_callback = callback;
     }
 
@@ -70,6 +91,10 @@ class CandidateWindow {
 
     void set_page_callback(std::function<void(bool)> callback) {
         page_callback = callback;
+    }
+
+    void set_scroll_callback(std::function<void(int, int)> callback) {
+        scroll_callback = callback;
     }
 
     void set_paging_buttons(bool pageable, bool has_prev, bool has_next) {
@@ -85,8 +110,9 @@ class CandidateWindow {
 
   protected:
     std::function<void()> init_callback = []() {};
-    std::function<void(size_t index)> select_callback = [](size_t) {};
+    std::function<void(int index)> select_callback = [](int) {};
     std::function<void(bool next)> page_callback = [](bool) {};
+    std::function<void(int, int)> scroll_callback = [](int, int) {};
     std::function<void(size_t index, int id)> action_callback = [](int, int) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";
