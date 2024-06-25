@@ -76,7 +76,7 @@ body {
   }
 
   &.horizontal-scroll {
-    block-size: 180px;
+    max-block-size: 180px; /* If block-size, 2 rows will have 90px each. */
     inline-size: 400px;
     flex-wrap: wrap;
     overflow-y: auto;
