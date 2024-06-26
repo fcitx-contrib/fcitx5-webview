@@ -162,6 +162,6 @@ hoverables.addEventListener('scroll', () => {
   const bottomRight = candidates[bottomRightIndex]
   if (bottomRight.getBoundingClientRect().top < hoverables.clientHeight) {
     fetching = true
-    window._scroll(candidates.length, 6)
+    window._scroll(candidates.length, 36)
   }
 })
