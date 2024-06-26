@@ -37,6 +37,10 @@ function getHighlightedRow (): number {
   return rowItemCount.length - 1
 }
 
+function distanceToTop (element: Element, basis: 'top' | 'bottom') {
+  return element.getBoundingClientRect()[basis] - hoverables.getBoundingClientRect().top
+}
+
 function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
   const candidates = hoverables.querySelectorAll('.candidate')
   if (clearOld) {
@@ -60,6 +64,18 @@ function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
     candidate.querySelector('.label')!.innerHTML = `${i - skipped + 1}`
   }
   candidates[highlighted].classList.add('highlighted')
+
+  const bottomOffset = distanceToTop(candidates[highlighted], 'bottom') - hoverables.clientHeight
+  // Highlighted candidate below bottom of panel
+  if (bottomOffset > 0) {
+    hoverables.scrollTop += bottomOffset
+  }
+
+  const topOffset = distanceToTop(candidates[highlighted], 'top')
+  // Highlighted candidate above top of panel
+  if (topOffset < 0) {
+    hoverables.scrollTop += topOffset
+  }
 }
 
 export function recalculateScroll (scrollStart: boolean) {
@@ -167,7 +183,7 @@ hoverables.addEventListener('scroll', () => {
   const bottomRightIndex = itemCountInFirstNRows(rowItemCount.length - 1) - 1
   const candidates = hoverables.querySelectorAll('.candidate')
   const bottomRight = candidates[bottomRightIndex]
-  if (bottomRight.getBoundingClientRect().top < hoverables.clientHeight) {
+  if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
     fetching = true
     window._scroll(candidates.length, 36)
   }
