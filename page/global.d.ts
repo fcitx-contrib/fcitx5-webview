@@ -28,7 +28,7 @@ declare global {
     _resize: (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, enlargedWidth: number, enlargedHeight: number, dragging: boolean) => void
 
     // JavaScript APIs that webview_candidate_window.mm calls
-    setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollEnd: boolean) => void
+    setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
     setLayout: (layout: 0 | 1) => void
     updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void
     resize: (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void

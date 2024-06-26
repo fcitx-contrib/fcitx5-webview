@@ -229,14 +229,14 @@ void WebviewCandidateWindow::set_layout(layout_t layout) {
 
 void WebviewCandidateWindow::set_candidates(
     const std::vector<Candidate> &candidates, int highlighted,
-    scroll_state_t scroll_state, bool scroll_end) {
+    scroll_state_t scroll_state, bool scroll_start, bool scroll_end) {
     std::vector<Candidate> escaped_candidates;
     escaped_candidates.reserve(candidates.size());
     std::transform(candidates.begin(), candidates.end(),
                    std::back_inserter(escaped_candidates), escape_candidate);
     invoke_js("setCandidates", escaped_candidates, highlighted,
               escape_html(highlight_mark_text_), pageable_, has_prev_,
-              has_next_, scroll_state, scroll_end);
+              has_next_, scroll_state, scroll_start, scroll_end);
 }
 
 void WebviewCandidateWindow::scroll_key_action(scroll_key_action_t action) {

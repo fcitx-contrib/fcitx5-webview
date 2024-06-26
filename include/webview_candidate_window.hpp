@@ -21,7 +21,7 @@ class WebviewCandidateWindow : public CandidateWindow {
                             const formatted<std::string> &auxDown) override;
     void set_candidates(const std::vector<Candidate> &candidates,
                         int highlighted, scroll_state_t scroll_state,
-                        bool scroll_end) override;
+                        bool scroll_start, bool scroll_end) override;
     void scroll_key_action(scroll_key_action_t action) override;
     void set_highlight_callback(std::function<void(size_t index)>) override {}
     void set_theme(theme_t theme) override;

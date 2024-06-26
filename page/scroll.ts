@@ -62,7 +62,7 @@ function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
   candidates[highlighted].classList.add('highlighted')
 }
 
-export function recalculateScroll () {
+export function recalculateScroll (scrollStart: boolean) {
   const candidates = hoverables.querySelectorAll('.candidate')
   let currentY = candidates[0].getBoundingClientRect().y
   rowItemCount = []
@@ -79,7 +79,7 @@ export function recalculateScroll () {
     }
   }
   rowItemCount.push(itemCount)
-  renderHighlightAndLabels(0, false)
+  renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
 }
 
 function getNeighborCandidate (direction: SCROLL_MOVE_HIGHLIGHT): number {
@@ -139,6 +139,13 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
       const newHighlighted = getNeighborCandidate(action)
       if (newHighlighted >= 0) {
         renderHighlightAndLabels(newHighlighted, true)
+        if (!scrollEnd && !fetching) {
+          const newHighlightedRow = getHighlightedRow()
+          if (rowItemCount.length - newHighlightedRow <= 6) {
+            fetching = true
+            window._scroll(itemCountInFirstNRows(rowItemCount.length), 36)
+          }
+        }
       }
       break
     }

@@ -29,7 +29,7 @@ int main(int argc, const char *argv[]) {
                 {{"<h1>防注入</h1>", "1", "注释", {{0, "<h1>防注入</h1>"}}},
                  {"候选词", "2", "", {{1, "删词"}, {2, "置顶"}}},
                  {"制\t表\t符\n多 空  格", "2", ""}},
-                0, candidate_window::scroll_state_t::none, false);
+                0, candidate_window::scroll_state_t::none, false, false);
             candidateWindow->set_theme(candidate_window::theme_t::light);
             candidateWindow->show(100, 200);
         });

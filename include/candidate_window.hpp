@@ -67,7 +67,7 @@ class CandidateWindow {
                                     const formatted<std::string> &auxDown) = 0;
     virtual void set_candidates(const std::vector<Candidate> &candidates,
                                 int highlighted, scroll_state_t scroll_state,
-                                bool scroll_end) = 0;
+                                bool scroll_start, bool scroll_end) = 0;
     virtual void scroll_key_action(scroll_key_action_t action) = 0;
     virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;
