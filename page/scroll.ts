@@ -2,6 +2,9 @@ import {
   hoverables
 } from './selector'
 
+const MAX_ROW = 6
+const MAX_COLUMN = 6
+
 let scrollState: SCROLL_STATE = 0
 
 export function getScrollState () {
@@ -25,16 +28,20 @@ function itemCountInFirstNRows (n: number): number {
   return rowItemCount.slice(0, n).reduce((sum, count) => sum + count, 0)
 }
 
-function getHighlightedRow (): number {
+function getRowOf (index: number): number {
   let skipped = 0
   for (let i = 0; i < rowItemCount.length - 1; ++i) {
     const end = skipped + rowItemCount[i]
-    if (highlighted < end) {
+    if (index < end) {
       return i
     }
     skipped = end
   }
   return rowItemCount.length - 1
+}
+
+function getHighlightedRow (): number {
+  return getRowOf(highlighted)
 }
 
 function distanceToTop (element: Element, basis: 'top' | 'bottom') {
@@ -98,10 +105,10 @@ export function recalculateScroll (scrollStart: boolean) {
   renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
 }
 
-function getNeighborCandidate (direction: SCROLL_MOVE_HIGHLIGHT): number {
-  const highlightedRow = getHighlightedRow()
+function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {
+  const row = getRowOf(index)
   const candidates = hoverables.querySelectorAll('.candidate')
-  const { left, right } = candidates[highlighted].getBoundingClientRect()
+  const { left, right } = candidates[index].getBoundingClientRect()
   const mid = (left + right) / 2
 
   function helper (row: number) {
@@ -122,20 +129,35 @@ function getNeighborCandidate (direction: SCROLL_MOVE_HIGHLIGHT): number {
 
   switch (direction) {
     case 10: {
-      return helper(highlightedRow - 1)
+      return helper(row - 1)
     }
     case 11: {
-      return helper(highlightedRow + 1)
+      return helper(row + 1)
     }
     case 12:
-      return highlighted - 1
+      return index - 1
     case 13:
-      if (highlighted + 1 < itemCountInFirstNRows(rowItemCount.length + 1)) {
-        return highlighted + 1
+      if (index + 1 < itemCountInFirstNRows(rowItemCount.length + 1)) {
+        return index + 1
       }
       return -1
+    case 14:
+    case 15: {
+      const skipped = itemCountInFirstNRows(row)
+      return direction === 14 ? skipped : skipped + rowItemCount[row] - 1
+    }
+    case 16:
+    case 17: {
+      const d = direction === 16 ? 10 : 11
+      let step = MAX_ROW
+      let newIndex: number
+      do {
+        newIndex = index
+        index = getNeighborCandidate(index, d) // execute at most MAX_ROW times, but the last result is not assigned to newIndex
+      } while (index >= 0 && --step)
+      return newIndex
+    }
   }
-  return -1
 }
 
 export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
@@ -151,15 +173,19 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
     case 10:
     case 11:
     case 12:
-    case 13: {
-      const newHighlighted = getNeighborCandidate(action)
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17: {
+      const newHighlighted = getNeighborCandidate(highlighted, action)
       if (newHighlighted >= 0) {
         renderHighlightAndLabels(newHighlighted, true)
         if (!scrollEnd && !fetching) {
           const newHighlightedRow = getHighlightedRow()
-          if (rowItemCount.length - newHighlightedRow <= 6) {
+          if (rowItemCount.length - newHighlightedRow <= MAX_ROW) {
             fetching = true
-            window._scroll(itemCountInFirstNRows(rowItemCount.length), 36)
+            window._scroll(itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
           }
         }
       }
@@ -185,6 +211,6 @@ hoverables.addEventListener('scroll', () => {
   const bottomRight = candidates[bottomRightIndex]
   if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
     fetching = true
-    window._scroll(candidates.length, 36)
+    window._scroll(candidates.length, MAX_ROW * MAX_COLUMN)
   }
 })

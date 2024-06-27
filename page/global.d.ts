@@ -13,7 +13,7 @@ declare global {
 
   type SCROLL_STATE = 0 | 1 | 2
   type SCROLL_SELECT = 1 | 2 | 3 | 4 | 5 | 6
-  type SCROLL_MOVE_HIGHLIGHT = 10 | 11 | 12 | 13 | 14 | 15
+  type SCROLL_MOVE_HIGHLIGHT = 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17
   type SCROLL_KEY_ACTION = SCROLL_SELECT | SCROLL_MOVE_HIGHLIGHT
 
   interface Window {

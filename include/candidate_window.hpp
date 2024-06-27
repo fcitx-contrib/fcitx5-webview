@@ -40,8 +40,10 @@ enum scroll_key_action_t {
     right = 13,
     home = 14,
     end = 15,
-    expand = 16,
-    collapse = 17
+    page_up = 16,
+    page_down = 17,
+    expand = 18,
+    collapse = 19
 };
 
 struct CandidateAction {
