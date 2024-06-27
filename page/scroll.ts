@@ -118,6 +118,16 @@ export function recalculateScroll (scrollStart: boolean) {
   }
   rowItemCount.push(itemCount)
   renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
+
+  // Manually adjust last row so that candidates align left.
+  if (scrollEnd) {
+    const dividers = hoverables.querySelectorAll('.divider')
+    const skipped = itemCountInFirstNRows(rowItemCount.length - 1)
+    const { width } = dividers[skipped - 1].getBoundingClientRect() // Don't use clientWidth as it rounds to integer.
+    for (let i = skipped; i < skipped + rowItemCount[rowItemCount.length - 1] - 1; ++i) {
+      dividers[i].setAttribute('style', `flex-grow: 0; flex-basis: ${width}px`)
+    }
+  }
 }
 
 function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {

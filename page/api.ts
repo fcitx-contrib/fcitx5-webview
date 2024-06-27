@@ -108,15 +108,13 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
   }
   for (let i = 0; i < cands.length; ++i) {
     const candidate = div('candidate', 'hoverable')
-    if (i === 0) {
+    if (i === 0 && scrollState !== 2) {
       candidate.classList.add('candidate-first')
-    } else {
-      hoverables.append(divider())
     }
     if (i === highlighted) {
       candidate.classList.add('highlighted', 'highlighted-original')
     }
-    if (i === cands.length - 1) {
+    if (i === cands.length - 1 && scrollState !== 2) {
       candidate.classList.add('candidate-last')
     }
 
@@ -151,6 +149,13 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
     candidate.append(candidateInner)
     hoverables.append(candidate)
+
+    // No divider after last element in non-scroll mode,
+    // but for scroll mode it needs to fill the row when
+    // candidates are not enough.
+    if (scrollState === 2 || i !== cands.length - 1) {
+      hoverables.append(divider())
+    }
   }
 
   setActions(cands.map(c => c.actions))
