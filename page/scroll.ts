@@ -21,6 +21,21 @@ export function setScrollEnd (end: boolean) {
   scrollEnd = end
 }
 
+// A lock that prevents fetching same candidates simultaneously.
+let fetching = false
+
+export function fetchComplete () {
+  fetching = false
+}
+
+export function expand () {
+  window._scroll(0, (MAX_ROW + 1) * MAX_COLUMN) // visible rows plus 1 hidden row
+}
+
+function collapse () {
+  window._scroll(-1, 0)
+}
+
 let rowItemCount: number[] = []
 let highlighted = 0
 
@@ -150,11 +165,15 @@ function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT):
     case 17: {
       const d = direction === 16 ? 10 : 11
       let step = MAX_ROW
+      let intermediateIndex = index
       let newIndex: number
       do {
-        newIndex = index
-        index = getNeighborCandidate(index, d) // execute at most MAX_ROW times, but the last result is not assigned to newIndex
-      } while (index >= 0 && --step)
+        newIndex = intermediateIndex
+        intermediateIndex = getNeighborCandidate(intermediateIndex, d) // execute at most MAX_ROW times, but the last result is not assigned to newIndex
+      } while (intermediateIndex >= 0 && --step)
+      if (newIndex === index) {
+        return -1
+      }
       return newIndex
     }
   }
@@ -188,17 +207,12 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
             window._scroll(itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
           }
         }
+      } else if ([10, 16].includes(action) && getHighlightedRow() === 0) {
+        collapse()
       }
       break
     }
   }
-}
-
-// A lock that prevents fetching same candidates simultaneously.
-let fetching = false
-
-export function fetchComplete () {
-  fetching = false
 }
 
 hoverables.addEventListener('scroll', () => {

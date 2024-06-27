@@ -4,6 +4,9 @@ import {
   contextmenu,
   hoverables
 } from './selector'
+import {
+  expand
+} from './scroll'
 
 let pressed = false
 let dragging = false
@@ -159,7 +162,7 @@ document.addEventListener('mouseup', e => {
     } else if (target.classList.contains('next')) {
       return window._page(true)
     } else if (target.classList.contains('expand')) {
-      return window._scroll(0, 42) // 6 visible rows plus 1 hidden row
+      return expand()
     }
     target = target.parentElement!
   }
