@@ -5,6 +5,7 @@ import {
   hoverables
 } from './selector'
 import {
+  getScrollState,
   expand
 } from './scroll'
 
@@ -119,6 +120,23 @@ function getCandidateIndex (target: Element) {
   return -1
 }
 
+export function showContextmenu (x: number, y: number, index: number, actions: CandidateAction[]) {
+  contextmenu.innerHTML = ''
+  for (const action of actions) {
+    const item = div('menu-item')
+    item.innerHTML = action.text
+    item.addEventListener('click', () => {
+      window._action(index, action.id)
+      hideContextmenu()
+    })
+    contextmenu.appendChild(item)
+  }
+  contextmenu.style.top = `${y}px`
+  contextmenu.style.left = `${x}px`
+  contextmenu.style.display = 'block'
+  resize(0, 0, false, true)
+}
+
 export function hideContextmenu () {
   contextmenu.innerHTML = ''
   contextmenu.style.display = 'none'
@@ -177,6 +195,14 @@ export function setActions (newActions: CandidateAction[][]) {
   actions = newActions
 }
 
+let actionX = 0
+let actionY = 0
+let actionIndex = 0
+
+export function answerActions (actions: CandidateAction[]) {
+  showContextmenu(actionX, actionY, actionIndex, actions)
+}
+
 document.addEventListener('contextmenu', e => {
   e.preventDefault()
   let target = e.target as Element
@@ -187,21 +213,14 @@ document.addEventListener('contextmenu', e => {
     target = target.parentElement!
   }
   const i = getCandidateIndex(target)
+  if (i >= 0 && getScrollState() === 2) {
+    actionX = e.clientX
+    actionY = e.clientY
+    actionIndex = i
+    return window._askActions(i)
+  }
   if (i >= 0 && actions[i].length > 0) {
-    contextmenu.innerHTML = ''
-    for (const action of actions[i]) {
-      const item = div('menu-item')
-      item.innerHTML = action.text
-      item.addEventListener('click', () => {
-        window._action(i, action.id)
-        hideContextmenu()
-      })
-      contextmenu.appendChild(item)
-    }
-    contextmenu.style.top = `${e.clientY}px`
-    contextmenu.style.left = `${e.clientX}px`
-    contextmenu.style.display = 'block'
-    resize(0, 0, false, true)
+    showContextmenu(e.clientX, e.clientY, i, actions[i])
   } else {
     hideContextmenu()
   }

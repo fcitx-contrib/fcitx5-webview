@@ -23,6 +23,7 @@ class WebviewCandidateWindow : public CandidateWindow {
                         int highlighted, scroll_state_t scroll_state,
                         bool scroll_start, bool scroll_end) override;
     void scroll_key_action(scroll_key_action_t action) override;
+    void answer_actions(const std::vector<CandidateAction> &actions) override;
     void set_theme(theme_t theme) override;
     void set_writing_mode(writing_mode_t mode) override;
     void set_style(const void *style) override;

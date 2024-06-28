@@ -8,6 +8,7 @@ import {
 import {
   div,
   setActions,
+  answerActions,
   hideContextmenu,
   getHoverBehavior,
   getPagingButtonsStyle,
@@ -263,3 +264,4 @@ window.setStyle = setStyle
 window.setWritingMode = setWritingMode
 window.copyHTML = copyHTML
 window.scrollKeyAction = scrollKeyAction
+window.answerActions = answerActions

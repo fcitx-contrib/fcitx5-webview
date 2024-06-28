@@ -72,6 +72,8 @@ class CandidateWindow {
                                 int highlighted, scroll_state_t scroll_state,
                                 bool scroll_start, bool scroll_end) = 0;
     virtual void scroll_key_action(scroll_key_action_t action) = 0;
+    virtual void
+    answer_actions(const std::vector<CandidateAction> &actions) = 0;
     virtual void set_theme(theme_t theme) = 0;
     virtual void set_writing_mode(writing_mode_t mode) = 0;
     virtual void set_style(const void *style) = 0;
@@ -109,6 +111,10 @@ class CandidateWindow {
         has_next_ = has_next;
     }
 
+    void set_ask_actions_callback(std::function<void(int index)> callback) {
+        ask_actions_callback = callback;
+    }
+
     void
     set_action_callback(std::function<void(size_t index, int id)> callback) {
         action_callback = callback;
@@ -120,6 +126,7 @@ class CandidateWindow {
     std::function<void(int index)> highlight_callback = [](int) {};
     std::function<void(bool next)> page_callback = [](bool) {};
     std::function<void(int, int)> scroll_callback = [](int, int) {};
+    std::function<void(int index)> ask_actions_callback = [](int) {};
     std::function<void(size_t index, int id)> action_callback = [](int, int) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";

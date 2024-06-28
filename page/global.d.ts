@@ -25,6 +25,7 @@ declare global {
     _highlight: (index: number) => void
     _page: (next: boolean) => void
     _scroll: (start: number, length: number) => void
+    _askActions: (index: number) => void
     _action: (index: number, id: number) => void
     _resize: (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, enlargedWidth: number, enlargedHeight: number, dragging: boolean) => void
 
@@ -39,6 +40,7 @@ declare global {
     setWritingMode: (mode: 0 | 1 | 2) => void
     copyHTML: () => void
     scrollKeyAction: (action: SCROLL_KEY_ACTION) => void
+    answerActions: (actions: CandidateAction[]) => void
 
     // Utility functions globally available
     fcitxLog: (...args: unknown[]) => void

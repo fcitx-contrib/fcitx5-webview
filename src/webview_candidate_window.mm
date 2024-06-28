@@ -49,13 +49,15 @@ void to_json(nlohmann::json &j, const Candidate &c) {
                        {"actions", c.actions}};
 }
 
+CandidateAction escape_action(const CandidateAction &a) {
+    return CandidateAction{a.id, escape_html(a.text)};
+}
+
 Candidate escape_candidate(const Candidate &c) {
     std::vector<CandidateAction> escaped_actions;
     escaped_actions.reserve(c.actions.size());
     std::transform(c.actions.begin(), c.actions.end(),
-                   std::back_inserter(escaped_actions), [](const auto &a) {
-                       return CandidateAction{a.id, escape_html(a.text)};
-                   });
+                   std::back_inserter(escaped_actions), escape_action);
     return Candidate{escape_html(c.text), escape_html(c.label),
                      escape_html(c.comment), std::move(escaped_actions)};
 }
@@ -172,6 +174,8 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     bind("_scroll",
          [this](int start, int length) { scroll_callback(start, length); });
 
+    bind("_askActions", [this](int i) { ask_actions_callback(i); });
+
     bind("_action", [this](size_t i, int id) { action_callback(i, id); });
 
     bind("_onload", [this]() { init_callback(); });
@@ -243,6 +247,15 @@ void WebviewCandidateWindow::set_candidates(
 
 void WebviewCandidateWindow::scroll_key_action(scroll_key_action_t action) {
     invoke_js("scrollKeyAction", action);
+}
+
+void WebviewCandidateWindow::answer_actions(
+    const std::vector<CandidateAction> &actions) {
+    std::vector<CandidateAction> escaped_actions;
+    escaped_actions.reserve(actions.size());
+    std::transform(actions.begin(), actions.end(),
+                   std::back_inserter(escaped_actions), escape_action);
+    invoke_js("answerActions", escaped_actions);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) {
