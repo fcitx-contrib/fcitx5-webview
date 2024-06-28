@@ -125,6 +125,8 @@ const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} .header`
 const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .hoverables :is(.candidate, .paging)`
 const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .hoverables .divider .divider-middle`
 const PANEL_LIGHT_DIVIDER_SIDE = `${PANEL_LIGHT} .hoverables .divider .divider-side`
+const PANEL_LIGHT_SCROLL_DIVIDER = `${PANEL_LIGHT} .hoverables.horizontal-scroll .divider-middle`
+const PANEL_LIGHT_SCROLL_TRACK = `${PANEL_LIGHT} .hoverables.horizontal-scroll::-webkit-scrollbar-track`
 const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .cursor.no-text`
 const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .highlighted .mark`
 
@@ -148,6 +150,8 @@ const HEADER_DARK_BACKGROUND = lightToDark(HEADER_LIGHT_BACKGROUND)
 const HOVERABLES_DARK_BACKGROUND = lightToDark(HOVERABLES_LIGHT_BACKGROUND)
 const PANEL_DARK_DIVIDER_MIDDLE = lightToDark(PANEL_LIGHT_DIVIDER_MIDDLE)
 const PANEL_DARK_DIVIDER_SIDE = lightToDark(PANEL_LIGHT_DIVIDER_SIDE)
+const PANEL_DARK_SCROLL_DIVIDER = lightToDark(PANEL_LIGHT_SCROLL_DIVIDER)
+const PANEL_DARK_SCROLL_TRACK = lightToDark(PANEL_LIGHT_SCROLL_TRACK)
 const CURSOR_NO_TEXT_DARK = lightToDark(CURSOR_NO_TEXT_LIGHT)
 const HIGHLIGHT_MARK_DARK = lightToDark(HIGHLIGHT_MARK_LIGHT)
 
@@ -241,6 +245,9 @@ export function setStyle (style: string) {
     rules[PANEL_LIGHT_DIVIDER_SIDE] = {
       'background-color': lightBackgroundColor
     }
+    rules[PANEL_LIGHT_SCROLL_DIVIDER] = rules[PANEL_LIGHT_SCROLL_TRACK] = {
+      'background-color': lightBackgroundColor
+    }
     rules[HIGHLIGHT_MARK_LIGHT] = {
       [markKey]: j.LightMode.HighlightMarkColor
     }
@@ -276,6 +283,8 @@ export function setStyle (style: string) {
         PANEL_LIGHT,
         PANEL_LIGHT_DIVIDER_MIDDLE,
         PANEL_LIGHT_DIVIDER_SIDE,
+        PANEL_LIGHT_SCROLL_DIVIDER,
+        PANEL_LIGHT_SCROLL_TRACK,
         HIGHLIGHT_MARK_LIGHT
       ]
       if (j.Highlight.HoverBehavior === 'Add') {
@@ -343,6 +352,9 @@ export function setStyle (style: string) {
         'background-color': j.DarkMode.DividerColor
       }
       rules[PANEL_DARK_DIVIDER_SIDE] = {
+        'background-color': darkBackgroundColor
+      }
+      rules[PANEL_DARK_SCROLL_DIVIDER] = rules[PANEL_DARK_SCROLL_TRACK] = {
         'background-color': darkBackgroundColor
       }
       rules[HIGHLIGHT_MARK_DARK] = {
