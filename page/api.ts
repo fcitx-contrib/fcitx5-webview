@@ -8,6 +8,7 @@ import {
 import {
   div,
   setActions,
+  answerActions,
   hideContextmenu,
   getHoverBehavior,
   getPagingButtonsStyle,
@@ -19,6 +20,14 @@ import {
 } from './theme'
 import { setStyle } from './customize'
 import { fcitxLog } from './log'
+import {
+  getScrollState,
+  setScrollState,
+  setScrollEnd,
+  recalculateScroll,
+  scrollKeyAction,
+  fetchComplete
+} from './scroll'
 
 window.fcitxLog = fcitxLog
 window._onload && window._onload()
@@ -83,19 +92,30 @@ const caretRight = common.replace('{}', '0 0 192 512').replace('{}', 'M0 384.662
 const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z')
 const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
-function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean) {
-  hoverables.innerHTML = ''
+function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
+  setScrollState(scrollState)
+  // Clear existing candidates when scroll continues.
+  if (scrollState !== 2 || scrollStart) {
+    hoverables.innerHTML = ''
+    hoverables.scrollTop = 0 // Otherwise last scroll position will be kept.
+  } else {
+    fetchComplete()
+  }
+  if (scrollState === 2) {
+    hoverables.classList.add('horizontal-scroll')
+    setScrollEnd(scrollEnd)
+  } else {
+    hoverables.classList.remove('horizontal-scroll')
+  }
   for (let i = 0; i < cands.length; ++i) {
     const candidate = div('candidate', 'hoverable')
-    if (i === 0) {
+    if (i === 0 && scrollState !== 2) {
       candidate.classList.add('candidate-first')
-    } else {
-      hoverables.append(divider())
     }
     if (i === highlighted) {
       candidate.classList.add('highlighted', 'highlighted-original')
     }
-    if (i === cands.length - 1) {
+    if (i === cands.length - 1 && scrollState !== 2) {
       candidate.classList.add('candidate-last')
     }
 
@@ -112,9 +132,9 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
       candidateInner.append(mark)
     }
 
-    if (cands[i].label) {
+    if (cands[i].label || scrollState === 2) {
       const label = div('label')
-      label.innerHTML = escapeWS(cands[i].label)
+      label.innerHTML = escapeWS(cands[i].label || '0')
       candidateInner.append(label)
     }
 
@@ -130,11 +150,25 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
     candidate.append(candidateInner)
     hoverables.append(candidate)
+
+    // No divider after last element in non-scroll mode,
+    // but for scroll mode it needs to fill the row when
+    // candidates are not enough.
+    if (scrollState === 2 || i !== cands.length - 1) {
+      hoverables.append(divider())
+    }
   }
 
   setActions(cands.map(c => c.actions))
 
-  if (pageable) {
+  if (scrollState === 1) {
+    hoverables.append(divider(true))
+    const expand = div('expand', 'hoverable-inner')
+    expand.innerHTML = arrowForward
+    const paging = div('paging', 'scroll', 'hoverable')
+    paging.append(expand)
+    hoverables.append(paging)
+  } else if (scrollState === 0 && pageable) {
     const isArrow = getPagingButtonsStyle() === 'Arrow'
     hoverables.append(divider(true))
 
@@ -163,6 +197,10 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     paging.appendChild(prev)
     paging.appendChild(next)
     hoverables.appendChild(paging)
+  } else if (scrollState === 2) {
+    window.requestAnimationFrame(() => {
+      recalculateScroll(scrollStart)
+    })
   }
 
   for (const hoverable of hoverables.querySelectorAll('.hoverable')) {
@@ -207,6 +245,9 @@ hoverables.addEventListener('mouseleave', () => {
 })
 
 hoverables.addEventListener('wheel', e => {
+  if (getScrollState() === 2) {
+    return
+  }
   window._page((<WheelEvent>e).deltaY > 0)
 })
 
@@ -222,3 +263,5 @@ window.setAccentColor = setAccentColor
 window.setStyle = setStyle
 window.setWritingMode = setWritingMode
 window.copyHTML = copyHTML
+window.scrollKeyAction = scrollKeyAction
+window.answerActions = answerActions

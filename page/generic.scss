@@ -32,6 +32,19 @@ body {
   }
 }
 
+.candidate-inner {
+  display: flex;
+  gap: 6px;
+  align-items: center; /* English words have lower height */
+  line-height: 1em; /* align label and candidates */
+  position: relative; /* for absolute position of mark */
+}
+
+.label {
+  /* Label is usually a single number. Will look ugly when all parts have vertical writing mode. */
+  writing-mode: horizontal-tb;
+}
+
 .hoverables {
   display: flex;
 
@@ -50,30 +63,49 @@ body {
   &.horizontal {
     flex-direction: row;
 
+    .candidate {
+      /* When horizontal and there is multi-line candidate,
+      make sure other candidates are vertical centered.
+      Don't enable it for vertical. It will shrink highlight. */
+      display: flex;
+    }
+
     .divider {
       flex-direction: column;
     }
   }
+
+  &.horizontal-scroll {
+    max-block-size: 180px; /* If block-size, 2 rows will have 90px each. */
+    inline-size: 400px;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    overscroll-behavior: none;
+
+    .candidate {
+      min-inline-size: 60px;
+    }
+
+    .candidate-inner {
+      width: 100%;
+    }
+
+    .label {
+      opacity: 0;
+    }
+
+    .highlighted-row .label {
+      opacity: 1;
+    }
+
+    .divider {
+      flex-grow: 1;
+    }
+  }
 }
 
-.horizontal .candidate {
-  /* When horizontal and there is multi-line candidate,
-  make sure other candidates are vertical centered.
-  Don't enable it for vertical. It will shrink highlight. */
-  display: flex;
-}
-
-.candidate-inner {
-  display: flex;
-  gap: 6px;
-  align-items: center; /* English words have lower height */
-  line-height: 1em; /* align label and candidates */
-  position: relative; /* for absolute position of mark */
-}
-
-.label {
-  /* Label is usually a single number. Will look ugly when all parts have vertical writing mode. */
-  writing-mode: horizontal-tb;
+:is(.vertical-rl, .vertical-lr) .paging svg {
+  transform: rotate(90deg);
 }
 
 .paging {
@@ -88,10 +120,21 @@ body {
     block-size: 16px;
     inline-size: 16px;
   }
-}
 
-:is(.vertical-rl, .vertical-lr) .paging svg {
-  transform: rotate(90deg);
+  &.scroll {
+    .expand {
+      block-size: 18px;
+      inline-size: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        transform: rotate(90deg);
+        width: 16px;
+      }
+    }
+  }
 }
 
 /* When horizontal, paging is shorter than candidates, so need to centralize them. */
