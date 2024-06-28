@@ -1,6 +1,9 @@
 import {
   hoverables
 } from './selector'
+import {
+  hideContextmenu
+} from './ux'
 
 const MAX_ROW = 6
 const MAX_COLUMN = 6
@@ -190,6 +193,7 @@ function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT):
 }
 
 export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
+  hideContextmenu()
   if (action >= 1 && action <= 6) {
     const highlightedRow = getHighlightedRow()
     const n = rowItemCount[highlightedRow]
