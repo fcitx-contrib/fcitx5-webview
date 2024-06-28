@@ -115,8 +115,7 @@ class CandidateWindow {
         ask_actions_callback = callback;
     }
 
-    void
-    set_action_callback(std::function<void(size_t index, int id)> callback) {
+    void set_action_callback(std::function<void(int index, int id)> callback) {
         action_callback = callback;
     }
 
@@ -127,7 +126,7 @@ class CandidateWindow {
     std::function<void(bool next)> page_callback = [](bool) {};
     std::function<void(int, int)> scroll_callback = [](int, int) {};
     std::function<void(int index)> ask_actions_callback = [](int) {};
-    std::function<void(size_t index, int id)> action_callback = [](int, int) {};
+    std::function<void(int index, int id)> action_callback = [](int, int) {};
     std::string cursor_text_ = "";
     std::string highlight_mark_text_ = "";
     bool pageable_ = false;

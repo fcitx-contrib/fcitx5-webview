@@ -176,7 +176,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_askActions", [this](int i) { ask_actions_callback(i); });
 
-    bind("_action", [this](size_t i, int id) { action_callback(i, id); });
+    bind("_action", [this](int i, int id) { action_callback(i, id); });
 
     bind("_onload", [this]() { init_callback(); });
 
