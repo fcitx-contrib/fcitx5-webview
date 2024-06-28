@@ -209,6 +209,7 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
     case 17: {
       const newHighlighted = getNeighborCandidate(highlighted, action)
       if (newHighlighted >= 0) {
+        window._highlight(newHighlighted)
         renderHighlightAndLabels(newHighlighted, true)
         if (!scrollEnd && !fetching) {
           const newHighlightedRow = getHighlightedRow()
@@ -222,6 +223,9 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
       }
       break
     }
+    case 20:
+      window._select(highlighted)
+      break
   }
 }
 

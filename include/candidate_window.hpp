@@ -43,7 +43,8 @@ enum scroll_key_action_t {
     page_up = 16,
     page_down = 17,
     expand = 18,
-    collapse = 19
+    collapse = 19,
+    commit = 20
 };
 
 struct CandidateAction {
@@ -71,7 +72,6 @@ class CandidateWindow {
                                 int highlighted, scroll_state_t scroll_state,
                                 bool scroll_start, bool scroll_end) = 0;
     virtual void scroll_key_action(scroll_key_action_t action) = 0;
-    virtual void set_highlight_callback(std::function<void(size_t index)>) = 0;
     virtual void set_theme(theme_t theme) = 0;
     virtual void set_writing_mode(writing_mode_t mode) = 0;
     virtual void set_style(const void *style) = 0;
@@ -84,6 +84,10 @@ class CandidateWindow {
 
     void set_select_callback(std::function<void(int index)> callback) {
         select_callback = callback;
+    }
+
+    void set_highlight_callback(std::function<void(int index)> callback) {
+        highlight_callback = callback;
     }
 
     void set_cursor_text(const std::string &text) { cursor_text_ = text; }
@@ -113,6 +117,7 @@ class CandidateWindow {
   protected:
     std::function<void()> init_callback = []() {};
     std::function<void(int index)> select_callback = [](int) {};
+    std::function<void(int index)> highlight_callback = [](int) {};
     std::function<void(bool next)> page_callback = [](bool) {};
     std::function<void(int, int)> scroll_callback = [](int, int) {};
     std::function<void(size_t index, int id)> action_callback = [](int, int) {};

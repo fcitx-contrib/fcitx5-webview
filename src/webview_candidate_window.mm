@@ -163,7 +163,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
         [window setIsVisible:YES];
     });
 
-    bind("_select", [this](size_t i) { select_callback(i); });
+    bind("_select", [this](int i) { select_callback(i); });
+
+    bind("_highlight", [this](int i) { highlight_callback(i); });
 
     bind("_page", [this](bool next) { page_callback(next); });
 
