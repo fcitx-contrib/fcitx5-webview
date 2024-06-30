@@ -121,8 +121,8 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
     const candidateInner = div('candidate-inner', 'hoverable-inner')
 
-    // Render placeholder for vertical non-highlighted candidates
-    if (hoverables.classList.contains('vertical') || i === highlighted) {
+    // Render placeholder for vertical/scroll non-highlighted candidates
+    if (hoverables.classList.contains('vertical') || hoverables.classList.contains('horizontal-scroll') || i === highlighted) {
       const mark = div('mark')
       if (markText === '') {
         mark.classList.add('no-text')

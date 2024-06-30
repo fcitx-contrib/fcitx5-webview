@@ -92,7 +92,7 @@ function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
       candidate.classList.remove('highlighted-row')
       candidate.querySelector('.label')!.innerHTML = '0'
     }
-    candidates[highlighted].classList.remove('highlighted')
+    candidates[highlighted].classList.remove('highlighted', 'highlighted-original')
   }
 
   highlighted = newHighlighted
@@ -104,7 +104,7 @@ function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
     candidate.classList.add('highlighted-row')
     candidate.querySelector('.label')!.innerHTML = `${i - skipped + 1}`
   }
-  candidates[highlighted].classList.add('highlighted')
+  candidates[highlighted].classList.add('highlighted', 'highlighted-original')
 }
 
 export function recalculateScroll (scrollStart: boolean) {
