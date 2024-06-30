@@ -107,6 +107,25 @@ test('Drag should not select candidate', async ({ page }) => {
   expect(cppCalls[0]).toHaveProperty('resize')
 })
 
+test('But micro drag is tolerated', async ({ page }) => {
+  await init(page)
+  await setCandidates(page, [
+    { text: '微动', label: '1', comment: '', actions: [] },
+    { text: '选词', label: '2', comment: '', actions: [] }], 0)
+
+  const box = await getBox(candidate(page, 0))
+  const centerX = box.x + box.width / 2
+  const centerY = box.y + box.height / 2
+  await page.mouse.move(centerX, centerY + 1)
+  await page.mouse.down()
+  await page.mouse.move(centerX, centerY + 1)
+  await page.mouse.up()
+  const cppCalls = await getCppCalls(page)
+  expect(cppCalls).toHaveLength(2)
+  expect(cppCalls[0]).toHaveProperty('resize')
+  expect(cppCalls[1]).toEqual({ select: 0 })
+})
+
 test('Set layout', async ({ page }) => {
   await init(page)
   await setCandidates(page, [

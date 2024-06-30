@@ -9,10 +9,16 @@ import {
   expand
 } from './scroll'
 
+const DRAG_THRESHOLD = 10
+
 let pressed = false
 let dragging = false
 let startX = 0
 let startY = 0
+// accumulate
+let dX = 0
+let dY = 0
+let dragOffset = 0
 
 type ShadowBox = {
   shadowTop: number,
@@ -149,6 +155,9 @@ document.addEventListener('mousedown', e => {
   pressed = true
   startX = e.clientX
   startY = e.clientY
+  dX = 0
+  dY = 0
+  dragOffset = 0
 })
 
 document.addEventListener('mousemove', e => {
@@ -157,8 +166,13 @@ document.addEventListener('mousemove', e => {
   }
   hideContextmenu()
   dragging = true
+  const dx = e.clientX - startX
+  const dy = e.clientY - startY
+  dX += dx
+  dY += dy
+  dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
   // minus because macOS has bottom-left (0, 0)
-  resize(e.clientX - startX, -(e.clientY - startY), true, false)
+  resize(dx, -dy, true, false)
 })
 
 document.addEventListener('mouseup', e => {
@@ -168,7 +182,9 @@ document.addEventListener('mouseup', e => {
   pressed = false
   if (dragging) {
     dragging = false
-    return
+    if (dragOffset > DRAG_THRESHOLD) {
+      return
+    }
   }
   let target = e.target as Element
   if (!isInsideHoverables(target)) {
