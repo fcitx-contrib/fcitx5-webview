@@ -157,7 +157,7 @@ $dark-graphite: rgb(105 105 105);
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .header, .contextmenu {
+  .candidate, .header, .aux-down, .contextmenu {
     background-color: $panel-color-light;
   }
 
@@ -165,7 +165,7 @@ $dark-graphite: rgb(105 105 105);
     color: black;
   }
 
-  .text, .header {
+  .text, .header, .aux-down {
     color: $text-color-light;
   }
 
@@ -268,7 +268,7 @@ $dark-graphite: rgb(105 105 105);
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .header, .contextmenu {
+  .candidate, .header, .aux-down, .contextmenu {
     background-color: $panel-color-dark;
   }
 
@@ -276,7 +276,7 @@ $dark-graphite: rgb(105 105 105);
     color: white;
   }
 
-  .text, .header {
+  .text, .header, .aux-down {
     color: $text-color-dark;
   }
 
