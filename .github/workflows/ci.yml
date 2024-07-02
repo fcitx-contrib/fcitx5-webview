@@ -58,6 +58,8 @@ jobs:
       - name: Build
         run: |
           PKG_CONFIG_PATH=/tmp/fcitx5/lib/pkgconfig cmake -B build -G Ninja \
+            -DWKWEBVIEW_PROTOCOL="fcitx" \
+            -DWEBVIEW_WWW_PATH=".local/share/fcitx5/www" \
             -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build

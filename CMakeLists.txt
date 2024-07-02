@@ -5,6 +5,8 @@ project(fcitx5-webview)
 set(CMAKE_CXX_STANDARD 17)
 
 option(BUILD_PREVIEW "Build preview app for development" ON)
+set(WKWEBVIEW_PROTOCOL "" CACHE STRING "")
+set(WEBVIEW_WWW_PATH "" CACHE STRING "")
 
 if(NOT CMAKE_OSX_ARCHITECTURES)
     set(CMAKE_OSX_ARCHITECTURES "${CMAKE_HOST_SYSTEM_PROCESSOR}")
@@ -14,7 +16,11 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
 include_directories(pugixml/src)
-include_directories(webview)
+
+if(NOT "${WKWEBVIEW_PROTOCOL}" STREQUAL "")
+    add_definitions(-DWKWEBVIEW_PROTOCOL="${WKWEBVIEW_PROTOCOL}")
+    add_definitions(-DWEBVIEW_WWW_PATH="${WEBVIEW_WWW_PATH}")
+endif()
 
 file(GLOB HTML_SOURCES CONFIGURE_DEPENDS "page/*")
 add_custom_command(
