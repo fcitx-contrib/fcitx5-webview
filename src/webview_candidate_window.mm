@@ -36,6 +36,74 @@
 
 @end
 
+#ifdef WKWEBVIEW_PROTOCOL
+@implementation FileSchemeHandler
+
+// In f5m, it serves fcitx:///file/foo/bar from
+// ~/.local/share/fcitx5/www/foo/bar
+- (void)webView:(WKWebView *)webView
+    startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
+    NSURL *url = urlSchemeTask.request.URL;
+    if (!url || ![url.path hasPrefix:@"/file"]) {
+        [urlSchemeTask didFailWithError:[NSError errorWithDomain:@"Invalid URL"
+                                                            code:0
+                                                        userInfo:nil]];
+        return;
+    }
+    NSString *filePath = [url.path substringFromIndex:[@"/file" length]];
+    std::cerr << "Accessing " << [filePath UTF8String] << " from webview"
+              << std::endl;
+    NSString *homeDirectory = NSHomeDirectory();
+    NSString *localFilePath =
+        [[homeDirectory stringByAppendingString:@"/" WEBVIEW_WWW_PATH]
+            stringByAppendingString:filePath];
+#ifndef NDEBUG
+    std::cerr << "Resolved to " << [localFilePath UTF8String] << std::endl;
+#endif
+    NSURL *fileURL = [NSURL fileURLWithPath:localFilePath];
+
+    NSData *data = [NSData dataWithContentsOfURL:fileURL];
+    if (data) {
+        NSString *mimeType = [self mimeTypeForPath:fileURL.path];
+        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:url
+                                                            MIMEType:mimeType
+                                               expectedContentLength:data.length
+                                                    textEncodingName:nil];
+        [urlSchemeTask didReceiveResponse:response];
+        [urlSchemeTask didReceiveData:data];
+        [urlSchemeTask didFinish];
+    } else {
+        [urlSchemeTask
+            didFailWithError:[NSError errorWithDomain:@"File not found"
+                                                 code:404
+                                             userInfo:nil]];
+    }
+}
+
+- (void)webView:(WKWebView *)webView
+    stopURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
+}
+
+- (NSString *)mimeTypeForPath:(NSString *)path {
+    NSString *pathExtension = [path pathExtension];
+    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(
+        kUTTagClassFilenameExtension, (__bridge CFStringRef)pathExtension,
+        NULL);
+    NSString *mimeType = @"application/octet-stream";
+    if (type) {
+        CFStringRef mimeTypeRef =
+            UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
+        if (mimeTypeRef) {
+            mimeType = (NSString *)mimeTypeRef;
+        }
+        CFRelease(type);
+    }
+    return mimeType;
+}
+
+@end
+#endif
+
 namespace candidate_window {
 
 void to_json(nlohmann::json &j, const CandidateAction &a) {
