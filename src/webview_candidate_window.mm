@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 
+NSString *const F5mErrorDomain = @"F5mErrorDomain";
+
 @interface NotificationListener : NSObject
 
 @property(nonatomic, assign)
@@ -45,7 +47,7 @@
     startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURL *url = urlSchemeTask.request.URL;
     if (!url || ![url.path hasPrefix:@"/file"]) {
-        [urlSchemeTask didFailWithError:[NSError errorWithDomain:@"Invalid URL"
+        [urlSchemeTask didFailWithError:[NSError errorWithDomain:F5mErrorDomain
                                                             code:0
                                                         userInfo:nil]];
         return;
@@ -73,10 +75,9 @@
         [urlSchemeTask didReceiveData:data];
         [urlSchemeTask didFinish];
     } else {
-        [urlSchemeTask
-            didFailWithError:[NSError errorWithDomain:@"File not found"
-                                                 code:404
-                                             userInfo:nil]];
+        [urlSchemeTask didFailWithError:[NSError errorWithDomain:F5mErrorDomain
+                                                            code:404
+                                                        userInfo:nil]];
     }
 }
 
@@ -90,14 +91,14 @@
         kUTTagClassFilenameExtension, (__bridge CFStringRef)pathExtension,
         NULL);
     NSString *mimeType = @"application/octet-stream";
-    if (type) {
-        CFStringRef mimeTypeRef =
-            UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
-        if (mimeTypeRef) {
-            mimeType = (NSString *)mimeTypeRef;
-        }
-        CFRelease(type);
+    if (!type)
+        return mimeType;
+    CFStringRef mimeTypeRef =
+        UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
+    if (mimeTypeRef) {
+        mimeType = (NSString *)mimeTypeRef;
     }
+    CFRelease(type);
     return mimeType;
 }
 
