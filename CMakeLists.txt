@@ -16,6 +16,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
 include_directories(pugixml/src)
+include_directories(webview)
 
 if(NOT "${WKWEBVIEW_PROTOCOL}" STREQUAL "")
     add_definitions(-DWKWEBVIEW_PROTOCOL="${WKWEBVIEW_PROTOCOL}")
