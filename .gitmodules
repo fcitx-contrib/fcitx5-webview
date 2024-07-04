@@ -1,6 +1,6 @@
 [submodule "webview"]
 	path = webview
-	url = https://github.com/webview/webview
+	url = https://github.com/fcitx-contrib/webview
 [submodule "pugixml"]
 	path = pugixml
 	url = https://github.com/zeux/pugixml
