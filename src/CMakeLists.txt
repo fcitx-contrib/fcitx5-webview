@@ -1,13 +1,12 @@
 set(SOURCES
-    webview_candidate_window.cpp
     utility.cpp
     "${PROJECT_SOURCE_DIR}/pugixml/src/pugixml.cpp"
 )
 
 if(APPLE)
-    list(APPEND SOURCES macos.mm)
+    list(APPEND SOURCES webview_candidate_window.mm macos.mm)
 elseif(LINUX)
-    list(APPEND SOURCES linux.cpp)
+    list(APPEND SOURCES webview_candidate_window.cpp linux.cpp)
 endif()
 
 add_library(WebviewCandidateWindow ${SOURCES})

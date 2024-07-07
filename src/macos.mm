@@ -118,6 +118,7 @@ NSRect getNearestScreenFrame(double x, double y) {
     return frame;
 }
 
+namespace candidate_window {
 void *WebviewCandidateWindow::create_window() {
     auto window =
         [[HoverableWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
@@ -179,10 +180,11 @@ void WebviewCandidateWindow::write_clipboard(const std::string &html) {
     [pasteboard setString:s forType:NSPasteboardTypeString];
 }
 
-void resize(double dx, double dy, double shadow_top, double shadow_right,
-            double shadow_bottom, double shadow_left, double width,
-            double height, double enlarged_width, double enlarged_height,
-            bool dragging) {
+void WebviewCandidateWindow::resize(double dx, double dy, double shadow_top,
+                                    double shadow_right, double shadow_bottom,
+                                    double shadow_left, double width,
+                                    double height, double enlarged_width,
+                                    double enlarged_height, bool dragging) {
     const int gap = 4;
     const int preedit_height = 24;
     NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);
@@ -242,3 +244,4 @@ void resize(double dx, double dy, double shadow_top, double shadow_right,
                      1];
     [window setIsVisible:YES];
 }
+} // namespace candidate_window
