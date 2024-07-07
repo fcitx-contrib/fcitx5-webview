@@ -17,7 +17,7 @@ jobs:
 
       - name: Lint
         run: |
-          find include preview src -name '*.mm' -o -name '*.hpp' | xargs clang-format -Werror --dry-run
+          find include preview src -name '*.mm' -o -name '*.hpp' -o -name '*.cpp' | xargs clang-format -Werror --dry-run
 
   build:
     needs: lint
@@ -25,10 +25,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-13]
+        os: [macos-14, macos-13, ubuntu-24.04]
         include:
           - { os: macos-14, arch: arm64 }
           - { os: macos-13, arch: x86_64 }
+          - { os: ubuntu-24.04, arch: x86_64 }
 
     steps:
       - uses: actions/checkout@v4
@@ -45,27 +46,41 @@ jobs:
           pnpm i
 
       - name: Lint and Check type
-        if: ${{ matrix.arch == 'arm64' }}
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           pnpm run lint
           pnpm run check
 
-      - name: Install dependencies
+      - name: Install dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
         run: |
           brew install ninja
           ./install-deps.sh ${{ matrix.arch }}
 
-      - name: Build
+      - name: Install dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt install -y ninja-build \
+            nlohmann-json \
+            libwebkit2gtk-4.1-dev
+
+      - name: Configure (macOS)
         run: |
           PKG_CONFIG_PATH=/tmp/fcitx5/lib/pkgconfig cmake -B build -G Ninja \
             -DWKWEBVIEW_PROTOCOL="fcitx" \
             -DWEBVIEW_WWW_PATH=".local/share/fcitx5/www" \
             -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
             -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
+
+      - name: Configure (Ubuntu)
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
 
       - name: Test
-        if: ${{ matrix.arch == 'arm64' }}
         run: |
           npx playwright install webkit
           pnpm run test

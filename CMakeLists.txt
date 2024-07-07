@@ -4,6 +4,8 @@ project(fcitx5-webview)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(BUILD_PREVIEW "Build preview app for development" ON)
 set(WKWEBVIEW_PROTOCOL "" CACHE STRING "")
 set(WEBVIEW_WWW_PATH "" CACHE STRING "")
@@ -14,6 +16,10 @@ endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
+
+if(LINUX)
+	pkg_check_modules(webkit2gtk REQUIRED IMPORTED_TARGET "webkit2gtk-4.1")
+endif()
 
 include_directories(pugixml/src)
 include_directories(webview)

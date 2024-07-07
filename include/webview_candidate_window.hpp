@@ -35,9 +35,18 @@ class WebviewCandidateWindow : public CandidateWindow {
     void copy_html();
 
   private:
+    void *create_window();
     void set_transparent_background();
+    void resize(double dx, double dy, double shadow_top, double shadow_right,
+                double shadow_bottom, double shadow_left, double width,
+                double height, double enlarged_width, double enlarged_height,
+                bool dragging);
+    void write_clipboard(const std::string &html);
     std::shared_ptr<webview::webview> w_;
+#ifdef __APPLE__
+    void *create_listener();
     void *listener_;
+#endif
     double cursor_x_ = 0;
     double cursor_y_ = 0;
     double x_ = 0;
@@ -62,11 +71,15 @@ class WebviewCandidateWindow : public CandidateWindow {
         }
         auto s = ss.str();
         std::weak_ptr<webview::webview> weak_w = w_;
+#ifdef __APPLE__
         dispatch_async(dispatch_get_main_queue(), ^{
+#endif
           if (auto w = weak_w.lock()) {
               w->eval(s);
           }
+#ifdef __APPLE__
         });
+#endif
     }
 
     template <typename T>
