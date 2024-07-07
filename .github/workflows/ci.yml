@@ -66,6 +66,7 @@ jobs:
           npx playwright install-deps
 
       - name: Configure (macOS)
+        if: startsWith(matrix.os, 'macos')
         run: |
           PKG_CONFIG_PATH=/tmp/fcitx5/lib/pkgconfig cmake -B build -G Ninja \
             -DWKWEBVIEW_PROTOCOL="fcitx" \
@@ -74,6 +75,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Configure (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           cmake -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release
