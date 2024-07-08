@@ -11,7 +11,7 @@ endif()
 
 add_library(WebviewCandidateWindow ${SOURCES})
 
-target_include_directories(WebviewCandidateWindow PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview")
 
 if(APPLE)
     target_link_libraries(WebviewCandidateWindow "-framework WebKit" PkgConfig::NlohmannJson)

@@ -13,8 +13,6 @@ int main(int argc, char *argv[]) {
 #ifdef __APPLE__
     @autoreleasepool {
         NSApplication *application = [NSApplication sharedApplication];
-#elif defined(__linux__)
-    gtk_init(&argc, &argv);
 #endif
         std::unique_ptr<candidate_window::CandidateWindow> candidateWindow =
             std::make_unique<candidate_window::WebviewCandidateWindow>();

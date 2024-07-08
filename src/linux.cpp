@@ -4,6 +4,7 @@
 namespace candidate_window {
 
 void *WebviewCandidateWindow::create_window() {
+    gtk_init(nullptr, nullptr);
     auto window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
     gtk_window_set_decorated(GTK_WINDOW(window), FALSE);

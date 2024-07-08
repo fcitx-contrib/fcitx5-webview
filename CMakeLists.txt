@@ -22,7 +22,6 @@ if(LINUX)
 endif()
 
 include_directories(pugixml/src)
-include_directories(webview)
 
 if(NOT "${WKWEBVIEW_PROTOCOL}" STREQUAL "")
     add_definitions(-DWKWEBVIEW_PROTOCOL="${WKWEBVIEW_PROTOCOL}")
