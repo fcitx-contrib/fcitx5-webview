@@ -18,7 +18,12 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
 if(LINUX)
-	pkg_check_modules(webkit2gtk REQUIRED IMPORTED_TARGET "webkit2gtk-4.1")
+    pkg_check_modules(webkit2gtk REQUIRED IMPORTED_TARGET "webkit2gtk-4.1")
+    set(LIBS PkgConfig::NlohmannJson PkgConfig::webkit2gtk)
+elseif(APPLE)
+    find_library(COCOA_LIB Cocoa REQUIRED)
+    find_library(WEBKIT_LIB WebKit REQUIRED)
+    set(LIBS PkgConfig::NlohmannJson ${COCOA_LIB} ${WEBKIT_LIB})
 endif()
 
 include_directories(pugixml/src)
