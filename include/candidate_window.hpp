@@ -63,7 +63,6 @@ class CandidateWindow {
   public:
     virtual ~CandidateWindow() = default;
     virtual void set_layout(layout_t layout) = 0;
-    virtual void set_preedit_mode(bool enabled) = 0;
     virtual void update_input_panel(const formatted<std::string> &preedit,
                                     int preedit_cursor,
                                     const formatted<std::string> &auxUp,

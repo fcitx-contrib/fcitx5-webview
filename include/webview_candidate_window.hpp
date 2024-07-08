@@ -14,7 +14,6 @@ class WebviewCandidateWindow : public CandidateWindow {
     WebviewCandidateWindow();
     ~WebviewCandidateWindow();
     void set_layout(layout_t layout) override;
-    void set_preedit_mode(bool enabled) override {}
     void update_input_panel(const formatted<std::string> &preedit,
                             int preedit_cursor,
                             const formatted<std::string> &auxUp,
@@ -35,9 +34,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void copy_html();
 
   private:
-    void set_transparent_background();
     std::shared_ptr<webview::webview> w_;
-    void *listener_;
     double cursor_x_ = 0;
     double cursor_y_ = 0;
     double x_ = 0;
@@ -48,6 +45,19 @@ class WebviewCandidateWindow : public CandidateWindow {
     int accent_color_ = 0;
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
+
+  private:
+    /* Platform-specific interfaces (implemented in 'platform') */
+    void *create_window();
+    void set_transparent_background();
+    void resize(double dx, double dy, double shadow_top, double shadow_right,
+                double shadow_bottom, double shadow_left, double width,
+                double height, double enlarged_width, double enlarged_height,
+                bool dragging);
+    void write_clipboard(const std::string &html);
+
+    void *platform_data = nullptr;
+    void platform_init();
 
   private:
     /* Invoke a JavaScript function. */
@@ -62,10 +72,10 @@ class WebviewCandidateWindow : public CandidateWindow {
         }
         auto s = ss.str();
         std::weak_ptr<webview::webview> weak_w = w_;
-        dispatch_async(dispatch_get_main_queue(), ^{
-          if (auto w = weak_w.lock()) {
-              w->eval(s);
-          }
+        async_on_main([=] {
+            if (auto w = weak_w.lock()) {
+                w->eval(s);
+            }
         });
     }
 
@@ -122,5 +132,32 @@ class WebviewCandidateWindow : public CandidateWindow {
         return {j[Is].get<typename std::tuple_element<Is, Tuple>::type>()...};
     }
 };
+
+#if defined(__APPLE__)
+
+inline __attribute__((always_inline)) void
+async_on_main(std::function<void()> functor) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      functor();
+    });
+}
+
+#elif defined(__linux__)
+
+inline int async_on_main_trampoline(void *data) {
+    auto ptr = static_cast<std::function<void()> *>(data);
+    (*ptr)();
+    delete ptr;
+    return 0;
+}
+
+inline __attribute__((always_inline)) void
+async_on_main(std::function<void()> functor) {
+    auto ptr = new std::function<void()>(functor);
+    g_idle_add(async_on_main_trampoline, ptr);
+}
+
+#endif
+
 } // namespace candidate_window
 #endif

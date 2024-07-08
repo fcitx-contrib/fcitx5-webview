@@ -4,6 +4,8 @@ project(fcitx5-webview)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(BUILD_PREVIEW "Build preview app for development" ON)
 set(WKWEBVIEW_PROTOCOL "" CACHE STRING "")
 set(WEBVIEW_WWW_PATH "" CACHE STRING "")
@@ -15,8 +17,16 @@ endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(NlohmannJson REQUIRED IMPORTED_TARGET "nlohmann_json")
 
+if(LINUX)
+    pkg_check_modules(webkit2gtk REQUIRED IMPORTED_TARGET "webkit2gtk-4.1")
+    set(LIBS PkgConfig::NlohmannJson PkgConfig::webkit2gtk)
+elseif(APPLE)
+    find_library(COCOA_LIB Cocoa REQUIRED)
+    find_library(WEBKIT_LIB WebKit REQUIRED)
+    set(LIBS PkgConfig::NlohmannJson ${COCOA_LIB} ${WEBKIT_LIB})
+endif()
+
 include_directories(pugixml/src)
-include_directories(webview)
 
 if(NOT "${WKWEBVIEW_PROTOCOL}" STREQUAL "")
     add_definitions(-DWKWEBVIEW_PROTOCOL="${WKWEBVIEW_PROTOCOL}")
