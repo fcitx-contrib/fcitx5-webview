@@ -32,12 +32,8 @@ Candidate escape_candidate(const Candidate &c) {
 }
 
 WebviewCandidateWindow::WebviewCandidateWindow()
-    : w_(std::make_shared<webview::webview>(1, create_window()))
-#ifdef __APPLE__
-      ,
-      listener_(create_listener())
-#endif
-{
+    : w_(std::make_shared<webview::webview>(1, create_window())) {
+    platform_init();
     set_transparent_background();
     update_accent_color();
 

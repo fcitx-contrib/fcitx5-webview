@@ -119,6 +119,18 @@ NSRect getNearestScreenFrame(double x, double y) {
 }
 
 namespace candidate_window {
+
+void WebviewCandidateWindow::platform_init() {
+    auto listener = [[NotificationListener alloc] init];
+    [listener setCandidateWindow:this];
+    [[NSDistributedNotificationCenter defaultCenter]
+        addObserver:listener
+           selector:@selector(accentColorChanged:)
+               name:@"AppleColorPreferencesChangedNotification"
+             object:nil];
+    platform_data = listener;
+}
+
 void *WebviewCandidateWindow::create_window() {
     auto window =
         [[HoverableWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
@@ -129,20 +141,10 @@ void *WebviewCandidateWindow::create_window() {
     return window;
 }
 
-void *WebviewCandidateWindow::create_listener() {
-    auto listener = [[NotificationListener alloc] init];
-    [listener setCandidateWindow:this];
-    [[NSDistributedNotificationCenter defaultCenter]
-        addObserver:listener
-           selector:@selector(accentColorChanged:)
-               name:@"AppleColorPreferencesChangedNotification"
-             object:nil];
-    return listener;
-}
-
 WebviewCandidateWindow::~WebviewCandidateWindow() {
     [(id)w_->window() close]; // By default NSWindow is released on close.
-    [static_cast<NotificationListener *>(listener_) release];
+    auto listener = static_cast<NotificationListener *>(this->platform_data);
+    [listener release];
 }
 
 void WebviewCandidateWindow::set_transparent_background() {

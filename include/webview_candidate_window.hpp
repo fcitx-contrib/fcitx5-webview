@@ -34,18 +34,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     void copy_html();
 
   private:
-    void *create_window();
-    void set_transparent_background();
-    void resize(double dx, double dy, double shadow_top, double shadow_right,
-                double shadow_bottom, double shadow_left, double width,
-                double height, double enlarged_width, double enlarged_height,
-                bool dragging);
-    void write_clipboard(const std::string &html);
     std::shared_ptr<webview::webview> w_;
-#ifdef __APPLE__
-    void *create_listener();
-    void *listener_;
-#endif
     double cursor_x_ = 0;
     double cursor_y_ = 0;
     double x_ = 0;
@@ -56,6 +45,19 @@ class WebviewCandidateWindow : public CandidateWindow {
     int accent_color_ = 0;
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
+
+  private:
+    /* Platform-specific interfaces (implemented in 'platform') */
+    void *create_window();
+    void set_transparent_background();
+    void resize(double dx, double dy, double shadow_top, double shadow_right,
+                double shadow_bottom, double shadow_left, double width,
+                double height, double enlarged_width, double enlarged_height,
+                bool dragging);
+    void write_clipboard(const std::string &html);
+
+    void *platform_data = nullptr;
+    void platform_init();
 
   private:
     /* Invoke a JavaScript function. */

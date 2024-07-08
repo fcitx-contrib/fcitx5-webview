@@ -3,6 +3,8 @@
 
 namespace candidate_window {
 
+void WebviewCandidateWindow::platform_init() {}
+
 void *WebviewCandidateWindow::create_window() {
     gtk_init(nullptr, nullptr);
     auto window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
