@@ -14,7 +14,7 @@ add_library(WebviewCandidateWindow ${SOURCES})
 target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview")
 
 if(APPLE)
-    target_link_libraries(WebviewCandidateWindow "-framework WebKit" PkgConfig::NlohmannJson)
+    target_link_libraries(WebviewCandidateWindow PUBLIC "-framework Cocoa" "-framework WebKit" PkgConfig::NlohmannJson)
     target_compile_options(WebviewCandidateWindow PRIVATE "-Wno-auto-var-id")
 elseif(LINUX)
     target_link_libraries(WebviewCandidateWindow PkgConfig::webkit2gtk PkgConfig::NlohmannJson)
