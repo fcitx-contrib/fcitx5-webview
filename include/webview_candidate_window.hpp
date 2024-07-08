@@ -70,15 +70,11 @@ class WebviewCandidateWindow : public CandidateWindow {
         }
         auto s = ss.str();
         std::weak_ptr<webview::webview> weak_w = w_;
-#ifdef __APPLE__
-        dispatch_async(dispatch_get_main_queue(), ^{
-#endif
-          if (auto w = weak_w.lock()) {
-              w->eval(s);
-          }
-#ifdef __APPLE__
+        async_on_main([=] {
+            if (auto w = weak_w.lock()) {
+                w->eval(s);
+            }
         });
-#endif
     }
 
     template <typename T>
@@ -134,5 +130,32 @@ class WebviewCandidateWindow : public CandidateWindow {
         return {j[Is].get<typename std::tuple_element<Is, Tuple>::type>()...};
     }
 };
+
+#if defined(__APPLE__)
+
+inline __attribute__((always_inline)) void
+async_on_main(std::function<void()> functor) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      functor();
+    });
+}
+
+#elif defined(__linux__)
+
+inline int async_on_main_trampoline(void *data) {
+    auto ptr = static_cast<std::function<void()> *>(data);
+    (*ptr)();
+    delete ptr;
+    return 0;
+}
+
+inline __attribute__((always_inline)) void
+async_on_main(std::function<void()> functor) {
+    auto ptr = new std::function<void()>(functor);
+    g_idle_add(async_on_main_trampoline, ptr);
+}
+
+#endif
+
 } // namespace candidate_window
 #endif
