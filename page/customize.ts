@@ -74,6 +74,9 @@ type STYLE_JSON = {
     LabelTextGap: string
     HorizontalDividerWidth: string
   }
+  Advanced: {
+    UserCss: string
+  }
 }
 
 function lightToDark (light: string) {
@@ -164,6 +167,10 @@ function setFontFamily (o: {[key: string]: string}, f: FONT_FAMILY) {
   if (fontFamily.length > 0) {
     o['font-family'] = fontFamily.join(', ')
   }
+}
+
+function noCache (url: string): string {
+  return url + '?r=' + Math.random()
 }
 
 export function setStyle (style: string) {
@@ -464,4 +471,6 @@ export function setStyle (style: string) {
       `${selector} {` + Object.entries(block).map(([key, value]) =>
         `${key}: ${value};`).join('\n') + '}').join('\n')
   }
+
+  document.head.querySelector('#fcitx-user')?.setAttribute('href', noCache(j.Advanced.UserCss))
 }
