@@ -5,30 +5,30 @@
     <style>
       @import "./generic.scss";
     </style>
-    <style id="macos">
+    <style id="fcitx-macos">
       @import "./macos.scss";
     </style>
-    <style id="user">
+    <style id="fcitx-user">
       @import "./user.scss";
     </style>
-    <style id="basic"></style>
+    <style id="fcitx-basic"></style>
   </head>
   <body>
-    <div id="theme" class="macos basic blue">
-      <div class="panel">
-        <div class="panel-blur-outer">
-          <div class="panel-blur-inner">
-            <div class="header">
-              <div class="aux-up hidden"></div>
-              <div class="preedit hidden"></div>
+    <div id="fcitx-theme" class="fcitx-macos fcitx-basic fcitx-blue">
+      <div class="fcitx-panel">
+        <div class="fcitx-panel-blur-outer">
+          <div class="fcitx-panel-blur-inner">
+            <div class="fcitx-header">
+              <div class="fcitx-aux-up fcitx-hidden"></div>
+              <div class="fcitx-preedit fcitx-hidden"></div>
             </div>
-            <div class="aux-down hidden"></div>
-            <div class="hoverables">
+            <div class="fcitx-aux-down fcitx-hidden"></div>
+            <div class="fcitx-hoverables">
             </div>
           </div>
         </div>
       </div>
-      <div class="contextmenu"></div>
+      <div class="fcitx-contextmenu"></div>
     </div>
     <script type="module">
       import './api.ts'

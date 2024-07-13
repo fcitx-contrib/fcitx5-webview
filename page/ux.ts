@@ -117,7 +117,7 @@ function isInsideHoverables (target: Element) {
 }
 
 function getCandidateIndex (target: Element) {
-  const allCandidates = hoverables.querySelectorAll('.candidate')
+  const allCandidates = hoverables.querySelectorAll('.fcitx-candidate')
   for (let i = 0; i < allCandidates.length; ++i) {
     if (allCandidates[i] === target) {
       return i
@@ -129,7 +129,7 @@ function getCandidateIndex (target: Element) {
 export function showContextmenu (x: number, y: number, index: number, actions: CandidateAction[]) {
   contextmenu.innerHTML = ''
   for (const action of actions) {
-    const item = div('menu-item')
+    const item = div('fcitx-menu-item')
     item.innerHTML = action.text
     item.addEventListener('click', () => {
       window._action(index, action.id)
@@ -191,11 +191,11 @@ document.addEventListener('mouseup', e => {
     return
   }
   while (target.parentElement !== hoverables) {
-    if (target.classList.contains('prev')) {
+    if (target.classList.contains('fcitx-prev')) {
       return window._page(false)
-    } else if (target.classList.contains('next')) {
+    } else if (target.classList.contains('fcitx-next')) {
       return window._page(true)
-    } else if (target.classList.contains('expand')) {
+    } else if (target.classList.contains('fcitx-expand')) {
       return expand()
     }
     target = target.parentElement!
@@ -249,25 +249,25 @@ export function setBlur (enabled: boolean) {
 
 // HACK: force redraw blur every 40ms so that window background change counts
 let blurSwitch = false
-const panelBlurOuter = document.querySelector('.panel-blur-outer')!
-const panelBlurInner = document.querySelector('.panel-blur-inner')!
+const panelBlurOuter = document.querySelector('.fcitx-panel-blur-outer')!
+const panelBlurInner = document.querySelector('.fcitx-panel-blur-inner')!
 function redrawBlur () {
-  if (!blurEnabled || !theme.classList.contains('macos')) {
+  if (!blurEnabled || !theme.classList.contains('fcitx-macos')) {
     return
   }
   if (blurSwitch) {
-    panelBlurOuter.classList.add('blur')
-    panelBlurInner.classList.remove('blur')
+    panelBlurOuter.classList.add('fcitx-blur')
+    panelBlurInner.classList.remove('fcitx-blur')
   } else {
-    panelBlurInner.classList.add('blur')
-    panelBlurOuter.classList.remove('blur')
+    panelBlurInner.classList.add('fcitx-blur')
+    panelBlurOuter.classList.remove('fcitx-blur')
   }
   blurSwitch = !blurSwitch
 }
 setInterval(redrawBlur, 40)
 
 export function showCursor (show: boolean) {
-  const cursor = document.querySelector('.cursor')
+  const cursor = document.querySelector('.fcitx-cursor')
   if (cursor) {
     (<HTMLElement>cursor).style.opacity = show ? '1' : '0'
   }

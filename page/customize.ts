@@ -80,57 +80,57 @@ function lightToDark (light: string) {
   return light.replace(PANEL_LIGHT, PANEL_DARK)
 }
 
-const PANEL = '.basic .panel'
-const PANEL_HORIZONTAL_DIVIDER = `${PANEL} .hoverables.vertical .divider`
-const PANEL_HORIZONTAL_DIVIDER_SIDE = `${PANEL} .hoverables.vertical .divider-side`
+const PANEL = '.fcitx-basic .fcitx-panel'
+const PANEL_HORIZONTAL_DIVIDER = `${PANEL} .fcitx-hoverables.fcitx-vertical .fcitx-divider`
+const PANEL_HORIZONTAL_DIVIDER_SIDE = `${PANEL} .fcitx-hoverables.fcitx-vertical .fcitx-divider-side`
 // left of prev paging button, same with MSPY
-const PANEL_VERTICAL_DIVIDER_SIDE = `${PANEL} .hoverables.horizontal .divider-paging .divider-side`
-const HOVERABLES = `${PANEL} .hoverables`
-const LABEL = `${PANEL} .label`
-const TEXT = `${PANEL} .text`
-const COMMENT = `${PANEL} .comment`
-const PREEDIT = `${PANEL} .preedit`
-const CURSOR_NO_TEXT = `${PANEL} .cursor.no-text`
-const CANDIDATE_INNER = `${PANEL} .candidate-inner`
-const FIRST_CANDIDATE_INNER = '.candidate-first .candidate-inner'
-const LAST_CANDIDATE_INNER = '.candidate-last .candidate-inner'
-const VERTICAL_CANDIDATE_INNER = `${PANEL} .hoverables.vertical .candidate-inner`
-const VERTICAL_FIRST_CANDIDATE_INNER = `${PANEL} .hoverables.vertical ${FIRST_CANDIDATE_INNER}`
-const VERTICAL_LAST_CANDIDATE_INNER = `${PANEL} .hoverables.vertical ${LAST_CANDIDATE_INNER}`
-const HORIZONTAL_CANDIDATE_INNER = `${PANEL} .hoverables.horizontal .candidate-inner`
-const HORIZONTAL_FIRST_CANDIDATE_INNER = `${PANEL} .hoverables.horizontal ${FIRST_CANDIDATE_INNER}`
-const HORIZONTAL_LAST_CANDIDATE_INNER = `${PANEL} .hoverables.horizontal ${LAST_CANDIDATE_INNER}`
-const PAGING_OUTER = `${PANEL} :is(.prev, .next)`
-const PAGING_INNER = `${PANEL} .paging-inner`
-const HIGHLIGHT_MARK = `${PANEL} .highlighted .mark`
-const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .highlighted-original .mark`
+const PANEL_VERTICAL_DIVIDER_SIDE = `${PANEL} .fcitx-hoverables.fcitx-horizontal .fcitx-divider-paging .fcitx-divider-side`
+const HOVERABLES = `${PANEL} .fcitx-hoverables`
+const LABEL = `${PANEL} .fcitx-label`
+const TEXT = `${PANEL} .fcitx-text`
+const COMMENT = `${PANEL} .fcitx-comment`
+const PREEDIT = `${PANEL} .fcitx-preedit`
+const CURSOR_NO_TEXT = `${PANEL} .fcitx-cursor.fcitx-no-text`
+const CANDIDATE_INNER = `${PANEL} .fcitx-candidate-inner`
+const FIRST_CANDIDATE_INNER = '.fcitx-candidate-first .fcitx-candidate-inner'
+const LAST_CANDIDATE_INNER = '.fcitx-candidate-last .fcitx-candidate-inner'
+const VERTICAL_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-vertical .fcitx-candidate-inner`
+const VERTICAL_FIRST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-vertical ${FIRST_CANDIDATE_INNER}`
+const VERTICAL_LAST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-vertical ${LAST_CANDIDATE_INNER}`
+const HORIZONTAL_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal .fcitx-candidate-inner`
+const HORIZONTAL_FIRST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal ${FIRST_CANDIDATE_INNER}`
+const HORIZONTAL_LAST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal ${LAST_CANDIDATE_INNER}`
+const PAGING_OUTER = `${PANEL} :is(.fcitx-prev, .fcitx-next)`
+const PAGING_INNER = `${PANEL} .fcitx-paging-inner`
+const HIGHLIGHT_MARK = `${PANEL} .fcitx-highlighted .fcitx-mark`
+const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .fcitx-highlighted-original .fcitx-mark`
 
-const PANEL_LIGHT = `.light${PANEL}`
-const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .hoverable.highlighted .hoverable-inner`
-const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .hoverable.highlighted:hover .hoverable-inner`
-const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .hoverable.highlighted:active .hoverable-inner`
-const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .hoverable:not(.highlighted):hover .hoverable-inner`
-const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .hoverable:not(.highlighted):active .hoverable-inner`
-const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .text`
-const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .candidate:active .candidate-inner .text`
-const LABEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .label`
-const COMMENT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .candidate.highlighted .comment`
-const TEXT_LIGHT = `${PANEL_LIGHT} .text`
-const LABEL_LIGHT = `${PANEL_LIGHT} .label`
-const COMMENT_LIGHT = `${PANEL_LIGHT} .comment`
-const PAGING_BUTTON_LIGHT = `${PANEL_LIGHT} .paging .hoverable-inner svg`
-const PAGING_BUTTON_DISABLED_LIGHT = `${PANEL_LIGHT} .paging svg`
-const PREEDIT_LIGHT = `${PANEL_LIGHT} :is(.preedit, .aux-up, .aux-down)`
-const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} :is(.header, .aux-down)`
-const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .hoverables :is(.candidate, .paging)`
-const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .hoverables .divider .divider-middle`
-const PANEL_LIGHT_DIVIDER_SIDE = `${PANEL_LIGHT} .hoverables .divider .divider-side`
-const PANEL_LIGHT_SCROLL_DIVIDER = `${PANEL_LIGHT} .hoverables.horizontal-scroll .divider-middle`
-const PANEL_LIGHT_SCROLL_TRACK = `${PANEL_LIGHT} .hoverables.horizontal-scroll::-webkit-scrollbar-track`
-const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .cursor.no-text`
-const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .highlighted .mark`
+const PANEL_LIGHT = `.fcitx-light${PANEL}`
+const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner`
+const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted:hover .fcitx-hoverable-inner`
+const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted:active .fcitx-hoverable-inner`
+const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .fcitx-hoverable:not(.fcitx-highlighted):hover .fcitx-hoverable-inner`
+const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .fcitx-hoverable:not(.fcitx-highlighted):active .fcitx-hoverable-inner`
+const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-candidate.fcitx-highlighted .fcitx-text`
+const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .fcitx-candidate:active .fcitx-candidate-inner .fcitx-text`
+const LABEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-candidate.fcitx-highlighted .fcitx-label`
+const COMMENT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-candidate.fcitx-highlighted .fcitx-comment`
+const TEXT_LIGHT = `${PANEL_LIGHT} .fcitx-text`
+const LABEL_LIGHT = `${PANEL_LIGHT} .fcitx-label`
+const COMMENT_LIGHT = `${PANEL_LIGHT} .fcitx-comment`
+const PAGING_BUTTON_LIGHT = `${PANEL_LIGHT} .fcitx-paging .fcitx-hoverable-inner svg`
+const PAGING_BUTTON_DISABLED_LIGHT = `${PANEL_LIGHT} .fcitx-paging svg`
+const PREEDIT_LIGHT = `${PANEL_LIGHT} :is(.fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down)`
+const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} :is(.fcitx-header, .fcitx-aux-down)`
+const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .fcitx-hoverables :is(.fcitx-candidate, .fcitx-paging)`
+const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .fcitx-hoverables .fcitx-divider .fcitx-divider-middle`
+const PANEL_LIGHT_DIVIDER_SIDE = `${PANEL_LIGHT} .fcitx-hoverables .fcitx-divider .fcitx-divider-side`
+const PANEL_LIGHT_SCROLL_DIVIDER = `${PANEL_LIGHT} .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider-middle`
+const PANEL_LIGHT_SCROLL_TRACK = `${PANEL_LIGHT} .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track`
+const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .fcitx-cursor.fcitx-no-text`
+const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .fcitx-highlighted .fcitx-mark`
 
-const PANEL_DARK = `.dark${PANEL}`
+const PANEL_DARK = `.fcitx-dark${PANEL}`
 const PANEL_DARK_HIGHLIGHT = lightToDark(PANEL_LIGHT_HIGHLIGHT)
 const PANEL_DARK_HIGHLIGHT_HOVER = lightToDark(PANEL_LIGHT_HIGHLIGHT_HOVER)
 const PANEL_DARK_HIGHLIGHT_PRESS = lightToDark(PANEL_LIGHT_HIGHLIGHT_PRESS)
@@ -381,11 +381,11 @@ export function setStyle (style: string) {
 
   if (j.Background.Blur === 'True') {
     setBlur(true)
-    rules['.blur'] = { '-webkit-backdrop-filter': `blur(${px(j.Background.BlurRadius)})` }
+    rules['.fcitx-blur'] = { '-webkit-backdrop-filter': `blur(${px(j.Background.BlurRadius)})` }
   } else {
     setBlur(false)
-    document.querySelector('.panel-blur-outer')?.classList.remove('blur')
-    document.querySelector('.panel-blur-outer')?.classList.remove('blur')
+    document.querySelector('fcitx-.panel-blur-outer')?.classList.remove('fcitx-blur')
+    document.querySelector('.fcitx-panel-blur-outer')?.classList.remove('fcitx-blur')
   }
 
   if (j.Background.Shadow === 'False') {
@@ -458,7 +458,7 @@ export function setStyle (style: string) {
     'block-size': px(j.Size.Margin)
   }
 
-  const basic = document.head.querySelector('#basic')
+  const basic = document.head.querySelector('#fcitx-basic')
   if (basic) {
     basic.innerHTML = Object.entries(rules).map(([selector, block]) =>
       `${selector} {` + Object.entries(block).map(([key, value]) =>

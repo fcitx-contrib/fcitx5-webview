@@ -38,14 +38,14 @@ function escapeWS (s: string) {
 }
 
 function divider (paging: boolean = false) {
-  const e = div('divider')
+  const e = div('fcitx-divider')
   // Is this divider between candidates and paging buttons?
   if (paging) {
-    e.classList.add('divider-paging')
+    e.classList.add('fcitx-divider-paging')
   }
-  const dividerStart = div('divider-side')
-  const dividerMiddle = div('divider-middle')
-  const dividerEnd = div('divider-side')
+  const dividerStart = div('fcitx-divider-side')
+  const dividerMiddle = div('fcitx-divider-middle')
+  const dividerEnd = div('fcitx-divider-side')
   e.append(dividerStart, dividerMiddle, dividerEnd)
   return e
 }
@@ -53,17 +53,17 @@ function divider (paging: boolean = false) {
 function setLayout (layout : 0 | 1) {
   switch (layout) {
     case 0:
-      hoverables.classList.remove('vertical')
-      hoverables.classList.add('horizontal')
+      hoverables.classList.remove('fcitx-vertical')
+      hoverables.classList.add('fcitx-horizontal')
       break
     case 1:
-      hoverables.classList.remove('horizontal')
-      hoverables.classList.add('vertical')
+      hoverables.classList.remove('fcitx-horizontal')
+      hoverables.classList.add('fcitx-vertical')
   }
 }
 
 function setWritingMode (mode: 0 | 1 | 2) {
-  const classes = ['horizontal-tb', 'vertical-rl', 'vertical-lr']
+  const classes = ['fcitx-horizontal-tb', 'fcitx-vertical-rl', 'fcitx-vertical-lr']
   for (let i = 0; i < classes.length; ++i) {
     if (mode === i) {
       panel.classList.add(classes[i])
@@ -74,12 +74,12 @@ function setWritingMode (mode: 0 | 1 | 2) {
 }
 
 function moveHighlight (from: Element | null, to: Element | null) {
-  from?.classList.remove('highlighted')
-  to?.classList.add('highlighted')
-  const fromMark = from?.querySelector('.mark')
-  const toMark = to?.querySelector('.mark')
+  from?.classList.remove('fcitx-highlighted')
+  to?.classList.add('fcitx-highlighted')
+  const fromMark = from?.querySelector('.fcitx-mark')
+  const toMark = to?.querySelector('.fcitx-mark')
   if (fromMark && !toMark) {
-    to?.querySelector('.candidate-inner')?.prepend(fromMark)
+    to?.querySelector('.fcitx-candidate-inner')?.prepend(fromMark)
   }
 }
 
@@ -102,30 +102,30 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     fetchComplete()
   }
   if (scrollState === 2) {
-    hoverables.classList.add('horizontal-scroll')
+    hoverables.classList.add('fcitx-horizontal-scroll')
     setScrollEnd(scrollEnd)
   } else {
-    hoverables.classList.remove('horizontal-scroll')
+    hoverables.classList.remove('fcitx-horizontal-scroll')
   }
   for (let i = 0; i < cands.length; ++i) {
-    const candidate = div('candidate', 'hoverable')
+    const candidate = div('fcitx-candidate', 'fcitx-hoverable')
     if (i === 0 && scrollState !== 2) {
-      candidate.classList.add('candidate-first')
+      candidate.classList.add('fcitx-candidate-first')
     }
     if (i === highlighted) {
-      candidate.classList.add('highlighted', 'highlighted-original')
+      candidate.classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
     }
     if (i === cands.length - 1 && scrollState !== 2) {
-      candidate.classList.add('candidate-last')
+      candidate.classList.add('fcitx-candidate-last')
     }
 
-    const candidateInner = div('candidate-inner', 'hoverable-inner')
+    const candidateInner = div('fcitx-candidate-inner', 'fcitx-hoverable-inner')
 
     // Render placeholder for vertical/scroll non-highlighted candidates
-    if (hoverables.classList.contains('vertical') || hoverables.classList.contains('horizontal-scroll') || i === highlighted) {
-      const mark = div('mark')
+    if (hoverables.classList.contains('fcitx-vertical') || hoverables.classList.contains('fcitx-horizontal-scroll') || i === highlighted) {
+      const mark = div('fcitx-mark')
       if (markText === '') {
-        mark.classList.add('no-text')
+        mark.classList.add('fcitx-no-text')
       } else {
         mark.innerHTML = markText
       }
@@ -133,17 +133,17 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     }
 
     if (cands[i].label || scrollState === 2) {
-      const label = div('label')
+      const label = div('fcitx-label')
       label.innerHTML = escapeWS(cands[i].label || '0')
       candidateInner.append(label)
     }
 
-    const text = div('text')
+    const text = div('fcitx-text')
     text.innerHTML = escapeWS(cands[i].text)
     candidateInner.append(text)
 
     if (cands[i].comment) {
-      const comment = div('comment')
+      const comment = div('fcitx-comment')
       comment.innerHTML = escapeWS(cands[i].comment)
       candidateInner.append(comment)
     }
@@ -163,36 +163,36 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
   if (scrollState === 1) {
     hoverables.append(divider(true))
-    const expand = div('expand', 'hoverable-inner')
+    const expand = div('fcitx-expand', 'fcitx-hoverable-inner')
     expand.innerHTML = arrowForward
-    const paging = div('paging', 'scroll', 'hoverable')
+    const paging = div('fcitx-paging', 'fcitx-scroll', 'fcitx-hoverable')
     paging.append(expand)
     hoverables.append(paging)
   } else if (scrollState === 0 && pageable) {
     const isArrow = getPagingButtonsStyle() === 'Arrow'
     hoverables.append(divider(true))
 
-    const prev = div('prev', 'hoverable')
-    const prevInner = div('paging-inner')
+    const prev = div('fcitx-prev', 'fcitx-hoverable')
+    const prevInner = div('fcitx-paging-inner')
     if (hasPrev) {
-      prevInner.classList.add('hoverable-inner')
+      prevInner.classList.add('fcitx-hoverable-inner')
     }
     prevInner.innerHTML = isArrow ? arrowBack : caretLeft
     prev.appendChild(prevInner)
 
-    const next = div('next', 'hoverable')
-    const nextInner = div('paging-inner')
+    const next = div('fcitx-next', 'fcitx-hoverable')
+    const nextInner = div('fcitx-paging-inner')
     if (hasNext) {
-      nextInner.classList.add('hoverable-inner')
+      nextInner.classList.add('fcitx-hoverable-inner')
     }
     nextInner.innerHTML = isArrow ? arrowForward : caretRight
     next.appendChild(nextInner)
 
-    const paging = div('paging')
+    const paging = div('fcitx-paging')
     if (isArrow) {
-      paging.classList.add('arrow')
+      paging.classList.add('fcitx-arrow')
     } else {
-      paging.classList.add('triangle')
+      paging.classList.add('fcitx-triangle')
     }
     paging.appendChild(prev)
     paging.appendChild(next)
@@ -203,11 +203,11 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     })
   }
 
-  for (const hoverable of hoverables.querySelectorAll('.hoverable')) {
+  for (const hoverable of hoverables.querySelectorAll('.fcitx-hoverable')) {
     hoverable.addEventListener('mouseenter', () => {
       const hoverBehavior = getHoverBehavior()
       if (hoverBehavior === 'Move') {
-        const lastHighlighted = hoverables.querySelector('.highlighted')
+        const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
         moveHighlight(lastHighlighted, hoverable)
       }
     })
@@ -216,10 +216,10 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
 function updateElement (element: Element, innerHTML: string) {
   if (innerHTML === '') {
-    element.classList.add('hidden')
+    element.classList.add('fcitx-hidden')
   } else {
     element.innerHTML = innerHTML
-    element.classList.remove('hidden')
+    element.classList.remove('fcitx-hidden')
   }
 }
 
@@ -238,8 +238,8 @@ function copyHTML () {
 hoverables.addEventListener('mouseleave', () => {
   const hoverBehavior = getHoverBehavior()
   if (hoverBehavior === 'Move') {
-    const lastHighlighted = hoverables.querySelector('.highlighted')
-    const originalHighlighted = hoverables.querySelector('.highlighted-original')
+    const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
+    const originalHighlighted = hoverables.querySelector('.fcitx-highlighted-original')
     moveHighlight(lastHighlighted, originalHighlighted)
   }
 })

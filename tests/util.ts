@@ -40,15 +40,15 @@ export function setLayout (page: Page, layout: 0 | 1) {
 }
 
 export function theme (page: Page) {
-  return page.locator('#theme')
+  return page.locator('#fcitx-theme')
 }
 
 export function panel (page: Page) {
-  return page.locator('.panel')
+  return page.locator('.fcitx-panel')
 }
 
 export function candidate (page: Page, index: number) {
-  return panel(page).locator('.candidate').nth(index)
+  return panel(page).locator('.fcitx-candidate').nth(index)
 }
 
 export async function getBox (locator: Locator) {

@@ -67,7 +67,7 @@ function distanceToTop (element: Element, basis: 'top' | 'bottom') {
 }
 
 function scrollForHighlight () {
-  const candidates = hoverables.querySelectorAll('.candidate')
+  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
 
   const bottomOffset = distanceToTop(candidates[highlighted], 'bottom') - hoverables.clientHeight
   // Highlighted candidate below bottom of panel
@@ -83,16 +83,16 @@ function scrollForHighlight () {
 }
 
 function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
-  const candidates = hoverables.querySelectorAll('.candidate')
+  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   if (clearOld) {
     const highlightedRow = getHighlightedRow()
     const skipped = itemCountInFirstNRows(highlightedRow)
     for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
       const candidate = candidates[i]
-      candidate.classList.remove('highlighted-row')
-      candidate.querySelector('.label')!.innerHTML = '0'
+      candidate.classList.remove('fcitx-highlighted-row')
+      candidate.querySelector('.fcitx-label')!.innerHTML = '0'
     }
-    candidates[highlighted].classList.remove('highlighted', 'highlighted-original')
+    candidates[highlighted].classList.remove('fcitx-highlighted', 'fcitx-highlighted-original')
   }
 
   highlighted = newHighlighted
@@ -101,19 +101,19 @@ function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
   const skipped = itemCountInFirstNRows(highlightedRow)
   for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
     const candidate = candidates[i]
-    candidate.classList.add('highlighted-row')
-    candidate.querySelector('.label')!.innerHTML = `${i - skipped + 1}`
+    candidate.classList.add('fcitx-highlighted-row')
+    candidate.querySelector('.fcitx-label')!.innerHTML = `${i - skipped + 1}`
   }
-  candidates[highlighted].classList.add('highlighted', 'highlighted-original')
+  candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
 
 export function recalculateScroll (scrollStart: boolean) {
-  const candidates = hoverables.querySelectorAll('.candidate')
+  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   let currentY = candidates[0].getBoundingClientRect().y
   rowItemCount = []
   let itemCount = 0
   for (const candidate of candidates) {
-    candidate.classList.remove('highlighted-row')
+    candidate.classList.remove('fcitx-highlighted-row')
     const { y } = candidate.getBoundingClientRect()
     if (y === currentY) {
       ++itemCount
@@ -128,7 +128,7 @@ export function recalculateScroll (scrollStart: boolean) {
 
   // Manually adjust last row so that candidates align left.
   if (scrollEnd) {
-    const dividers = hoverables.querySelectorAll('.divider')
+    const dividers = hoverables.querySelectorAll('.fcitx-divider')
     const skipped = itemCountInFirstNRows(rowItemCount.length - 1)
     const { width } = dividers[skipped - 1].getBoundingClientRect() // Don't use clientWidth as it rounds to integer.
     for (let i = skipped; i < skipped + rowItemCount[rowItemCount.length - 1] - 1; ++i) {
@@ -139,7 +139,7 @@ export function recalculateScroll (scrollStart: boolean) {
 
 function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {
   const row = getRowOf(index)
-  const candidates = hoverables.querySelectorAll('.candidate')
+  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   const { left, right } = candidates[index].getBoundingClientRect()
   const mid = (left + right) / 2
 
@@ -244,7 +244,7 @@ hoverables.addEventListener('scroll', () => {
   }
   // This is safe since there are at least 7 lines.
   const bottomRightIndex = itemCountInFirstNRows(rowItemCount.length - 1) - 1
-  const candidates = hoverables.querySelectorAll('.candidate')
+  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   const bottomRight = candidates[bottomRightIndex]
   if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
     fetching = true

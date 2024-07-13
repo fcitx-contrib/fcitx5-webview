@@ -7,13 +7,13 @@ let isSystemDark = darkMQL.matches
 let followSystemTheme = true
 
 function setLightTheme () {
-  theme.classList.remove('dark')
-  theme.classList.add('light')
+  theme.classList.remove('fcitx-dark')
+  theme.classList.add('fcitx-light')
 }
 
 function setDarkTheme () {
-  theme.classList.remove('light')
-  theme.classList.add('dark')
+  theme.classList.remove('fcitx-light')
+  theme.classList.add('fcitx-dark')
 }
 
 function systemThemeHandler () {
