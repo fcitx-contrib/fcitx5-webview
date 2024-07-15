@@ -8,6 +8,14 @@ body {
   font-family: sans-serif;
 }
 
+.fcitx-decoration {
+  display: inline-grid;
+  padding: 0;
+  gap: 0;
+  grid-template-columns: min-content 1fr min-content;
+  grid-template-rows: auto;
+}
+
 .fcitx-panel {
   overflow: hidden; /* needed because of border-radius */
   display: inline-block; /* wrap content, not fill parent */

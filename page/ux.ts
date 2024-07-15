@@ -1,6 +1,7 @@
 import {
   theme,
   panel,
+  decoration,
   contextmenu,
   hoverables
 } from './selector'
@@ -31,7 +32,7 @@ type ShadowBox = {
 
 export function resize (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
   function adaptWindowSize (reserveSpaceForContextmenu: boolean) {
-    const {
+    let {
       shadowTop,
       shadowRight,
       shadowBottom,
@@ -39,6 +40,19 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
       fullWidth,
       fullHeight
     } = getBoundingRectWithShadow(panel)
+
+    // Account for window decorations.
+    const dRect = decoration.getBoundingClientRect()
+    if (dRect.width > fullWidth) {
+      shadowLeft = 0
+      shadowRight = 0
+      fullWidth = dRect.width
+    }
+    if (dRect.height > fullHeight) {
+      shadowTop = 0
+      shadowBottom = 0
+      fullHeight = dRect.height
+    }
 
     // HACK: enlarge then shrink.
     let enlargedWidth = fullWidth

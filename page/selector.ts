@@ -1,4 +1,5 @@
 export const theme = document.querySelector('#fcitx-theme')!
+export const decoration = document.querySelector('.fcitx-decoration')!
 export const panel = document.querySelector('.fcitx-panel')!
 export const hoverables = panel.querySelector('.fcitx-hoverables')!
 export const preedit = document.querySelector('.fcitx-preedit')!
