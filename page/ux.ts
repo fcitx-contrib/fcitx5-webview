@@ -84,6 +84,7 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
 }
 
 function getBoundingRectWithShadow (element: Element): ShadowBox {
+  const parentRect = element.parentElement!.getBoundingClientRect()
   const rect = element.getBoundingClientRect()
   const elementXHi = rect.x + rect.width
   const elementYHi = rect.y + rect.height
@@ -106,17 +107,14 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
     if (shadowYHi > yHi) yHi = shadowYHi
   }
   // Extend the rect to contain the shadow.
-  // rect.x and rect.y will be the coordinates of the top-left of the panel.
-  // rect.height and rect.width will cover the whole panel and its shadow.
-  rect.width = xHi
-  rect.height = yHi
+  // fullWidth and fullHeight will cover the whole element and its shadow.
   return {
-    shadowTop: rect.y,
+    shadowTop: rect.y - parentRect.y,
     shadowRight: xHi - elementXHi,
     shadowBottom: yHi - elementYHi,
-    shadowLeft: rect.x,
-    fullWidth: xHi,
-    fullHeight: yHi
+    shadowLeft: rect.x - parentRect.x,
+    fullWidth: xHi - parentRect.x,
+    fullHeight: yHi - parentRect.y
   }
 }
 
