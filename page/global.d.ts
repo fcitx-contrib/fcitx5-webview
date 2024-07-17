@@ -27,7 +27,7 @@ declare global {
     _scroll: (start: number, length: number) => void
     _askActions: (index: number) => void
     _action: (index: number, id: number) => void
-    _resize: (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, enlargedWidth: number, enlargedHeight: number, dragging: boolean) => void
+    _resize: (dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, fullWidth: number, fullHeight: number, dragging: boolean) => void
 
     // JavaScript APIs that webview_candidate_window.mm calls
     setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void

@@ -37,14 +37,13 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     set_transparent_background();
     update_accent_color();
 
-    bind("_resize", [this](double dx, double dy, double shadow_top,
-                           double shadow_right, double shadow_bottom,
-                           double shadow_left, double width, double height,
-                           double enlarged_width, double enlarged_height,
-                           bool dragging) {
-        resize(dx, dy, shadow_top, shadow_right, shadow_bottom, shadow_left,
-               width, height, enlarged_width, enlarged_height, dragging);
-    });
+    bind("_resize",
+         [this](double dx, double dy, double anchor_top, double anchor_right,
+                double anchor_bottom, double anchor_left, double width,
+                double height, bool dragging) {
+             resize(dx, dy, anchor_top, anchor_right, anchor_bottom,
+                    anchor_left, width, height, dragging);
+         });
 
     bind("_select", [this](int i) { select_callback(i); });
 

@@ -182,11 +182,10 @@ void WebviewCandidateWindow::write_clipboard(const std::string &html) {
     [pasteboard setString:s forType:NSPasteboardTypeString];
 }
 
-void WebviewCandidateWindow::resize(double dx, double dy, double shadow_top,
-                                    double shadow_right, double shadow_bottom,
-                                    double shadow_left, double width,
-                                    double height, double enlarged_width,
-                                    double enlarged_height, bool dragging) {
+void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
+                                    double anchor_right, double anchor_bottom,
+                                    double anchor_left, double width,
+                                    double height, bool dragging) {
     const int gap = 4;
     const int preedit_height = 24;
     NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);
@@ -206,35 +205,29 @@ void WebviewCandidateWindow::resize(double dx, double dy, double shadow_top,
             writing_mode_ == writing_mode_t::vertical_rl) {
             // Right side of the window needs to align with the cursor as
             // the first candidate is on the right.
-            x_ = adjusted_x - width + shadow_right;
-            x_ = std::max<double>(x_, left - shadow_left);
-            x_ = std::min<double>(x_, right - (width - shadow_right));
+            x_ = adjusted_x - anchor_right;
+            x_ = std::max<double>(x_, left - anchor_left);
+            x_ = std::min<double>(x_, right - anchor_right);
         } else {
-            x_ = adjusted_x - shadow_left;
-            x_ = std::min<double>(x_, right - (width - shadow_right));
-            x_ = std::max<double>(x_, left - shadow_left);
+            x_ = adjusted_x - anchor_left;
+            x_ = std::min<double>(x_, right - anchor_right);
+            x_ = std::max<double>(x_, left - anchor_left);
         }
-        if ((height - shadow_top - shadow_bottom) + gap >
+        if (anchor_bottom - anchor_top + gap >
                 adjusted_y - bottom        // No enough space underneath
             || (!hidden_ && was_above_)) { // It was above, avoid flicker
-            y_ = std::max<double>(
-                adjusted_y + preedit_height + gap - shadow_bottom, bottom);
-            y_ = std::min<double>(y_, top - (height - shadow_top));
+            y_ = std::max<double>(adjusted_y + preedit_height + gap, bottom) -
+                 (height - anchor_bottom);
+            y_ = std::min<double>(y_, top - (height - anchor_top));
             was_above_ = true;
         } else {
-            y_ = adjusted_y - gap - (height - shadow_top);
+            y_ = adjusted_y - gap - (height - anchor_top);
             was_above_ = false;
         }
     }
     hidden_ = false;
     NSWindow *window = static_cast<NSWindow *>(w_->window());
-    // contextmenu may enlarge window but we don't want layout shift.
-    // Considering right click then drag, we don't want y -=
-    // (enlarged_height - height).
-    [window setFrame:NSMakeRect(x_, y_ - (enlarged_height - height),
-                                enlarged_width, enlarged_height)
-             display:YES
-             animate:NO];
+    [window setFrame:NSMakeRect(x_, y_, width, height) display:YES animate:NO];
     [window orderFront:nil];
     // A User reported Bob.app called out by shortcut is above candidate
     // window on M1. While I can't reproduce it on Intel, he tested this and

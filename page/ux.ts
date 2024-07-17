@@ -22,54 +22,53 @@ let dY = 0
 let dragOffset = 0
 
 type ShadowBox = {
-  shadowTop: number,
-  shadowRight: number,
-  shadowBottom: number,
-  shadowLeft: number,
-  fullWidth: number,
-  fullHeight: number
+  anchorTop: number,
+  anchorRight: number,
+  anchorLeft: number,
+  right: number,
+  bottom: number
 }
 
 export function resize (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
   function adaptWindowSize (reserveSpaceForContextmenu: boolean) {
     let {
-      shadowTop,
-      shadowRight,
-      shadowBottom,
-      shadowLeft,
-      fullWidth,
-      fullHeight
+      anchorTop,
+      anchorRight,
+      anchorLeft,
+      right,
+      bottom
     } = getBoundingRectWithShadow(panel)
 
     // Account for window decorations.
     const dRect = decoration.getBoundingClientRect()
-    if (dRect.width > fullWidth) {
-      shadowLeft = 0
-      shadowRight = 0
-      fullWidth = dRect.width
+    anchorTop = Math.min(anchorTop, dRect.top)
+    anchorLeft = Math.min(anchorLeft, dRect.left)
+    if (dRect.right > right) {
+      anchorRight = right = dRect.right
     }
-    if (dRect.height > fullHeight) {
-      shadowTop = 0
-      shadowBottom = 0
-      fullHeight = dRect.height
+    // Always use decoration's bottom as anchorBottom because
+    // 1. When no decoration, it's the same with panel's.
+    // 2. When there is decoration and no enough room under client preedit,
+    //    we don't want layout shift of decoration when scroll is expanded.
+    const anchorBottom = dRect.bottom
+    if (anchorBottom > bottom) {
+      bottom = dRect.bottom
     }
 
     // HACK: enlarge then shrink.
-    let enlargedWidth = fullWidth
-    let enlargedHeight = fullHeight
     if (reserveSpaceForContextmenu) {
-      enlargedWidth += 100
-      enlargedHeight += 100
+      right += 100
+      bottom += 100
     } else if (contextmenu.style.display === 'block') {
       const {
-        fullWidth: xHi,
-        fullHeight: yHi
+        right: r,
+        bottom: b
       } = getBoundingRectWithShadow(contextmenu)
-      enlargedWidth = Math.max(xHi, enlargedWidth)
-      enlargedHeight = Math.max(yHi, enlargedHeight)
+      right = Math.max(right, r)
+      bottom = Math.max(bottom, b)
     }
 
-    window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, enlargedWidth, enlargedHeight, dragging)
+    window._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {
@@ -84,12 +83,9 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
 }
 
 function getBoundingRectWithShadow (element: Element): ShadowBox {
-  const parentRect = element.parentElement!.getBoundingClientRect()
   const rect = element.getBoundingClientRect()
-  const elementXHi = rect.x + rect.width
-  const elementYHi = rect.y + rect.height
-  let xHi = elementXHi
-  let yHi = elementYHi
+  let xHi = rect.right
+  let yHi = rect.bottom
 
   const vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
   // The format of computed style is 'rgb(255, 0, 0) 10px 5px 5px 0px, rgb(255, 0, 0) 10px 5px 5px 0px'
@@ -101,20 +97,18 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
     const spreadRadius = vals[7 * i + 6]
     const deltaX = offsetX + blurRadius + spreadRadius
     const deltaY = offsetY + blurRadius + spreadRadius
-    const shadowXHi = elementXHi + (deltaX > 0 ? deltaX : 0)
-    const shadowYHi = elementYHi + (deltaY > 0 ? deltaY : 0)
+    const shadowXHi = rect.right + (deltaX > 0 ? deltaX : 0)
+    const shadowYHi = rect.bottom + (deltaY > 0 ? deltaY : 0)
     if (shadowXHi > xHi) xHi = shadowXHi
     if (shadowYHi > yHi) yHi = shadowYHi
   }
   // Extend the rect to contain the shadow.
-  // fullWidth and fullHeight will cover the whole element and its shadow.
   return {
-    shadowTop: rect.y - parentRect.y,
-    shadowRight: xHi - elementXHi,
-    shadowBottom: yHi - elementYHi,
-    shadowLeft: rect.x - parentRect.x,
-    fullWidth: xHi - parentRect.x,
-    fullHeight: yHi - parentRect.y
+    anchorTop: rect.top,
+    anchorRight: rect.right,
+    anchorLeft: rect.left,
+    right: xHi,
+    bottom: yHi
   }
 }
 

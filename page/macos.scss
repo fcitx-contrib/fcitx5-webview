@@ -38,6 +38,14 @@ $light-graphite: rgb(128 128 128);
 $dark-graphite: rgb(105 105 105);
 
 .fcitx-macos {
+  .fcitx-decoration {
+    /* Leave top and left for shadow. 
+      It's done here instead of fcitx-panel because we want fcitx-panel to
+      align with it by default, so that we can know whether there are images
+      that changes anchor from panel to it. */
+    transform: translate(25px, 25px);
+  }
+
   .fcitx-panel, .fcitx-contextmenu {
     border-width: 1px;
     border-style: solid;
@@ -48,8 +56,6 @@ $dark-graphite: rgb(105 105 105);
   }
 
   .fcitx-panel {
-    transform: translate(25px, 25px); /* leave top and left for shadow */
-
     &:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
       border-start-end-radius: 15px;
       border-end-end-radius: 15px;

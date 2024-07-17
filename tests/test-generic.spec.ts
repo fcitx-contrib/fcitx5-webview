@@ -28,50 +28,52 @@ test('HTML structure', async ({ page }) => {
   const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
     .replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
-<div id="fcitx-theme" class="fcitx-basic fcitx-blue fcitx-dark fcitx-decoration">
-  <div class="fcitx-panel-topleft"></div>
-  <div class="fcitx-panel-top"></div>
-  <div class="fcitx-panel-topright"></div>
-  <div class="fcitx-panel-left"></div>
-  <div class="fcitx-panel-center">
-    <div class="fcitx-panel">
-      <div class="fcitx-panel-blur-outer">
-        <div class="fcitx-panel-blur-inner">
-          <div class="fcitx-header">
-            <div class="fcitx-aux-up fcitx-hidden"></div>
-            <div class="fcitx-hidden fcitx-preedit"></div>
-          </div>
-          <div class="fcitx-aux-down fcitx-hidden"></div>
-          <div class="fcitx-hoverables">
-            <div class="fcitx-candidate fcitx-candidate-first fcitx-highlighted fcitx-highlighted-original fcitx-hoverable">
-              <div class="fcitx-candidate-inner fcitx-hoverable-inner">
-                <div class="fcitx-mark fcitx-no-text"></div>
-                <div class="fcitx-label">1</div>
-                <div class="fcitx-text">页面结构</div>
-                <div class="fcitx-comment">c</div>
+<div id="fcitx-theme" class="fcitx-basic fcitx-blue fcitx-dark">
+  <div class="fcitx-decoration">
+    <div class="fcitx-panel-topleft"></div>
+    <div class="fcitx-panel-top"></div>
+    <div class="fcitx-panel-topright"></div>
+    <div class="fcitx-panel-left"></div>
+    <div class="fcitx-panel-center">
+      <div class="fcitx-panel">
+        <div class="fcitx-panel-blur-outer">
+          <div class="fcitx-panel-blur-inner">
+            <div class="fcitx-header">
+              <div class="fcitx-aux-up fcitx-hidden"></div>
+              <div class="fcitx-hidden fcitx-preedit"></div>
+            </div>
+            <div class="fcitx-aux-down fcitx-hidden"></div>
+            <div class="fcitx-hoverables">
+              <div class="fcitx-candidate fcitx-candidate-first fcitx-highlighted fcitx-highlighted-original fcitx-hoverable">
+                <div class="fcitx-candidate-inner fcitx-hoverable-inner">
+                  <div class="fcitx-mark fcitx-no-text"></div>
+                  <div class="fcitx-label">1</div>
+                  <div class="fcitx-text">页面结构</div>
+                  <div class="fcitx-comment">c</div>
+                </div>
               </div>
-            </div>
-            <div class="fcitx-divider">
-              <div class="fcitx-divider-side"></div>
-              <div class="fcitx-divider-middle"></div>
-              <div class="fcitx-divider-side"></div>
-            </div>
-            <div class="fcitx-candidate fcitx-candidate-last fcitx-hoverable">
-              <div class="fcitx-candidate-inner fcitx-hoverable-inner">
-                <div class="fcitx-label">2</div>
-                <div class="fcitx-text">测试</div>
+              <div class="fcitx-divider">
+                <div class="fcitx-divider-side"></div>
+                <div class="fcitx-divider-middle"></div>
+                <div class="fcitx-divider-side"></div>
+              </div>
+              <div class="fcitx-candidate fcitx-candidate-last fcitx-hoverable">
+                <div class="fcitx-candidate-inner fcitx-hoverable-inner">
+                  <div class="fcitx-label">2</div>
+                  <div class="fcitx-text">测试</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="fcitx-panel-right"></div>
+    <div class="fcitx-panel-bottomleft"></div>
+    <div class="fcitx-panel-bottom"></div>
+    <div class="fcitx-panel-bottomright"></div>
   </div>
-  <div class="fcitx-panel-right"></div>
-  <div class="fcitx-panel-bottomleft"></div>
-  <div class="fcitx-panel-bottom"></div>
-  <div class="fcitx-panel-bottomright"></div>
-  <div class="fcitx-contextmenu"></div>
+  <div class="fcitx-contextmenu" style="display: none;"></div>
 </div>
 `.replaceAll(/\n */g, '')
   expect(actual).toEqual(expected)
