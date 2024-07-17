@@ -41,11 +41,10 @@ void WebviewCandidateWindow::hide() {}
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 
-void WebviewCandidateWindow::resize(double dx, double dy, double shadow_top,
-                                    double shadow_right, double shadow_bottom,
-                                    double shadow_left, double width,
-                                    double height, double enlarged_width,
-                                    double enlarged_height, bool dragging) {
+void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
+                                    double anchor_right, double anchor_bottom,
+                                    double anchor_left, double width,
+                                    double height, bool dragging) {
     gtk_widget_show_all(static_cast<GtkWidget *>(w_->window()));
 }
 } // namespace candidate_window
