@@ -8,40 +8,48 @@ body {
   font-family: sans-serif;
 }
 
-.panel {
+.fcitx-decoration {
+  display: inline-grid;
+  padding: 0;
+  gap: 0;
+  grid-template-columns: min-content 1fr min-content;
+  grid-template-rows: auto;
+}
+
+.fcitx-panel {
   overflow: hidden; /* needed because of border-radius */
   display: inline-block; /* wrap content, not fill parent */
 
-  &.vertical-rl {
+  &.fcitx-vertical-rl {
     writing-mode: vertical-rl;
   }
 
-  &.vertical-lr {
+  &.fcitx-vertical-lr {
     writing-mode: vertical-lr;
   }
 }
 
-.preedit, .aux-up {
+.fcitx-preedit, .fcitx-aux-up {
   display: inline-flex; /* put the cursor on the same line with preedit */
   align-items: center;
   justify-content: center;
   line-height: 1em; /* align preedit and text cursor */
 
-  &.hidden {
+  &.fcitx-hidden {
     display: none; /* needed because the above display has higher precedence than .hidden's */
   }
 }
 
-.aux-down {
+.fcitx-aux-down {
   display: flex;
   align-items: center;
 
-  &.hidden {
+  &.fcitx-hidden {
     display: none;
   }
 }
 
-.candidate-inner {
+.fcitx-candidate-inner {
   display: flex;
   gap: 6px;
   align-items: center; /* English words have lower height */
@@ -49,89 +57,89 @@ body {
   position: relative; /* for absolute position of mark */
 }
 
-.label {
+.fcitx-label {
   /* Label is usually a single number. Will look ugly when all parts have vertical writing mode. */
   writing-mode: horizontal-tb;
 }
 
-.hoverables {
+.fcitx-hoverables {
   display: flex;
 
-  .divider {
+  .fcitx-divider {
     display: flex;
   }
 
-  &.vertical {
+  &.fcitx-vertical {
     flex-direction: column;
 
-    .divider {
+    .fcitx-divider {
       flex-direction: row;
     }
   }
 
-  &.horizontal {
+  &.fcitx-horizontal {
     flex-direction: row;
 
-    .candidate {
+    .fcitx-candidate {
       /* When horizontal and there is multi-line candidate,
       make sure other candidates are vertical centered.
       Don't enable it for vertical. It will shrink highlight. */
       display: flex;
     }
 
-    .divider {
+    .fcitx-divider {
       flex-direction: column;
     }
   }
 
-  &.horizontal-scroll {
+  &.fcitx-horizontal-scroll {
     max-block-size: 180px; /* If block-size, 2 rows will have 90px each. */
     inline-size: 400px;
     flex-wrap: wrap;
     overflow-y: auto;
     overscroll-behavior: none;
 
-    .candidate {
+    .fcitx-candidate {
       min-inline-size: 60px;
     }
 
-    .candidate-inner {
+    .fcitx-candidate-inner {
       width: 100%;
     }
 
-    .label {
+    .fcitx-label {
       opacity: 0;
     }
 
-    .highlighted-row .label {
+    .fcitx-highlighted-row .fcitx-label {
       opacity: 1;
     }
 
-    .divider {
+    .fcitx-divider {
       flex-grow: 1;
     }
   }
 }
 
-:is(.vertical-rl, .vertical-lr) .paging svg {
+:is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-paging svg {
   transform: rotate(90deg);
 }
 
-.paging {
+.fcitx-paging {
   display: flex;
 
-  &.arrow svg {
+  &.fcitx-arrow svg {
     block-size: 12px;
     inline-size: 12px;
   }
 
-  &.triangle svg {
+  &.fcitx-triangle svg {
     block-size: 16px;
     inline-size: 16px;
   }
 
-  &.scroll {
-    .expand {
+  &.fcitx-scroll {
+    .fcitx-expand {
       block-size: 18px;
       inline-size: 18px;
       display: flex;
@@ -147,12 +155,12 @@ body {
 }
 
 /* When horizontal, paging is shorter than candidates, so need to centralize them. */
-.prev, .next {
+.fcitx-prev, .fcitx-next {
   display: flex;
   align-items: center;
 }
 
-.paging-inner {
+.fcitx-paging-inner {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,10 +168,10 @@ body {
   height: 20px;
 }
 
-.mark {
+.fcitx-mark {
   opacity: 0;
 
-  &.no-text {
+  &.fcitx-no-text {
     position: absolute;
     inset-inline-start: 0;
     inline-size: 3px;
@@ -173,26 +181,26 @@ body {
   }
 }
 
-.highlighted :active .mark.no-text {
+.fcitx-highlighted :active .fcitx-mark.fcitx-no-text {
   block-size: 12px;
 }
 
-.hidden {
+.fcitx-hidden {
   display: none;
 }
 
-.blur {
+.fcitx-blur {
   backdrop-filter: blur(16px); /* blur background */
 }
 
-.contextmenu {
+.fcitx-contextmenu {
   position: absolute;
   z-index: 1000;
   display: none;
   overflow: hidden;
 }
 
-.menu-item {
+.fcitx-menu-item {
   display: flex;
   align-items: center;
 }

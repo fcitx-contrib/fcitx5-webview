@@ -10,9 +10,9 @@ export async function init (page: Page) {
   await page.evaluate(() => {
     window.setTheme(2)
     window.cppCalls = []
-    window._resize = (dx: number, dy: number, shadowTop: number, shadowRight: number, shadowBottom: number, shadowLeft: number, fullWidth: number, fullHeight: number, enlargedWidth: number, enlargedHeight: number, dragging: boolean) => {
+    window._resize = (dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, fullWidth: number, fullHeight: number, dragging: boolean) => {
       window.cppCalls.push({
-        resize: [dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, enlargedWidth, enlargedHeight, dragging]
+        resize: [dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, fullWidth, fullHeight, dragging]
       })
     }
     window._select = (index: number) => {
@@ -40,15 +40,15 @@ export function setLayout (page: Page, layout: 0 | 1) {
 }
 
 export function theme (page: Page) {
-  return page.locator('#theme')
+  return page.locator('#fcitx-theme')
 }
 
 export function panel (page: Page) {
-  return page.locator('.panel')
+  return page.locator('.fcitx-panel')
 }
 
 export function candidate (page: Page, index: number) {
-  return panel(page).locator('.candidate').nth(index)
+  return panel(page).locator('.fcitx-candidate').nth(index)
 }
 
 export async function getBox (locator: Locator) {

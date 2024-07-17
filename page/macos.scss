@@ -37,8 +37,16 @@ $dark-green: rgb(67 146 42);
 $light-graphite: rgb(128 128 128);
 $dark-graphite: rgb(105 105 105);
 
-.macos {
-  .panel, .contextmenu {
+.fcitx-macos {
+  .fcitx-decoration {
+    /* Leave top and left for shadow. 
+      It's done here instead of fcitx-panel because we want fcitx-panel to
+      align with it by default, so that we can know whether there are images
+      that changes anchor from panel to it. */
+    transform: translate(25px, 25px);
+  }
+
+  .fcitx-panel, .fcitx-contextmenu {
     border-width: 1px;
     border-style: solid;
     border-radius: 6px;
@@ -47,42 +55,40 @@ $dark-graphite: rgb(105 105 105);
                 0 0 25px rgb(0 0 0 / 12%);
   }
 
-  .panel {
-    transform: translate(25px, 25px); /* leave top and left for shadow */
-
-    &:has(.horizontal .paging:is(.arrow, .scroll)) {
+  .fcitx-panel {
+    &:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
       border-start-end-radius: 15px;
       border-end-end-radius: 15px;
     }
   }
 
-  .horizontal .paging.arrow {
+  .fcitx-horizontal .fcitx-paging.fcitx-arrow {
     flex-direction: column;
     justify-content: center;
 
-    .paging-inner {
+    .fcitx-paging-inner {
       inline-size: 28px;
       block-size: auto;
     }
   }
 
-  .paging.scroll {
+  .fcitx-paging.fcitx-scroll {
     inline-size: 28px;
     justify-content: center;
     align-items: center;
   }
 
-  .contextmenu {
+  .fcitx-contextmenu {
     backdrop-filter: blur(16px);
   }
 
-  .cursor.no-text {
+  .fcitx-cursor.fcitx-no-text {
     inline-size: 1px;
     block-size: 16px;
     margin-inline: 1px;
   }
 
-  .candidate-inner, .preedit, .aux-up, .aux-down, .menu-item {
+  .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down, .fcitx-menu-item {
     min-block-size: 24px; /* compromise to 🀄's height */
     min-inline-size: 16px;
 
@@ -92,7 +98,7 @@ $dark-graphite: rgb(105 105 105);
     background-clip: padding-box;
   }
 
-  .menu-item:hover {
+  .fcitx-menu-item:hover {
     color: white;
   }
 
@@ -100,280 +106,280 @@ $dark-graphite: rgb(105 105 105);
    * 1. divider color is not overlaid by panel color
    * 2. divider may not be full-length
    */
-  .hoverables.vertical .divider {
+  .fcitx-hoverables.fcitx-vertical .fcitx-divider {
     block-size: 1px;
 
-    .divider-middle {
+    .fcitx-divider-middle {
       inline-size: 100%;
     }
   }
 
-  .hoverables.horizontal .divider {
+  .fcitx-hoverables.fcitx-horizontal .fcitx-divider {
     inline-size: 0;
 
-    &.divider-paging {
+    &.fcitx-divider-paging {
       inline-size: 1px;
     }
 
-    .divider-middle {
+    .fcitx-divider-middle {
       block-size: 100%;
     }
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar {
     width: 8px;
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar-thumb {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
     border-radius: 4px;
   }
   
 
-  .label, .comment {
+  .fcitx-label, .fcitx-comment {
     font-size: 12px;
   }
 
-  .horizontal-tb .horizontal .paging.arrow svg {
+  .fcitx-horizontal-tb .fcitx-horizontal .fcitx-paging.fcitx-arrow svg {
     transform: rotate(90deg);
   }
 
-  .vertical-rl .horizontal .paging.arrow svg {
+  .fcitx-vertical-rl .fcitx-horizontal .fcitx-paging.fcitx-arrow svg {
     transform: rotate(180deg);
   }
 
-  .vertical-lr .horizontal .paging.arrow svg {
+  .fcitx-vertical-lr .fcitx-horizontal .fcitx-paging.fcitx-arrow svg {
     transform: rotate(0deg);
   }
 }
 
-.macos.light {
+.fcitx-macos.fcitx-light {
   /* stylelint-disable-next-line no-descending-specificity */
-  .panel, .contextmenu {
+  .fcitx-panel, .fcitx-contextmenu {
     border-color: $panel-border-color-light;
   }
 
-  .cursor.no-text {
+  .fcitx-cursor.fcitx-no-text {
     background-color: $text-color-light;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .header, .aux-down, .contextmenu {
+  .fcitx-candidate, .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
     background-color: $panel-color-light;
   }
 
-  .contextmenu {
+  .fcitx-contextmenu {
     color: black;
   }
 
-  .text, .header, .aux-down {
+  .fcitx-text, .fcitx-header, .fcitx-aux-down {
     color: $text-color-light;
   }
 
-  .label, .comment {
+  .fcitx-label, .fcitx-comment {
     color: $label-color-light;
   }
 
-  .paging {
+  .fcitx-paging {
     color: gray; // disabled
     background-color: $panel-color-light;
 
-    .hoverable-inner {
+    .fcitx-hoverable-inner {
       color: $text-color-light; // enabled
     }
   }
 
-  &.blue {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-blue {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-blue;
     }
   }
 
-  &.purple {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-purple {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-purple;
     }
   }
 
-  &.pink {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-pink {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-pink;
     }
   }
 
-  &.red {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-red {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-red;
     }
   }
 
-  &.orange {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-orange {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-orange;
     }
   }
 
-  &.yellow {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-yellow {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-yellow;
     }
   }
 
-  &.green {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-green {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-green;
     }
   }
 
-  &.graphite {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-graphite {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $light-graphite;
     }
   }
 
-  .hoverables .divider {
-    .divider-side {
+  .fcitx-hoverables .fcitx-divider {
+    .fcitx-divider-side {
       background-color: $panel-color-light;
     }
 
-    .divider-middle {
+    .fcitx-divider-middle {
       background-color: $vertical-border-color-light;
     }
   }
 
-  .hoverables.horizontal-scroll .divider .divider-middle {
+  .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider .fcitx-divider-middle {
     background-color: $panel-color-light;
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar-thumb {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
     background-color: $thumb-color-light;
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar-track {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
     background-color: $panel-color-light;
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb:hover {
     background-color: $thumb-hover-color-light;
   }
 }
 
-.macos.dark {
+.fcitx-macos.fcitx-dark {
   /* stylelint-disable-next-line no-descending-specificity */
-  .panel, .contextmenu {
+  .fcitx-panel, .fcitx-contextmenu {
     border-color: $panel-border-color-dark;
   }
 
-  .cursor.no-text {
+  .fcitx-cursor.fcitx-no-text {
     background-color: $text-color-dark;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .candidate, .header, .aux-down, .contextmenu {
+  .fcitx-candidate, .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
     background-color: $panel-color-dark;
   }
 
-  .contextmenu {
+  .fcitx-contextmenu {
     color: white;
   }
 
-  .text, .header, .aux-down {
+  .fcitx-text, .fcitx-header, .fcitx-aux-down {
     color: $text-color-dark;
   }
 
-  .label, .comment {
+  .fcitx-label, .fcitx-comment {
     color: $label-color-dark;
   }
 
-  .paging {
+  .fcitx-paging {
     color: gray; // disabled
     background-color: $panel-color-dark;
 
     /* stylelint-disable-next-line no-descending-specificity */
-    .hoverable-inner {
+    .fcitx-hoverable-inner {
       color: $text-color-dark; // enabled
     }
   }
 
-  &.blue {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-blue {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-blue;
     }
   }
 
-  &.purple {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-purple {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-purple;
     }
   }
 
-  &.pink {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-pink {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-pink;
     }
   }
 
-  &.red {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-red {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-red;
     }
   }
 
-  &.orange {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-orange {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-orange;
     }
   }
 
-  &.yellow {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-yellow {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-yellow;
     }
   }
 
-  &.green {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-green {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-green;
     }
   }
 
-  &.graphite {
-    .hoverable.highlighted .hoverable-inner, .menu-item:hover {
+  &.fcitx-graphite {
+    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
       background-color: $dark-graphite;
     }
   }
 
-  .hoverables .divider {
-    .divider-side {
+  .fcitx-hoverables .fcitx-divider {
+    .fcitx-divider-side {
       background-color: $panel-color-dark;
     }
 
     /* stylelint-disable-next-line no-descending-specificity */
-    .divider-middle {
+    .fcitx-divider-middle {
       background-color: $vertical-border-color-dark;
     }
   }
 
-  .hoverables.horizontal-scroll .divider .divider-middle {
+  .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider .fcitx-divider-middle {
     background-color: $panel-color-dark;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
-  .hoverables.horizontal-scroll::-webkit-scrollbar-thumb {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
     background-color: $thumb-color-dark;
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar-track {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
     background-color: $panel-color-dark;
   }
 
-  .hoverables.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb:hover {
     background-color: $thumb-hover-color-dark;
   }
 }
 
-.macos.light, .macos.dark {
-  .highlighted {
-    .text, .label, .comment {
+.fcitx-macos.fcitx-light, .fcitx-macos.fcitx-dark {
+  .fcitx-highlighted {
+    .fcitx-text, .fcitx-label, .fcitx-comment {
       color: white;
     }
   }

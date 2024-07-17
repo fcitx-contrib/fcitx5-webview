@@ -1,6 +1,7 @@
 import {
   theme,
   panel,
+  decoration,
   contextmenu,
   hoverables
 } from './selector'
@@ -21,41 +22,53 @@ let dY = 0
 let dragOffset = 0
 
 type ShadowBox = {
-  shadowTop: number,
-  shadowRight: number,
-  shadowBottom: number,
-  shadowLeft: number,
-  fullWidth: number,
-  fullHeight: number
+  anchorTop: number,
+  anchorRight: number,
+  anchorLeft: number,
+  right: number,
+  bottom: number
 }
 
 export function resize (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
   function adaptWindowSize (reserveSpaceForContextmenu: boolean) {
-    const {
-      shadowTop,
-      shadowRight,
-      shadowBottom,
-      shadowLeft,
-      fullWidth,
-      fullHeight
+    let {
+      anchorTop,
+      anchorRight,
+      anchorLeft,
+      right,
+      bottom
     } = getBoundingRectWithShadow(panel)
 
-    // HACK: enlarge then shrink.
-    let enlargedWidth = fullWidth
-    let enlargedHeight = fullHeight
-    if (reserveSpaceForContextmenu) {
-      enlargedWidth += 100
-      enlargedHeight += 100
-    } else if (contextmenu.style.display === 'block') {
-      const {
-        fullWidth: xHi,
-        fullHeight: yHi
-      } = getBoundingRectWithShadow(contextmenu)
-      enlargedWidth = Math.max(xHi, enlargedWidth)
-      enlargedHeight = Math.max(yHi, enlargedHeight)
+    // Account for window decorations.
+    const dRect = decoration.getBoundingClientRect()
+    anchorTop = Math.min(anchorTop, dRect.top)
+    anchorLeft = Math.min(anchorLeft, dRect.left)
+    if (dRect.right > right) {
+      anchorRight = right = dRect.right
+    }
+    // Always use decoration's bottom as anchorBottom because
+    // 1. When no decoration, it's the same with panel's.
+    // 2. When there is decoration and no enough room under client preedit,
+    //    we don't want layout shift of decoration when scroll is expanded.
+    const anchorBottom = dRect.bottom
+    if (anchorBottom > bottom) {
+      bottom = dRect.bottom
     }
 
-    window._resize(dx, dy, shadowTop, shadowRight, shadowBottom, shadowLeft, fullWidth, fullHeight, enlargedWidth, enlargedHeight, dragging)
+    // HACK: enlarge then shrink.
+    if (reserveSpaceForContextmenu) {
+      right += 100
+      bottom += 100
+    } else if (contextmenu.style.display === 'block') {
+      const {
+        right: r,
+        bottom: b
+      } = getBoundingRectWithShadow(contextmenu)
+      right = Math.max(right, r)
+      bottom = Math.max(bottom, b)
+    }
+
+    window._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {
@@ -71,10 +84,8 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
 
 function getBoundingRectWithShadow (element: Element): ShadowBox {
   const rect = element.getBoundingClientRect()
-  const elementXHi = rect.x + rect.width
-  const elementYHi = rect.y + rect.height
-  let xHi = elementXHi
-  let yHi = elementYHi
+  let xHi = rect.right
+  let yHi = rect.bottom
 
   const vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
   // The format of computed style is 'rgb(255, 0, 0) 10px 5px 5px 0px, rgb(255, 0, 0) 10px 5px 5px 0px'
@@ -86,23 +97,18 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
     const spreadRadius = vals[7 * i + 6]
     const deltaX = offsetX + blurRadius + spreadRadius
     const deltaY = offsetY + blurRadius + spreadRadius
-    const shadowXHi = elementXHi + (deltaX > 0 ? deltaX : 0)
-    const shadowYHi = elementYHi + (deltaY > 0 ? deltaY : 0)
+    const shadowXHi = rect.right + (deltaX > 0 ? deltaX : 0)
+    const shadowYHi = rect.bottom + (deltaY > 0 ? deltaY : 0)
     if (shadowXHi > xHi) xHi = shadowXHi
     if (shadowYHi > yHi) yHi = shadowYHi
   }
   // Extend the rect to contain the shadow.
-  // rect.x and rect.y will be the coordinates of the top-left of the panel.
-  // rect.height and rect.width will cover the whole panel and its shadow.
-  rect.width = xHi
-  rect.height = yHi
   return {
-    shadowTop: rect.y,
-    shadowRight: xHi - elementXHi,
-    shadowBottom: yHi - elementYHi,
-    shadowLeft: rect.x,
-    fullWidth: xHi,
-    fullHeight: yHi
+    anchorTop: rect.top,
+    anchorRight: rect.right,
+    anchorLeft: rect.left,
+    right: xHi,
+    bottom: yHi
   }
 }
 
@@ -117,7 +123,7 @@ function isInsideHoverables (target: Element) {
 }
 
 function getCandidateIndex (target: Element) {
-  const allCandidates = hoverables.querySelectorAll('.candidate')
+  const allCandidates = hoverables.querySelectorAll('.fcitx-candidate')
   for (let i = 0; i < allCandidates.length; ++i) {
     if (allCandidates[i] === target) {
       return i
@@ -129,7 +135,7 @@ function getCandidateIndex (target: Element) {
 export function showContextmenu (x: number, y: number, index: number, actions: CandidateAction[]) {
   contextmenu.innerHTML = ''
   for (const action of actions) {
-    const item = div('menu-item')
+    const item = div('fcitx-menu-item')
     item.innerHTML = action.text
     item.addEventListener('click', () => {
       window._action(index, action.id)
@@ -191,11 +197,11 @@ document.addEventListener('mouseup', e => {
     return
   }
   while (target.parentElement !== hoverables) {
-    if (target.classList.contains('prev')) {
+    if (target.classList.contains('fcitx-prev')) {
       return window._page(false)
-    } else if (target.classList.contains('next')) {
+    } else if (target.classList.contains('fcitx-next')) {
       return window._page(true)
-    } else if (target.classList.contains('expand')) {
+    } else if (target.classList.contains('fcitx-expand')) {
       return expand()
     }
     target = target.parentElement!
@@ -249,25 +255,25 @@ export function setBlur (enabled: boolean) {
 
 // HACK: force redraw blur every 40ms so that window background change counts
 let blurSwitch = false
-const panelBlurOuter = document.querySelector('.panel-blur-outer')!
-const panelBlurInner = document.querySelector('.panel-blur-inner')!
+const panelBlurOuter = document.querySelector('.fcitx-panel-blur-outer')!
+const panelBlurInner = document.querySelector('.fcitx-panel-blur-inner')!
 function redrawBlur () {
-  if (!blurEnabled || !theme.classList.contains('macos')) {
+  if (!blurEnabled || !theme.classList.contains('fcitx-macos')) {
     return
   }
   if (blurSwitch) {
-    panelBlurOuter.classList.add('blur')
-    panelBlurInner.classList.remove('blur')
+    panelBlurOuter.classList.add('fcitx-blur')
+    panelBlurInner.classList.remove('fcitx-blur')
   } else {
-    panelBlurInner.classList.add('blur')
-    panelBlurOuter.classList.remove('blur')
+    panelBlurInner.classList.add('fcitx-blur')
+    panelBlurOuter.classList.remove('fcitx-blur')
   }
   blurSwitch = !blurSwitch
 }
 setInterval(redrawBlur, 40)
 
 export function showCursor (show: boolean) {
-  const cursor = document.querySelector('.cursor')
+  const cursor = document.querySelector('.fcitx-cursor')
   if (cursor) {
     (<HTMLElement>cursor).style.opacity = show ? '1' : '0'
   }
