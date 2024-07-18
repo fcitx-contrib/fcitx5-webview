@@ -11,15 +11,15 @@ test('Set accent color', async ({ page }) => {
   await init(page)
 
   const cases = [
-    [null, 'blue'],
-    [-1, 'graphite'],
-    [0, 'red'],
-    [1, 'orange'],
-    [2, 'yellow'],
-    [3, 'green'],
-    [4, 'blue'],
-    [5, 'purple'],
-    [6, 'pink']
+    [null, 'fcitx-blue'],
+    [-1, 'fcitx-graphite'],
+    [0, 'fcitx-red'],
+    [1, 'fcitx-orange'],
+    [2, 'fcitx-yellow'],
+    [3, 'fcitx-green'],
+    [4, 'fcitx-blue'],
+    [5, 'fcitx-purple'],
+    [6, 'fcitx-pink']
   ] as [number | null, string][]
 
   for (const [value, color] of cases) {

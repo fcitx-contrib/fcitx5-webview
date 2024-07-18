@@ -66,12 +66,12 @@ type ACCENT_COLOR = keyof typeof accentColorMap
 let accentColor: ACCENT_COLOR = 'null'
 
 export function setAccentColor (color: number | null) {
-  theme.classList.remove(accentColorMap[accentColor])
+  theme.classList.remove(`fcitx-${accentColorMap[accentColor]}`)
   const key = String(color)
   if (key in accentColorMap) {
     accentColor = key as ACCENT_COLOR
   } else {
     accentColor = '4'
   }
-  theme.classList.add(accentColorMap[accentColor])
+  theme.classList.add(`fcitx-${accentColorMap[accentColor]}`)
 }
