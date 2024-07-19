@@ -102,6 +102,10 @@ $dark-graphite: rgb(105 105 105);
     color: white;
   }
 
+  .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
+    background-color: var(--accent-color);
+  }
+
   /* Use a dedicated div because
    * 1. divider color is not overlaid by panel color
    * 2. divider may not be full-length
@@ -189,51 +193,35 @@ $dark-graphite: rgb(105 105 105);
   }
 
   &.fcitx-blue {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-blue;
-    }
+    --accent-color: #{$light-blue};
   }
 
   &.fcitx-purple {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-purple;
-    }
+    --accent-color: #{$light-purple};
   }
 
   &.fcitx-pink {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-pink;
-    }
+    --accent-color: #{$light-pink};
   }
 
   &.fcitx-red {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-red;
-    }
+    --accent-color: #{$light-red};
   }
 
   &.fcitx-orange {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-orange;
-    }
+    --accent-color: #{$light-orange};
   }
 
   &.fcitx-yellow {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-yellow;
-    }
+    --accent-color: #{$light-yellow};
   }
 
   &.fcitx-green {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-green;
-    }
+    --accent-color: #{$light-green};
   }
 
   &.fcitx-graphite {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $light-graphite;
-    }
+    --accent-color: #{$light-graphite};
   }
 
   .fcitx-hoverables .fcitx-divider {
@@ -301,51 +289,35 @@ $dark-graphite: rgb(105 105 105);
   }
 
   &.fcitx-blue {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-blue;
-    }
+    --accent-color: #{$dark-blue};
   }
 
   &.fcitx-purple {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-purple;
-    }
+    --accent-color: #{$dark-purple};
   }
 
   &.fcitx-pink {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-pink;
-    }
+    --accent-color: #{$dark-pink};
   }
 
   &.fcitx-red {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-red;
-    }
+    --accent-color: #{$dark-red};
   }
 
   &.fcitx-orange {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-orange;
-    }
+    --accent-color: #{$dark-orange};
   }
 
   &.fcitx-yellow {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-yellow;
-    }
+    --accent-color: #{$dark-yellow};
   }
 
   &.fcitx-green {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-green;
-    }
+    --accent-color: #{$dark-green};
   }
 
   &.fcitx-graphite {
-    .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
-      background-color: $dark-graphite;
-    }
+    --accent-color: #{$dark-graphite};
   }
 
   .fcitx-hoverables .fcitx-divider {
