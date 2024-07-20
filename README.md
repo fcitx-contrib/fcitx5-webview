@@ -28,15 +28,21 @@ Execute the following JavaScript code to show candidates and more:
 _select = console.log
 _page = console.log
 _resize = console.log
+_scroll = console.log
 _action = console.log
 _log = console.log
 
 // Show candidates with labels, and highlight the first one.
+// Show paging buttons but disable previous page.
+// Not eligible for scroll mode.
 setCandidates([
   { text: "虚假的", label: "1", comment: "comment", actions: [{ "id": 1, "text": "删词" }] },
   { text: "🀄", label: "2", comment: "", actions: [] },
   { text: "candidates", label: "3", comment: "", actions: [] }], 0, "",
-  true, true, false)
+  true, false, true, 0, false, false)
+
+// Set writing mode. 0=horizontal-tb, 1=vertical-rl, 2=vertical-lr.
+setWritingMode(1)
 
 // Set vertical layout. 0 means horizontal.
 setLayout(1)

@@ -164,6 +164,9 @@ static std::string formatted_to_html(const formatted<std::string> &f,
                                      int cursor = -1) {
     std::stringstream ss;
     int cursor_pos = 0;
+    if (cursor >= 0) {
+        ss << "<div class=\"fcitx-pre-cursor\">";
+    }
     for (const auto &slice : f) {
         build_html_open_tags(ss, slice.second);
         auto size =
@@ -172,18 +175,21 @@ static std::string formatted_to_html(const formatted<std::string> &f,
         if (cursor_pos <= cursor && cursor <= cursor_pos + size) {
             ss << escape_html(slice.first.substr(0, cursor - cursor_pos));
             if (cursor_text.empty()) {
-                ss << "<div class=\"cursor no-text\">";
+                ss << "</div><div class=\"fcitx-cursor fcitx-no-text\">";
             } else {
-                ss << "<div class=\"cursor\">";
+                ss << "</div><div class=\"fcitx-cursor\">";
                 ss << escape_html(cursor_text);
             }
-            ss << "</div>";
+            ss << "</div><div class=\"fcitx-post-cursor\">";
             ss << escape_html(slice.first.substr(cursor - cursor_pos));
             // Do not draw cursor again when it's at the end of current slice
             cursor = -1;
         } else {
             ss << escape_html(slice.first);
             cursor_pos += size;
+        }
+        if (cursor >= 0) {
+            ss << "</div>";
         }
         build_html_close_tags(ss, slice.second);
     }

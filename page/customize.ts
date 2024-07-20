@@ -25,6 +25,7 @@ type LIGHT_MODE = {
   PagingButtonColor: string
   DisabledPagingButtonColor: string
   PreeditColor: string
+  PreeditColorPreCursor: string
   BorderColor: string
   DividerColor: string
 }
@@ -124,6 +125,7 @@ const COMMENT_LIGHT = `${PANEL_LIGHT} .fcitx-comment`
 const PAGING_BUTTON_LIGHT = `${PANEL_LIGHT} .fcitx-paging .fcitx-hoverable-inner svg`
 const PAGING_BUTTON_DISABLED_LIGHT = `${PANEL_LIGHT} .fcitx-paging svg`
 const PREEDIT_LIGHT = `${PANEL_LIGHT} :is(.fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down)`
+const PREEDIT_PRE_CURSOR_LIGHT = `${PANEL_LIGHT} .fcitx-pre-cursor`
 const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} :is(.fcitx-header, .fcitx-aux-down)`
 const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .fcitx-hoverables :is(.fcitx-candidate, .fcitx-paging)`
 const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .fcitx-hoverables .fcitx-divider .fcitx-divider-middle`
@@ -149,6 +151,7 @@ const COMMENT_DARK = lightToDark(COMMENT_LIGHT)
 const PAGING_BUTTON_DARK = lightToDark(PAGING_BUTTON_LIGHT)
 const PAGING_BUTTON_DISABLED_DARK = lightToDark(PAGING_BUTTON_DISABLED_LIGHT)
 const PREEDIT_DARK = lightToDark(PREEDIT_LIGHT)
+const PREEDIT_PRE_CURSOR_DARK = lightToDark(PREEDIT_PRE_CURSOR_LIGHT)
 const HEADER_DARK_BACKGROUND = lightToDark(HEADER_LIGHT_BACKGROUND)
 const HOVERABLES_DARK_BACKGROUND = lightToDark(HOVERABLES_LIGHT_BACKGROUND)
 const PANEL_DARK_DIVIDER_MIDDLE = lightToDark(PANEL_LIGHT_DIVIDER_MIDDLE)
@@ -243,6 +246,9 @@ export function setStyle (style: string) {
     rules[CURSOR_NO_TEXT_LIGHT] = {
       'background-color': j.LightMode.PreeditColor
     }
+    rules[PREEDIT_PRE_CURSOR_LIGHT] = {
+      color: j.LightMode.PreeditColorPreCursor
+    }
     rules[PANEL_LIGHT] = {
       'border-color': j.LightMode.BorderColor
     }
@@ -286,6 +292,7 @@ export function setStyle (style: string) {
         PAGING_BUTTON_LIGHT,
         PAGING_BUTTON_DISABLED_LIGHT,
         PREEDIT_LIGHT,
+        PREEDIT_PRE_CURSOR_LIGHT,
         CURSOR_NO_TEXT_LIGHT,
         PANEL_LIGHT,
         PANEL_LIGHT_DIVIDER_MIDDLE,
@@ -351,6 +358,9 @@ export function setStyle (style: string) {
       }
       rules[CURSOR_NO_TEXT_DARK] = {
         'background-color': j.DarkMode.PreeditColor
+      }
+      rules[PREEDIT_PRE_CURSOR_DARK] = {
+        color: j.DarkMode.PreeditColorPreCursor
       }
       rules[PANEL_DARK] = {
         'border-color': j.DarkMode.BorderColor
