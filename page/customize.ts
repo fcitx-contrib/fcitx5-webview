@@ -73,6 +73,7 @@ type STYLE_JSON = {
     BottomPadding: string
     LeftPadding: string
     LabelTextGap: string
+    VerticalMinWidth: string
     HorizontalDividerWidth: string
   }
   Advanced: {
@@ -85,6 +86,7 @@ function lightToDark (light: string) {
 }
 
 const PANEL = '.fcitx-basic .fcitx-panel'
+const PANEL_VERTICAL_CANDIDATE = `${PANEL}.fcitx-horizontal-tb .fcitx-vertical .fcitx-candidate`
 const PANEL_HORIZONTAL_DIVIDER = `${PANEL} .fcitx-hoverables.fcitx-vertical .fcitx-divider`
 const PANEL_HORIZONTAL_DIVIDER_SIDE = `${PANEL} .fcitx-hoverables.fcitx-vertical .fcitx-divider-side`
 // left of prev paging button, same with MSPY
@@ -465,6 +467,9 @@ export function setStyle (style: string) {
   rules[CANDIDATE_INNER]['padding-block-end'] = px(j.Size.BottomPadding)
   rules[CANDIDATE_INNER]['padding-inline-start'] = px(j.Size.LeftPadding)
   rules[CANDIDATE_INNER].gap = px(j.Size.LabelTextGap)
+  rules[PANEL_VERTICAL_CANDIDATE] = {
+    'min-inline-size': px(j.Size.VerticalMinWidth)
+  }
   rules[PANEL_HORIZONTAL_DIVIDER] = {
     'block-size': px(j.Size.HorizontalDividerWidth)
   }
