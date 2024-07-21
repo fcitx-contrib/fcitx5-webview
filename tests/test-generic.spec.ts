@@ -151,8 +151,8 @@ test('Set layout', async ({ page }) => {
   expect(verticalBox).toMatchObject({
     x: 25, y: 39 // shadow and inline-grid
   })
-  expect(verticalBox.width).toBeGreaterThan(41)
-  expect(verticalBox.width).toBeLessThan(51)
+  expect(verticalBox.width).toBeGreaterThan(197)
+  expect(verticalBox.width).toBeLessThan(207)
   expect(verticalBox.height).toBeGreaterThan(120)
   expect(verticalBox.height).toBeLessThan(130)
 

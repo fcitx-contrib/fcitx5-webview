@@ -143,6 +143,10 @@ $dark-graphite: rgb(105 105 105);
     font-size: 12px;
   }
 
+  .fcitx-horizontal-tb .fcitx-vertical .fcitx-candidate {
+    min-inline-size: 200px; /* avoid abrupt enlarging when start typing. */
+  }
+
   .fcitx-horizontal-tb .fcitx-horizontal .fcitx-paging.fcitx-arrow svg {
     transform: rotate(90deg);
   }
