@@ -113,9 +113,9 @@ const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .fcitx-highlighted-original .fcitx-mar
 
 const PANEL_LIGHT = `.fcitx-light${PANEL}`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner`
-const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted:hover .fcitx-hoverable-inner`
+const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .fcitx-mousemoved .fcitx-hoverable.fcitx-highlighted:hover .fcitx-hoverable-inner`
 const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted:active .fcitx-hoverable-inner`
-const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .fcitx-hoverable:not(.fcitx-highlighted):hover .fcitx-hoverable-inner`
+const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .fcitx-mousemoved .fcitx-hoverable:not(.fcitx-highlighted):hover .fcitx-hoverable-inner`
 const PANEL_LIGHT_OTHER_PRESS = `${PANEL_LIGHT} .fcitx-hoverable:not(.fcitx-highlighted):active .fcitx-hoverable-inner`
 const TEXT_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-candidate.fcitx-highlighted .fcitx-text`
 const TEXT_LIGHT_PRESS = `${PANEL_LIGHT} .fcitx-candidate:active .fcitx-candidate-inner .fcitx-text`

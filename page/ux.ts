@@ -21,6 +21,13 @@ let dX = 0
 let dY = 0
 let dragOffset = 0
 
+// 0: reset, 1: initial (when window is shown even if no mouse move there will be a mousemove event), 2+: moved
+let mouseMoveState = 0
+export function resetMouseMoveState () {
+  mouseMoveState = 0
+  hoverables.classList.remove('fcitx-mousemoved')
+}
+
 type ShadowBox = {
   anchorTop: number,
   anchorRight: number,
@@ -167,6 +174,9 @@ document.addEventListener('mousedown', e => {
 })
 
 document.addEventListener('mousemove', e => {
+  if (++mouseMoveState >= 2) {
+    hoverables.classList.add('fcitx-mousemoved')
+  }
   if (e.button !== 0 || !pressed) {
     return
   }

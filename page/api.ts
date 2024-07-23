@@ -12,6 +12,7 @@ import {
   hideContextmenu,
   getHoverBehavior,
   getPagingButtonsStyle,
+  resetMouseMoveState,
   resize
 } from './ux'
 import {
@@ -76,10 +77,16 @@ function setWritingMode (mode: 0 | 1 | 2) {
 function moveHighlight (from: Element | null, to: Element | null) {
   from?.classList.remove('fcitx-highlighted')
   to?.classList.add('fcitx-highlighted')
-  const fromMark = from?.querySelector('.fcitx-mark')
+  // In vertical or scroll mode, there are multiple marks,
+  // but either toMark exists (for candidate) or candidateInner doesn't exist (for paging button).
+  // In horizontal mode, there is a unique mark.
+  // Don't get mark from "from" because when mouse moves from paging button to outside,
+  // we need to move highlight from the last hovered candidate (not paging button) to original.
+  const mark = hoverables?.querySelector('.fcitx-mark')
   const toMark = to?.querySelector('.fcitx-mark')
-  if (fromMark && !toMark) {
-    to?.querySelector('.fcitx-candidate-inner')?.prepend(fromMark)
+  const candidateInner = to?.querySelector('.fcitx-candidate-inner') // not paging button
+  if (mark && !toMark && candidateInner) {
+    candidateInner.prepend(mark)
   }
 }
 
@@ -93,6 +100,7 @@ const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1
 const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
 function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
+  resetMouseMoveState()
   hideContextmenu()
   setScrollState(scrollState)
   // Clear existing candidates when scroll continues.
@@ -205,9 +213,9 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
   }
 
   for (const hoverable of hoverables.querySelectorAll('.fcitx-hoverable')) {
-    hoverable.addEventListener('mouseenter', () => {
+    hoverable.addEventListener('mousemove', () => {
       const hoverBehavior = getHoverBehavior()
-      if (hoverBehavior === 'Move') {
+      if (hoverBehavior === 'Move' && hoverables.classList.contains('fcitx-mousemoved')) {
         const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
         moveHighlight(lastHighlighted, hoverable)
       }
