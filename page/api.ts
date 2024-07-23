@@ -172,7 +172,7 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
 
   if (scrollState === 1) {
     hoverables.append(divider(true))
-    const expand = div('fcitx-expand', 'fcitx-hoverable-inner')
+    const expand = div('fcitx-expand', 'fcitx-paging-inner', 'fcitx-hoverable-inner')
     expand.innerHTML = arrowForward
     const paging = div('fcitx-paging', 'fcitx-scroll', 'fcitx-hoverable')
     paging.append(expand)
