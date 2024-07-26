@@ -3,6 +3,7 @@ add_library(WebviewCandidateWindow
     "${PROJECT_SOURCE_DIR}/pugixml/src/pugixml.cpp"
     webview_candidate_window.cpp
     platform.cpp
+    curl.cpp
 )
 target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview")
 target_link_libraries(WebviewCandidateWindow ${LIBS})

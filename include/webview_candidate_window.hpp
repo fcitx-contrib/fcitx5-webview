@@ -59,6 +59,10 @@ class WebviewCandidateWindow : public CandidateWindow {
     void platform_init();
 
   private:
+    /* API */
+    void api_curl(std::string id, std::string req);
+
+  private:
     /* Invoke a JavaScript function. */
     template <typename Ret = void, bool debug = false, typename... Args>
     inline Ret invoke_js(const char *name, Args... args) {

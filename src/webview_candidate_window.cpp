@@ -1,13 +1,10 @@
 #include "webview_candidate_window.hpp"
+#include "curl.hpp"
 #include "html_template.hpp"
 #include "utility.hpp"
 #include <algorithm>
-#include <curl/curl.h>
 #include <iostream>
 #include <sstream>
-
-static size_t _curl_cb(const char *data, size_t size, size_t nmemb,
-                       std::string *outbuf);
 
 namespace candidate_window {
 
@@ -70,105 +67,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     w_->bind(
         "curl",
-        [this](std::string id, std::string req, void *) {
-            // NOTE: resolve status 0=fulfilled, otherwise rejected
-
-            // TODO: for now, we use a one-thread-per-connection way.
-            // this is inscalable. need to be changed later.
-            auto j = nlohmann::json::parse(req);
-            std::string url;
-            try {
-                url = j[0].get<std::string>();
-            } catch (const std::exception &e) {
-                std::cerr << "[JS] Insufficient number of arguments to 'curl', "
-                             "needed 1 or 2, got 0\n";
-                return;
-            }
-            auto args = j[1];
-
-            std::thread([this, id = std::move(id), url = std::move(url),
-                         args = std::move(args)] {
-                CURL *curl = curl_easy_init();
-                if (!curl) {
-                    w_->resolve(id, 1, "\"Failed to initialize curl\"");
-                    return;
-                }
-
-                std::string recvBuf, postData;
-                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _curl_cb);
-                curl_easy_setopt(curl, CURLOPT_WRITEDATA, &recvBuf);
-
-                CURLcode res;
-                nlohmann::json j;
-                std::unordered_map<std::string, std::string> headers;
-                struct curl_slist *hlist = NULL;
-
-                // method
-                if (args.contains("method") && args["method"].is_string()) {
-                    std::string method = args["method"];
-                    if (method == "GET") {
-                        curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
-                    } else if (method == "POST") {
-                        curl_easy_setopt(curl, CURLOPT_POST, 1);
-                    } else if (method == "DELETE") {
-                        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-                    } else if (method == "HEAD") {
-                        curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
-                    } else {
-                        w_->resolve(id, 1,
-                                    nlohmann::json("Unknown HTTP method"));
-                        goto done;
-                    }
-                }
-
-                // json, data
-                if (args.contains("json")) {
-                    postData = args["json"].dump();
-                    curl_easy_setopt(curl, CURLOPT_POSTFIELDS,
-                                     postData.c_str());
-                    headers["Content-Type"] = "application/json";
-                } else if (args.contains("data") && args["data"].is_string()) {
-                    postData = args["data"].get<std::string>();
-                    curl_easy_setopt(curl, CURLOPT_POSTFIELDS,
-                                     postData.c_str());
-                }
-
-                // headers
-                if (args.contains("headers") && args["headers"].is_object()) {
-                    for (const auto &el : args["headers"].items()) {
-                        try {
-                            headers[el.key()] = el.value();
-                        } catch (...) {
-                            std::cerr << "[JS] Cannot get the value of header '"
-                                      << el.key() << "', value is "
-                                      << el.value() << "\n";
-                        }
-                    }
-                }
-                for (const auto &[key, value] : headers) {
-                    std::string s = key + ": " + value;
-                    hlist = curl_slist_append(hlist, s.c_str());
-                }
-                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hlist);
-
-                res = curl_easy_perform(curl);
-                if (res != CURLE_OK) {
-                    std::string errmsg = "Error getting data from remote: ";
-                    errmsg += curl_easy_strerror(res);
-                    w_->resolve(id, 1, nlohmann::json(errmsg).dump().c_str());
-                } else {
-                    int status = 0;
-                    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status);
-                    j["status"] = status;
-                    j["data"] = recvBuf;
-                    w_->resolve(id, 0, j.dump());
-                }
-
-            done:
-                curl_easy_cleanup(curl);
-            }).detach();
-        },
+        [this](std::string id, std::string req, void *) { api_curl(id, req); },
         nullptr);
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
@@ -314,10 +213,97 @@ void WebviewCandidateWindow::update_input_panel(
 
 void WebviewCandidateWindow::copy_html() { invoke_js("copyHTML"); }
 
-} // namespace candidate_window
+enum PromiseResolution {
+    kFulfilled,
+    kRejected,
+};
 
-static size_t _curl_cb(const char *data, size_t size, size_t nmemb,
-                       std::string *outbuf) {
-    outbuf->append(data, size * nmemb);
-    return size * nmemb;
+void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
+    auto j = nlohmann::json::parse(req);
+    std::string url;
+    try {
+        url = j[0].get<std::string>();
+    } catch (const std::exception &e) {
+        std::cerr << "[JS] Insufficient number of arguments to 'curl', "
+                     "needed 1 or 2, got 0\n";
+        w_->resolve(id, kRejected, "\"Bad call to 'curl'\"");
+        return;
+    }
+    auto args = j[1];
+
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        w_->resolve(id, kRejected, "\"Failed to initialize curl\"");
+        return;
+    }
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+    CURLcode res;
+    std::unordered_map<std::string, std::string> headers;
+    struct curl_slist *hlist = NULL;
+
+    // method
+    if (args.contains("method") && args["method"].is_string()) {
+        std::string method = args["method"];
+        if (method == "GET") {
+            curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
+        } else if (method == "POST") {
+            curl_easy_setopt(curl, CURLOPT_POST, 1);
+        } else if (method == "DELETE") {
+            curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+        } else if (method == "HEAD") {
+            curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+        } else {
+            w_->resolve(id, kRejected, nlohmann::json("Unknown HTTP method"));
+            curl_easy_cleanup(curl);
+            return;
+        }
+    }
+
+    // json, data
+    if (args.contains("json")) {
+        curl_easy_setopt(curl, CURLOPT_COPYPOSTFIELDS,
+                         args["json"].dump().c_str());
+        headers["Content-Type"] = "application/json";
+    } else if (args.contains("data") && args["data"].is_string()) {
+        curl_easy_setopt(curl, CURLOPT_COPYPOSTFIELDS,
+                         args["data"].get<std::string>().c_str());
+    }
+
+    // headers
+    if (args.contains("headers") && args["headers"].is_object()) {
+        for (const auto &el : args["headers"].items()) {
+            try {
+                headers[el.key()] = el.value();
+            } catch (...) {
+                std::cerr << "[JS] Cannot get the value of header '" << el.key()
+                          << "', value is " << el.value() << "\n";
+            }
+        }
+    }
+    for (const auto &[key, value] : headers) {
+        std::string s = key + ": " + value;
+        hlist = curl_slist_append(hlist, s.c_str());
+    }
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hlist);
+
+    CurlMultiManager::shared().add(curl, [this, id](CURLcode res, CURL *curl,
+                                                    const std::string &data) {
+        if (res != CURLE_OK) {
+            std::string errmsg = "CURL error: ";
+            errmsg += curl_easy_strerror(res);
+            w_->resolve(id, kRejected, nlohmann::json(errmsg).dump().c_str());
+        } else {
+            int status = 0;
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status);
+            nlohmann::json j{
+                {"status", status},
+                {"data", data},
+            };
+            w_->resolve(id, kFulfilled, j.dump());
+        }
+    });
 }
+
+} // namespace candidate_window
