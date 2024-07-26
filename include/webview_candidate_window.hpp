@@ -9,6 +9,9 @@
 #include <sstream>
 
 namespace candidate_window {
+
+enum CustomAPI : uint64_t { kCurl = 1 };
+
 class WebviewCandidateWindow : public CandidateWindow {
   public:
     WebviewCandidateWindow();
@@ -32,6 +35,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     void update_accent_color();
     void set_accent_color();
     void copy_html();
+
+    void set_api(uint64_t apis);
 
   private:
     std::shared_ptr<webview::webview> w_;

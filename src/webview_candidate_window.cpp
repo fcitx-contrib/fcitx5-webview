@@ -65,14 +65,11 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_copyHTML", [this](std::string html) { write_clipboard(html); });
 
-    w_->bind(
-        "curl",
-        [this](std::string id, std::string req, void *) { api_curl(id, req); },
-        nullptr);
-
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
     w_->set_html(html_template.c_str());
+
+    set_api(kCurl); // FIXME: remove before PR
 }
 
 void WebviewCandidateWindow::set_accent_color() {
@@ -212,6 +209,19 @@ void WebviewCandidateWindow::update_input_panel(
 }
 
 void WebviewCandidateWindow::copy_html() { invoke_js("copyHTML"); }
+
+void WebviewCandidateWindow::set_api(uint64_t apis) {
+    if (apis & kCurl) {
+        w_->bind(
+            "curl",
+            [this](std::string id, std::string req, void *) {
+                api_curl(id, req);
+            },
+            nullptr);
+    } else {
+        w_->eval("curl = undefined;");
+    }
+}
 
 enum PromiseResolution {
     kFulfilled,
