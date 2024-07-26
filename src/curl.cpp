@@ -86,7 +86,11 @@ void CurlMultiManager::run() {
                 {
                     // do this because the cb might be slow
                     std::shared_lock g(m);
-                    cb[easy](res, easy, buf[easy]);
+                    try {
+                        cb[easy](res, easy, buf[easy]);
+                    } catch (...) {
+                        assert(false && "curl callback must not throw!");
+                    }
                 }
                 curl_multi_remove_handle(multi, easy);
                 curl_easy_cleanup(easy);

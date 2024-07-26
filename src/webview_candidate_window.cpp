@@ -290,18 +290,26 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
 
     CurlMultiManager::shared().add(curl, [this, id](CURLcode res, CURL *curl,
                                                     const std::string &data) {
-        if (res != CURLE_OK) {
-            std::string errmsg = "CURL error: ";
-            errmsg += curl_easy_strerror(res);
-            w_->resolve(id, kRejected, nlohmann::json(errmsg).dump().c_str());
-        } else {
-            int status = 0;
-            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status);
-            nlohmann::json j{
-                {"status", status},
-                {"data", data},
-            };
-            w_->resolve(id, kFulfilled, j.dump());
+        try {
+            if (res != CURLE_OK) {
+                std::string errmsg = "CURL error: ";
+                errmsg += curl_easy_strerror(res);
+                w_->resolve(id, kRejected,
+                            nlohmann::json(errmsg).dump().c_str());
+            } else {
+                int status = 0;
+                curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status);
+                nlohmann::json j{
+                    {"status", status},
+                    {"data", data},
+                };
+                w_->resolve(id, kFulfilled, j.dump());
+            }
+        } catch (const std::exception &e) {
+            std::cerr << "[JS] curl callback throws " << e.what() << "\n";
+        } catch (...) {
+            std::cerr << "[JS] FATAL! Unhandled exception in curl callback\n";
+            std::terminate();
         }
     });
 }
