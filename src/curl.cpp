@@ -45,14 +45,14 @@ CurlMultiManager::~CurlMultiManager() {
 }
 
 void CurlMultiManager::add(CURL *easy, CurlMultiManager::Callback callback) {
+    curl_easy_setopt(easy, CURLOPT_WRITEFUNCTION, _on_data_cb);
+    curl_easy_setopt(easy, CURLOPT_WRITEDATA, &buf[easy]);
     {
         std::unique_lock g(m);
         buf[easy] = "";
         cb[easy] = callback;
+        curl_multi_add_handle(multi, easy);
     }
-    curl_easy_setopt(easy, CURLOPT_WRITEFUNCTION, _on_data_cb);
-    curl_easy_setopt(easy, CURLOPT_WRITEDATA, &buf[easy]);
-    curl_multi_add_handle(multi, easy);
     std::atomic_thread_fence(std::memory_order_release);
     write_char_strong(controlfd[1], 'a');
 }
@@ -99,13 +99,13 @@ void CurlMultiManager::run() {
                         assert(false && "curl callback must not throw!");
                     }
                 }
-                curl_multi_remove_handle(multi, easy);
-                curl_easy_cleanup(easy);
                 {
                     std::unique_lock g(m);
                     cb.erase(easy);
                     buf.erase(easy);
+                    curl_multi_remove_handle(multi, easy);
                 }
+                curl_easy_cleanup(easy);
             }
         }
     }
