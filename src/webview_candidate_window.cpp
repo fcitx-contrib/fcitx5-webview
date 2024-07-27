@@ -217,7 +217,7 @@ void WebviewCandidateWindow::set_api(uint64_t apis) {
             },
             nullptr);
     } else {
-        w_->eval("curl = undefined;");
+        w_->unbind("curl");
     }
 }
 
