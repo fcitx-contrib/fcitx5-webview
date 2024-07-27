@@ -312,7 +312,12 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
                                           binary](CURLcode res, CURL *curl,
                                                   const std::string &data) {
         try {
-            if (res == CURLE_OK) {
+            if (res != CURLE_OK) {
+                std::string errmsg = "CURL error: ";
+                errmsg += curl_easy_strerror(res);
+                w_->resolve(id, kRejected,
+                            nlohmann::json(errmsg).dump().c_str());
+            } else {
                 int status = 0;
                 curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status);
                 nlohmann::json j{
@@ -320,11 +325,6 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
                     {"data", !binary ? data : base64(data)},
                 };
                 w_->resolve(id, kFulfilled, j.dump());
-            } else {
-                std::string errmsg = "CURL error: ";
-                errmsg += curl_easy_strerror(res);
-                w_->resolve(id, kRejected,
-                            nlohmann::json(errmsg).dump().c_str());
             }
         } catch (const std::exception &e) {
             std::cerr << "[JS] curl callback throws " << e.what() << "\n";
