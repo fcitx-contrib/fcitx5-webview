@@ -49,7 +49,7 @@ void CurlMultiManager::add(CURL *easy, CurlMultiManager::Callback callback) {
     curl_easy_setopt(easy, CURLOPT_WRITEFUNCTION, _on_data_cb);
     curl_easy_setopt(easy, CURLOPT_WRITEDATA, &buf[easy]);
     curl_multi_add_handle(multi, easy);
-    std::atomic_thread_fence(std::memory_order_seq_cst);
+    std::atomic_thread_fence(std::memory_order_release);
     write(controlfd[1], "a", 1);
 }
 
@@ -64,7 +64,7 @@ void CurlMultiManager::run() {
         wfd.events = CURL_WAIT_POLLIN;
         wfd.revents = 0;
         curl_multi_poll(multi, &wfd, 1, 1000, &numfds);
-        std::atomic_thread_fence(std::memory_order_seq_cst);
+        std::atomic_thread_fence(std::memory_order_acquire);
         if (wfd.revents) {
             char cmd;
             read(controlfd[0], &cmd, 1);
