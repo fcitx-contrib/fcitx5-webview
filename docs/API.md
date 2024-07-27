@@ -23,6 +23,7 @@ type CurlResponse = {
 ```
 
 - If `args.binary` is `true`, then `response.data` will be a base64-encoded representation of the original data.
+- The precision of `args.timeout` is 50ms.
 
 **Example** POST w/ JSON:
 

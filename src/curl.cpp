@@ -67,7 +67,10 @@ void CurlMultiManager::run() {
         wfd.fd = controlfd[0];
         wfd.events = CURL_WAIT_POLLIN;
         wfd.revents = 0;
-        curl_multi_poll(multi, &wfd, 1, 1000, &numfds);
+        // NOTE: poll does not return when any of the easy handle's
+        // timeout expires.  By setting poll's timeout to 50ms, we
+        // effectively set the timeout precision to 50ms.
+        curl_multi_poll(multi, &wfd, 1, 50, &numfds);
         std::atomic_thread_fence(std::memory_order_acquire);
         if (wfd.revents) {
             char cmd;
