@@ -68,8 +68,6 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
     w_->set_html(html_template.c_str());
-
-    set_api(kCurl); // FIXME: remove before PR
 }
 
 void WebviewCandidateWindow::set_accent_color() {
