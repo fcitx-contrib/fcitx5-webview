@@ -1,12 +1,16 @@
 #include "curl.hpp"
 #include <atomic>
 #include <cassert>
+#include <errno.h>
+#include <mutex>
 #include <stdexcept>
 #include <thread>
 #include <unistd.h>
 
 static size_t _on_data_cb(char *data, size_t size, size_t nmemb,
                           std::string *outbuf);
+static bool write_char_strong(int fd, char c);
+static bool read_char_strong(int fd, char *c);
 std::mutex m;
 std::atomic<bool> running;
 
@@ -29,7 +33,7 @@ CurlMultiManager::CurlMultiManager() {
 }
 
 CurlMultiManager::~CurlMultiManager() {
-    write(controlfd[1], "q", 1);
+    write_char_strong(controlfd[1], 'q');
     if (worker_thread.joinable()) {
         worker_thread.join();
     }
@@ -50,7 +54,7 @@ void CurlMultiManager::add(CURL *easy, CurlMultiManager::Callback callback) {
     curl_easy_setopt(easy, CURLOPT_WRITEDATA, &buf[easy]);
     curl_multi_add_handle(multi, easy);
     std::atomic_thread_fence(std::memory_order_release);
-    write(controlfd[1], "a", 1);
+    write_char_strong(controlfd[1], 'a');
 }
 
 void CurlMultiManager::run() {
@@ -67,7 +71,7 @@ void CurlMultiManager::run() {
         std::atomic_thread_fence(std::memory_order_acquire);
         if (wfd.revents) {
             char cmd;
-            read(controlfd[0], &cmd, 1);
+            read_char_strong(controlfd[0], &cmd);
             switch (cmd) {
             case 'q': // quit
                 return;
@@ -108,4 +112,20 @@ size_t _on_data_cb(char *data, size_t size, size_t nmemb, std::string *outbuf) {
     size_t realsize = size * nmemb;
     outbuf->append(data, realsize);
     return realsize;
+}
+
+static bool write_char_strong(int fd, char c) {
+    ssize_t ret;
+    do {
+        ret = write(fd, &c, 1);
+    } while (ret == -1 && errno == EINTR);
+    return ret == 1;
+}
+
+static bool read_char_strong(int fd, char *c) {
+    ssize_t ret;
+    do {
+        ret = read(fd, c, 1);
+    } while (ret == -1 && errno == EINTR);
+    return ret == 1;
 }
