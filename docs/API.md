@@ -10,9 +10,10 @@ async function curl(url: string, args: CurlArgs) => CurlResponse
 type CurlArgs = {
     method?: "GET" | "POST" | "DELETE" | "HEAD" | "OPTIONS" | "PUT" | "PATCH",
     headers?: object,
-    data?: string, // ignored if `json` exists
+    data?: string,    // ignored if `json` exists
     json?: JSON,
     binary?: bool,
+    timeout?: uint64  // milliseconds
 }
 
 type CurlResponse = {
