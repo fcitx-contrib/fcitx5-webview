@@ -258,9 +258,12 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
             curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
         } else if (method == "POST") {
             curl_easy_setopt(curl, CURLOPT_POST, 1);
-        } else if (method == "DELETE") {
-            curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+        } else if (method == "DELETE" || method == "PUT" || method == "PATCH") {
+            curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.c_str());
         } else if (method == "HEAD") {
+            curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+        } else if (method == "OPTIONS") {
+            curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.c_str());
             curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
         } else {
             w_->resolve(id, kRejected, nlohmann::json("Unknown HTTP method"));

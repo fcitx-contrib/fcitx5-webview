@@ -8,7 +8,7 @@ With `curl`, you can interact with network resources directly.
 async function curl(url: string, args: CurlArgs) => CurlResponse
 
 type CurlArgs = {
-    method?: "GET" | "POST" | "DELETE" | "HEAD",
+    method?: "GET" | "POST" | "DELETE" | "HEAD" | "OPTIONS" | "PUT" | "PATCH",
     headers?: object,
     data?: string, // ignored if `json` exists
     json?: JSON,
