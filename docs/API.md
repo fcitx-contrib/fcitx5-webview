@@ -12,6 +12,7 @@ type CurlArgs = {
     headers?: object,
     data?: string, // ignored if `json` exists
     json?: JSON,
+    binary?: bool,
 }
 
 type CurlResponse = {
@@ -19,6 +20,8 @@ type CurlResponse = {
     data: string,
 }
 ```
+
+- If `args.binary` is `true`, then `response.data` will be a base64-encoded representation of the original data.
 
 **Example** POST w/ JSON:
 

@@ -249,7 +249,7 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-    CURLcode res;
+    bool binary = false;
     std::unordered_map<std::string, std::string> headers;
     struct curl_slist *hlist = NULL;
 
@@ -280,6 +280,9 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
         curl_easy_setopt(curl, CURLOPT_COPYPOSTFIELDS,
                          args["data"].get<std::string>().c_str());
     }
+    if (args.contains("binary") && args["binary"].is_boolean()) {
+        binary = args["binary"];
+    }
 
     // headers
     if (args.contains("headers") && args["headers"].is_object()) {
@@ -298,8 +301,9 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
     }
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hlist);
 
-    CurlMultiManager::shared().add(curl, [this, id](CURLcode res, CURL *curl,
-                                                    const std::string &data) {
+    CurlMultiManager::shared().add(curl, [this, id,
+                                          binary](CURLcode res, CURL *curl,
+                                                  const std::string &data) {
         try {
             if (res != CURLE_OK) {
                 std::string errmsg = "CURL error: ";
@@ -311,12 +315,13 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
                 curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status);
                 nlohmann::json j{
                     {"status", status},
-                    {"data", data},
+                    {"data", !binary ? data : base64(data)},
                 };
                 w_->resolve(id, kFulfilled, j.dump());
             }
         } catch (const std::exception &e) {
             std::cerr << "[JS] curl callback throws " << e.what() << "\n";
+            w_->resolve(id, kRejected, nlohmann::json(e.what()).dump());
         } catch (...) {
             std::cerr << "[JS] FATAL! Unhandled exception in curl callback\n";
             std::terminate();
