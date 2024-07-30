@@ -221,6 +221,13 @@ void WebviewCandidateWindow::set_api(uint64_t apis) {
     }
 }
 
+void WebviewCandidateWindow::load_plugins(
+    const std::vector<std::string> &names) {
+    invoke_js("loadPlugins", names);
+}
+
+void WebviewCandidateWindow::unload_plugins() { invoke_js("unloadPlugins"); }
+
 enum PromiseResolution {
     kFulfilled,
     kRejected,
