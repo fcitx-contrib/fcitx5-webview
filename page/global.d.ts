@@ -16,6 +16,11 @@ declare global {
   type SCROLL_MOVE_HIGHLIGHT = 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17
   type SCROLL_KEY_ACTION = SCROLL_SELECT | SCROLL_MOVE_HIGHLIGHT | 20
 
+  type FcitxPlugin = {
+    load: () => void
+    unload: () => void
+  }
+
   interface Window {
     // C++ APIs that api.ts calls
     _onload?: () => void
@@ -44,6 +49,11 @@ declare global {
 
     // Utility functions globally available
     fcitxLog: (...args: unknown[]) => void
+
+    // Plugin manager
+    pluginManager: {
+      register: (plugin: FcitxPlugin) => void
+    }
   }
 }
 

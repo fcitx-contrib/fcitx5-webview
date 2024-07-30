@@ -29,6 +29,11 @@ import {
   scrollKeyAction,
   fetchComplete
 } from './scroll'
+import {
+  pluginManager,
+  loadPlugins,
+  unloadPlugins
+} from './plugin'
 
 window.fcitxLog = fcitxLog
 window._onload && window._onload()
@@ -262,7 +267,7 @@ hoverables.addEventListener('wheel', e => {
 
 setTheme(0)
 
-// JavaScript APIs that webview_candidate_window.mm calls
+// JavaScript APIs that webview_candidate_window.cpp calls
 window.setCandidates = setCandidates
 window.setLayout = setLayout
 window.updateInputPanel = updateInputPanel
@@ -274,3 +279,15 @@ window.setWritingMode = setWritingMode
 window.copyHTML = copyHTML
 window.scrollKeyAction = scrollKeyAction
 window.answerActions = answerActions
+
+Object.defineProperty(window, 'pluginManager', {
+  value: pluginManager
+})
+
+Object.defineProperty(window, 'loadPlugins', {
+  value: loadPlugins
+})
+
+Object.defineProperty(window, 'unloadPlugins', {
+  value: unloadPlugins
+})

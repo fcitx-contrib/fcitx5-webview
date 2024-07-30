@@ -69,6 +69,7 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
         [urlSchemeTask didReceiveResponse:response];
         [urlSchemeTask didReceiveData:data];
         [urlSchemeTask didFinish];
+        [response release];
     } else {
         [urlSchemeTask didFailWithError:[NSError errorWithDomain:F5mErrorDomain
                                                             code:404

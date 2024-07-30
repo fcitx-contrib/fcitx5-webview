@@ -37,6 +37,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     void copy_html();
 
     void set_api(uint64_t apis);
+    void load_plugins(const std::vector<std::string> &names);
+    void unload_plugins();
 
   private:
     std::shared_ptr<webview::webview> w_;

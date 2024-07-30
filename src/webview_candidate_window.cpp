@@ -221,6 +221,13 @@ void WebviewCandidateWindow::set_api(uint64_t apis) {
     }
 }
 
+void WebviewCandidateWindow::load_plugins(
+    const std::vector<std::string> &names) {
+    invoke_js("loadPlugins", names);
+}
+
+void WebviewCandidateWindow::unload_plugins() { invoke_js("unloadPlugins"); }
+
 enum PromiseResolution {
     kFulfilled,
     kRejected,
@@ -252,8 +259,9 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
     struct curl_slist *hlist = NULL;
 
     // method
+    std::string method = "GET";
     if (args.contains("method") && args["method"].is_string()) {
-        std::string method = args["method"];
+        method = args["method"];
         if (method == "GET") {
             curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
         } else if (method == "POST") {
@@ -308,7 +316,7 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
         curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeout);
     }
 
-    CurlMultiManager::shared().add(curl, [this, id,
+    CurlMultiManager::shared().add(curl, [this, id, url, method,
                                           binary](CURLcode res, CURL *curl,
                                                   const std::string &data) {
         try {
@@ -319,6 +327,7 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
                     {"status", status},
                     {"data", !binary ? data : base64(data)},
                 };
+                std::cerr << method << " " << url << " " << status << std::endl;
                 w_->resolve(id, kFulfilled, j.dump());
             } else {
                 std::string errmsg = "CURL error: ";
