@@ -14,7 +14,7 @@ Object.defineProperty(pluginManager, 'register', {
   }
 })
 
-async function loadPlugins (names: string[]) {
+function loadPlugins (names: string[]) {
   for (const name of names) {
     window.fcitxLog(`Loading plugin ${name}`)
     const script = document.createElement('script')
