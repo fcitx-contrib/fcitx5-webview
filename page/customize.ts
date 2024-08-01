@@ -393,8 +393,12 @@ export function setStyle (style: string) {
   setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
 
   if (j.Background.ImageUrl) {
+    let url = j.Background.ImageUrl
+    if (url.startsWith('fcitx://')) {
+      url = noCache(url)
+    }
     // Background image should not affect aux
-    rules[HOVERABLES]['background-image'] = `url(${JSON.stringify(j.Background.ImageUrl)})`
+    rules[HOVERABLES]['background-image'] = `url(${JSON.stringify(url)})`
     rules[HOVERABLES]['background-size'] = 'cover'
   }
 
