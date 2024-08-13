@@ -23,7 +23,7 @@ test('Set accent color', async ({ page }) => {
   ] as [number | null, string][]
 
   for (const [value, color] of cases) {
-    await page.evaluate(value => window.setAccentColor(value), value)
+    await page.evaluate(value => window.fcitx.setAccentColor(value), value)
     await expect(theme(page)).toHaveClass(new RegExp(color))
   }
 })

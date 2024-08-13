@@ -3,7 +3,9 @@
 
 #include "candidate_window.hpp"
 #include "utility.hpp"
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#else
 #include "webview.h"
 #endif
 #include <iostream>
@@ -13,6 +15,11 @@
 namespace candidate_window {
 
 enum CustomAPI : uint64_t { kCurl = 1 };
+
+#ifdef __EMSCRIPTEN__
+extern std::unordered_map<std::string, std::function<std::string(std::string)>>
+    handlers;
+#endif
 
 class WebviewCandidateWindow : public CandidateWindow {
   public:
@@ -80,14 +87,16 @@ class WebviewCandidateWindow : public CandidateWindow {
     template <typename Ret = void, bool debug = false, typename... Args>
     inline Ret invoke_js(const char *name, Args... args) {
         std::stringstream ss;
-        ss << name << "(";
+        ss << "fcitx." << name << "(";
         build_js_args(ss, args...);
         ss << ");";
         if constexpr (debug) {
             std::cerr << ss.str() << "\n";
         }
         auto s = ss.str();
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+        emscripten_run_script(s.c_str());
+#else
         std::weak_ptr<webview::webview> weak_w = w_;
         async_on_main([=] {
             if (auto w = weak_w.lock()) {
@@ -117,8 +126,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     template <typename F> inline void bind(const std::string &name, F f) {
         using Ret = typename function_traits<F>::return_type;
         using ArgsTp = typename function_traits<F>::args_tuple;
-#ifndef __EMSCRIPTEN__
-	w_->bind(name, [=](std::string args_json) -> std::string {
+        auto handler = [=](std::string args_json) -> std::string {
             auto j = nlohmann::json::parse(args_json);
             ArgsTp args;
             if (std::tuple_size<ArgsTp>() > j.size()) {
@@ -143,7 +151,11 @@ class WebviewCandidateWindow : public CandidateWindow {
                 auto ret = std::apply(f, args);
                 return nlohmann::json(ret).dump();
             }
-        });
+        };
+#ifdef __EMSCRIPTEN__
+        handlers[name] = handler;
+#else
+        w_->bind(name, handler);
 #endif
     }
 

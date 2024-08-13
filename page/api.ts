@@ -35,9 +35,6 @@ import {
   unloadPlugins
 } from './plugin'
 
-window.fcitxLog = fcitxLog
-window._onload && window._onload()
-
 function escapeWS (s: string) {
   // XXX: &emsp; is broken in Safari
   return s.replaceAll(' ', '&nbsp;').replaceAll('\n', '<br>').replaceAll('\t', '&emsp;')
@@ -246,7 +243,7 @@ function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: 
 
 function copyHTML () {
   const html = document.documentElement.outerHTML
-  window._copyHTML(html)
+  fcitx._copyHTML(html)
 }
 
 hoverables.addEventListener('mouseleave', () => {
@@ -262,32 +259,64 @@ hoverables.addEventListener('wheel', e => {
   if (getScrollState() === 2) {
     return
   }
-  window._page((<WheelEvent>e).deltaY > 0)
+  fcitx._page((<WheelEvent>e).deltaY > 0)
 })
 
-setTheme(0)
+const distribution = process.env.FCITX_DISTRIBUTION
+
+let fcitx: FCITX
+
+if (distribution === 'fcitx5-js') {
+  fcitx = window.fcitx
+} else {
+  // @ts-expect-error f5m binds C++ function to JS global function, but we want to call fcitx._select for both f5m and f5j.
+  fcitx = window
+  window.fcitx = fcitx
+
+  /*
+    Don't pollute page's style for f5j
+    background: transparent, draw panel as you wish
+    margin: default is 8px
+    overflow: no scrollbar
+    width, height: big enough, disregard window size
+  */
+  const style = document.createElement('style')
+  style.innerHTML =
+`body {
+  background: rgb(0 0 0 / 0%);
+  margin: 0;
+  overflow: hidden;
+  width: 1920px;
+  height: 1080px;
+}`
+  document.head.append(style)
+}
 
 // JavaScript APIs that webview_candidate_window.cpp calls
-window.setCandidates = setCandidates
-window.setLayout = setLayout
-window.updateInputPanel = updateInputPanel
-window.resize = resize
-window.setTheme = setTheme
-window.setAccentColor = setAccentColor
-window.setStyle = setStyle
-window.setWritingMode = setWritingMode
-window.copyHTML = copyHTML
-window.scrollKeyAction = scrollKeyAction
-window.answerActions = answerActions
+fcitx.setCandidates = setCandidates
+fcitx.setLayout = setLayout
+fcitx.updateInputPanel = updateInputPanel
+fcitx.resize = resize
+fcitx.setTheme = setTheme
+fcitx.setAccentColor = setAccentColor
+fcitx.setStyle = setStyle
+fcitx.setWritingMode = setWritingMode
+fcitx.copyHTML = copyHTML
+fcitx.scrollKeyAction = scrollKeyAction
+fcitx.answerActions = answerActions
 
-Object.defineProperty(window, 'pluginManager', {
+Object.defineProperty(fcitx, 'pluginManager', {
   value: pluginManager
 })
 
-Object.defineProperty(window, 'loadPlugins', {
+Object.defineProperty(fcitx, 'loadPlugins', {
   value: loadPlugins
 })
 
-Object.defineProperty(window, 'unloadPlugins', {
+Object.defineProperty(fcitx, 'unloadPlugins', {
   value: unloadPlugins
 })
+
+fcitx.fcitxLog = fcitxLog
+fcitx._onload && fcitx._onload()
+setTheme(0)

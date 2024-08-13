@@ -72,7 +72,9 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+    EM_ASM(fcitx.createPanel(UTF8ToString($0)), html_template.c_str());
+#else
     w_->set_html(html_template.c_str());
 #endif
 }

@@ -21,7 +21,7 @@ declare global {
     unload: () => void
   }
 
-  interface Window {
+  type FCITX = {
     // C++ APIs that api.ts calls
     _onload?: () => void
     _log: (s: string) => void
@@ -54,6 +54,10 @@ declare global {
     pluginManager: {
       register: (plugin: FcitxPlugin) => void
     }
+  }
+
+  interface Window {
+    fcitx: FCITX
   }
 }
 

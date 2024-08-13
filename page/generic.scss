@@ -1,9 +1,4 @@
-body {
-  background: rgb(0 0 0 / 0%); /* transparent, draw panel as you wish */
-  margin: 0; /* default is 8px */
-  overflow: hidden; /* no scrollbar */
-  width: 1920px; /* big enough, disregard window size */
-  height: 1080px;
+#fcitx-theme {
   user-select: none; /* disable text select */
   font-family: sans-serif;
 }
