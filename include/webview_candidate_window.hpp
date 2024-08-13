@@ -3,7 +3,11 @@
 
 #include "candidate_window.hpp"
 #include "utility.hpp"
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#else
 #include "webview.h"
+#endif
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
@@ -11,6 +15,11 @@
 namespace candidate_window {
 
 enum CustomAPI : uint64_t { kCurl = 1 };
+
+#ifdef __EMSCRIPTEN__
+extern std::unordered_map<std::string, std::function<std::string(std::string)>>
+    handlers;
+#endif
 
 class WebviewCandidateWindow : public CandidateWindow {
   public:
@@ -36,12 +45,16 @@ class WebviewCandidateWindow : public CandidateWindow {
     void set_accent_color();
     void copy_html();
 
+#ifndef __EMSCRIPTEN__
     void set_api(uint64_t apis);
     void load_plugins(const std::vector<std::string> &names);
     void unload_plugins();
+#endif
 
   private:
+#ifndef __EMSCRIPTEN__
     std::shared_ptr<webview::webview> w_;
+#endif
     double cursor_x_ = 0;
     double cursor_y_ = 0;
     double x_ = 0;
@@ -74,19 +87,23 @@ class WebviewCandidateWindow : public CandidateWindow {
     template <typename Ret = void, bool debug = false, typename... Args>
     inline Ret invoke_js(const char *name, Args... args) {
         std::stringstream ss;
-        ss << name << "(";
+        ss << "fcitx." << name << "(";
         build_js_args(ss, args...);
         ss << ");";
         if constexpr (debug) {
             std::cerr << ss.str() << "\n";
         }
         auto s = ss.str();
+#ifdef __EMSCRIPTEN__
+        emscripten_run_script(s.c_str());
+#else
         std::weak_ptr<webview::webview> weak_w = w_;
         async_on_main([=] {
             if (auto w = weak_w.lock()) {
                 w->eval(s);
             }
         });
+#endif
     }
 
     template <typename T>
@@ -109,7 +126,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     template <typename F> inline void bind(const std::string &name, F f) {
         using Ret = typename function_traits<F>::return_type;
         using ArgsTp = typename function_traits<F>::args_tuple;
-        w_->bind(name, [=](std::string args_json) -> std::string {
+        auto handler = [=](std::string args_json) -> std::string {
             auto j = nlohmann::json::parse(args_json);
             ArgsTp args;
             if (std::tuple_size<ArgsTp>() > j.size()) {
@@ -134,7 +151,12 @@ class WebviewCandidateWindow : public CandidateWindow {
                 auto ret = std::apply(f, args);
                 return nlohmann::json(ret).dump();
             }
-        });
+        };
+#ifdef __EMSCRIPTEN__
+        handlers[name] = handler;
+#else
+        w_->bind(name, handler);
+#endif
     }
 
     template <typename Tuple, size_t... Is>

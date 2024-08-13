@@ -75,7 +75,7 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
       bottom = Math.max(bottom, b)
     }
 
-    window._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, right, bottom, dragging)
+    window.fcitx._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {
@@ -145,7 +145,7 @@ export function showContextmenu (x: number, y: number, index: number, actions: C
     const item = div('fcitx-menu-item')
     item.innerHTML = action.text
     item.addEventListener('click', () => {
-      window._action(index, action.id)
+      window.fcitx._action(index, action.id)
       hideContextmenu()
     })
     contextmenu.appendChild(item)
@@ -208,9 +208,9 @@ document.addEventListener('mouseup', e => {
   }
   while (target.parentElement !== hoverables) {
     if (target.classList.contains('fcitx-prev')) {
-      return window._page(false)
+      return window.fcitx._page(false)
     } else if (target.classList.contains('fcitx-next')) {
-      return window._page(true)
+      return window.fcitx._page(true)
     } else if (target.classList.contains('fcitx-expand')) {
       return expand()
     }
@@ -218,7 +218,7 @@ document.addEventListener('mouseup', e => {
   }
   const i = getCandidateIndex(target)
   if (i >= 0) {
-    return window._select(i)
+    return window.fcitx._select(i)
   }
 })
 
@@ -249,7 +249,7 @@ document.addEventListener('contextmenu', e => {
     actionX = e.clientX
     actionY = e.clientY
     actionIndex = i
-    return window._askActions(i)
+    return window.fcitx._askActions(i)
   }
   if (i >= 0 && actions[i].length > 0) {
     showContextmenu(e.clientX, e.clientY, i, actions[i])
@@ -280,7 +280,12 @@ function redrawBlur () {
   }
   blurSwitch = !blurSwitch
 }
-setInterval(redrawBlur, 40)
+
+if (window.location.href.startsWith('http')) { // fcitx5-js
+  redrawBlur()
+} else { // fcitx5-macos
+  setInterval(redrawBlur, 40)
+}
 
 export function showCursor (show: boolean) {
   const cursor = document.querySelector('.fcitx-cursor')

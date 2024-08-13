@@ -1,10 +1,14 @@
-add_library(WebviewCandidateWindow
+set(WCW_SRC
     utility.cpp
     "${PROJECT_SOURCE_DIR}/pugixml/src/pugixml.cpp"
     webview_candidate_window.cpp
     platform.cpp
-    curl.cpp
 )
+if(NOT EMSCRIPTEN)
+    list(APPEND WCW_SRC curl.cpp)
+endif()
+
+add_library(WebviewCandidateWindow ${WCW_SRC})
 target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview")
 target_link_libraries(WebviewCandidateWindow ${LIBS})
 if(APPLE)

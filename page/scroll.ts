@@ -32,11 +32,11 @@ export function fetchComplete () {
 }
 
 export function expand () {
-  window._scroll(0, (MAX_ROW + 1) * MAX_COLUMN) // visible rows plus 1 hidden row
+  window.fcitx._scroll(0, (MAX_ROW + 1) * MAX_COLUMN) // visible rows plus 1 hidden row
 }
 
 function collapse () {
-  window._scroll(-1, 0)
+  window.fcitx._scroll(-1, 0)
 }
 
 let rowItemCount: number[] = []
@@ -204,7 +204,7 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
     if (action > n) {
       return
     }
-    return window._select(itemCountInFirstNRows(highlightedRow) + action - 1)
+    return window.fcitx._select(itemCountInFirstNRows(highlightedRow) + action - 1)
   }
   switch (action) {
     case 10:
@@ -217,14 +217,14 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
     case 17: {
       const newHighlighted = getNeighborCandidate(highlighted, action)
       if (newHighlighted >= 0) {
-        window._highlight(newHighlighted)
+        window.fcitx._highlight(newHighlighted)
         renderHighlightAndLabels(newHighlighted, true)
         scrollForHighlight()
         if (!scrollEnd && !fetching) {
           const newHighlightedRow = getHighlightedRow()
           if (rowItemCount.length - newHighlightedRow <= MAX_ROW) {
             fetching = true
-            window._scroll(itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
+            window.fcitx._scroll(itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
           }
         }
       } else if ([10, 16].includes(action) && getHighlightedRow() === 0) {
@@ -233,7 +233,7 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
       break
     }
     case 20:
-      window._select(highlighted)
+      window.fcitx._select(highlighted)
       break
   }
 }
@@ -248,6 +248,6 @@ hoverables.addEventListener('scroll', () => {
   const bottomRight = candidates[bottomRightIndex]
   if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
     fetching = true
-    window._scroll(candidates.length, MAX_ROW * MAX_COLUMN)
+    window.fcitx._scroll(candidates.length, MAX_ROW * MAX_COLUMN)
   }
 })

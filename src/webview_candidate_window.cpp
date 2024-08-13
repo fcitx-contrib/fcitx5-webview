@@ -1,5 +1,7 @@
 #include "webview_candidate_window.hpp"
+#ifndef __EMSCRIPTEN__
 #include "curl.hpp"
+#endif
 #include "html_template.hpp"
 #include "utility.hpp"
 #include <algorithm>
@@ -33,7 +35,10 @@ Candidate escape_candidate(const Candidate &c) {
 }
 
 WebviewCandidateWindow::WebviewCandidateWindow()
-    : w_(std::make_shared<webview::webview>(1, create_window())) {
+#ifndef __EMSCRIPTEN__
+    : w_(std::make_shared<webview::webview>(1, create_window()))
+#endif
+{
     platform_init();
     set_transparent_background();
     update_accent_color();
@@ -67,7 +72,11 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
+#ifdef __EMSCRIPTEN__
+    EM_ASM(fcitx.createPanel(UTF8ToString($0)), html_template.c_str());
+#else
     w_->set_html(html_template.c_str());
+#endif
 }
 
 void WebviewCandidateWindow::set_accent_color() {
@@ -208,6 +217,7 @@ void WebviewCandidateWindow::update_input_panel(
 
 void WebviewCandidateWindow::copy_html() { invoke_js("copyHTML"); }
 
+#ifndef __EMSCRIPTEN__
 void WebviewCandidateWindow::set_api(uint64_t apis) {
     if (apis & kCurl) {
         w_->bind(
@@ -344,5 +354,6 @@ void WebviewCandidateWindow::api_curl(std::string id, std::string req) {
         }
     });
 }
+#endif
 
 } // namespace candidate_window
