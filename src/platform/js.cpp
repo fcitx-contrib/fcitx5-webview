@@ -26,6 +26,6 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
                                     double anchor_left, double width,
                                     double height, bool dragging) {
-    std::cerr << "resize" << std::endl;
+    EM_ASM(fcitx.placePanel($0, $1, $2, $3), dx, dy, anchor_top, anchor_left);
 }
 } // namespace candidate_window
