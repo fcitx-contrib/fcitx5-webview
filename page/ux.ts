@@ -161,7 +161,7 @@ export function hideContextmenu () {
   contextmenu.style.display = 'none'
 }
 
-document.addEventListener('mousedown', e => {
+decoration.addEventListener('mousedown', e => {
   if (e.button !== 0) {
     return
   }
@@ -173,7 +173,7 @@ document.addEventListener('mousedown', e => {
   dragOffset = 0
 })
 
-document.addEventListener('mousemove', e => {
+decoration.addEventListener('mousemove', e => {
   if (++mouseMoveState >= 2) {
     hoverables.classList.add('fcitx-mousemoved')
   }
@@ -191,7 +191,7 @@ document.addEventListener('mousemove', e => {
   resize(dx, -dy, true, false)
 })
 
-document.addEventListener('mouseup', e => {
+decoration.addEventListener('mouseup', e => {
   if (e.button !== 0) {
     return
   }
@@ -235,7 +235,7 @@ export function answerActions (actions: CandidateAction[]) {
   showContextmenu(actionX, actionY, actionIndex, actions)
 }
 
-document.addEventListener('contextmenu', e => {
+decoration.addEventListener('contextmenu', e => {
   e.preventDefault()
   let target = e.target as Element
   if (!isInsideHoverables(target)) {
