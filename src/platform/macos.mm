@@ -200,7 +200,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
 
     if (dragging) {
         x_ += dx;
-        y_ += dy;
+        y_ -= dy; // minus because macOS has bottom-left (0, 0)
     } else {
         if (layout_ == layout_t::vertical &&
             writing_mode_ == writing_mode_t::vertical_rl) {

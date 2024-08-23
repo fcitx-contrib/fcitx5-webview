@@ -18,7 +18,7 @@ void WebviewCandidateWindow::set_transparent_background() {}
 
 void WebviewCandidateWindow::update_accent_color() {}
 
-void WebviewCandidateWindow::hide() { std::cerr << "hide" << std::endl; }
+void WebviewCandidateWindow::hide() { EM_ASM(fcitx.hidePanel()); }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 

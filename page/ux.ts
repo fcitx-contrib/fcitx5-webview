@@ -184,11 +184,16 @@ decoration.addEventListener('mousemove', e => {
   dragging = true
   const dx = e.clientX - startX
   const dy = e.clientY - startY
+  if (window.fcitx.distribution === 'fcitx5-js') {
+    // On desktop mouse is always at where drag starts in the html,
+    // but on f5j mouse can be anywhere during drag.
+    startX = e.clientX
+    startY = e.clientY
+  }
   dX += dx
   dY += dy
   dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
-  // minus because macOS has bottom-left (0, 0)
-  resize(dx, -dy, true, false)
+  resize(dx, dy, true, false)
 })
 
 decoration.addEventListener('mouseup', e => {
