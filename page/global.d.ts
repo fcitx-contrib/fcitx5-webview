@@ -22,6 +22,8 @@ declare global {
   }
 
   type FCITX = {
+    distribution: string
+
     // C++ APIs that api.ts calls
     _onload?: () => void
     _log: (s: string) => void

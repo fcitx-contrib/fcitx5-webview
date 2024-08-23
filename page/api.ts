@@ -262,7 +262,7 @@ hoverables.addEventListener('wheel', e => {
   fcitx._page((<WheelEvent>e).deltaY > 0)
 })
 
-const distribution = process.env.FCITX_DISTRIBUTION
+const distribution = <string>process.env.FCITX_DISTRIBUTION ?? ''
 
 let fcitx: FCITX
 
@@ -291,6 +291,8 @@ if (distribution === 'fcitx5-js') {
 }`
   document.head.append(style)
 }
+
+fcitx.distribution = distribution
 
 // JavaScript APIs that webview_candidate_window.cpp calls
 fcitx.setCandidates = setCandidates
