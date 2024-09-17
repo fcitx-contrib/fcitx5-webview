@@ -1,15 +1,17 @@
-import {
+import type {
   HOVER_BEHAVIOR,
-  setHoverBehavior,
   PAGING_BUTTONS_STYLE,
-  setPagingButtonsStyle,
+} from './ux'
+import {
+  setBlink,
   setBlur,
-  setBlink
+  setHoverBehavior,
+  setPagingButtonsStyle,
 } from './ux'
 
 type CONFIG_BOOL = 'False' | 'True'
 
-type LIGHT_MODE = {
+interface LIGHT_MODE {
   OverrideDefault: CONFIG_BOOL
   HighlightColor: string
   HighlightHoverColor: string
@@ -30,10 +32,10 @@ type LIGHT_MODE = {
   DividerColor: string
 }
 
-type FONT_FAMILY = {[key: string]: string}
+interface FONT_FAMILY { [key: string]: string }
 
-type STYLE_JSON = {
-  LightMode: LIGHT_MODE,
+interface STYLE_JSON {
+  LightMode: LIGHT_MODE
   DarkMode: LIGHT_MODE & {
     SameWithLightMode: CONFIG_BOOL
   }
@@ -79,10 +81,6 @@ type STYLE_JSON = {
   Advanced: {
     UserCss: string
   }
-}
-
-function lightToDark (light: string) {
-  return light.replace(PANEL_LIGHT, PANEL_DARK)
 }
 
 const PANEL = '.fcitx-basic .fcitx-panel'
@@ -138,6 +136,11 @@ const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .fcitx-cursor.fcitx-no-text`
 const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .fcitx-highlighted .fcitx-mark`
 
 const PANEL_DARK = `.fcitx-dark${PANEL}`
+
+function lightToDark(light: string) {
+  return light.replace(PANEL_LIGHT, PANEL_DARK)
+}
+
 const PANEL_DARK_HIGHLIGHT = lightToDark(PANEL_LIGHT_HIGHLIGHT)
 const PANEL_DARK_HIGHLIGHT_HOVER = lightToDark(PANEL_LIGHT_HIGHLIGHT_HOVER)
 const PANEL_DARK_HIGHLIGHT_PRESS = lightToDark(PANEL_LIGHT_HIGHLIGHT_PRESS)
@@ -163,24 +166,24 @@ const PANEL_DARK_SCROLL_TRACK = lightToDark(PANEL_LIGHT_SCROLL_TRACK)
 const CURSOR_NO_TEXT_DARK = lightToDark(CURSOR_NO_TEXT_LIGHT)
 const HIGHLIGHT_MARK_DARK = lightToDark(HIGHLIGHT_MARK_LIGHT)
 
-function px (n: string | number) {
+function px(n: string | number) {
   return `${n}px`
 }
 
-function setFontFamily (o: {[key: string]: string}, f: FONT_FAMILY) {
+function setFontFamily(o: { [key: string]: string }, f: FONT_FAMILY) {
   const fontFamily = Object.values(f).filter(s => s.trim().length > 0).map(s => JSON.stringify(s.trim()))
   if (fontFamily.length > 0) {
     o['font-family'] = fontFamily.join(', ')
   }
 }
 
-function noCache (url: string): string {
-  return url + '?r=' + Math.random()
+function noCache(url: string): string {
+  return `${url}?r=${Math.random()}`
 }
 
-export function setStyle (style: string) {
+export function setStyle(style: string) {
   const j = JSON.parse(style) as STYLE_JSON
-  const rules: {[key: string]: {[key: string]: string}} = {}
+  const rules: { [key: string]: { [key: string]: string } } = {}
   const hasBackgroundImage = j.Background.ImageUrl.trim() !== ''
   const markKey = j.Highlight.MarkStyle === 'Text' ? 'color' : 'background-color'
   rules[PANEL] = {}
@@ -200,78 +203,78 @@ export function setStyle (style: string) {
     const lightBackgroundColor = hasBackgroundImage ? 'inherit' : j.LightMode.PanelColor
 
     rules[PANEL_LIGHT_HIGHLIGHT] = {
-      'background-color': j.LightMode.HighlightColor
+      'background-color': j.LightMode.HighlightColor,
     }
     rules[PANEL_LIGHT_HIGHLIGHT_HOVER] = {
-      'background-color': j.LightMode.HighlightHoverColor
+      'background-color': j.LightMode.HighlightHoverColor,
     }
     rules[PANEL_LIGHT_HIGHLIGHT_PRESS] = {
-      'background-color': j.LightMode.HighlightColor
+      'background-color': j.LightMode.HighlightColor,
     }
     rules[TEXT_LIGHT_HIGHLIGHT] = {
-      color: j.LightMode.HighlightTextColor
+      color: j.LightMode.HighlightTextColor,
     }
     rules[TEXT_LIGHT_PRESS] = {
-      color: j.LightMode.HighlightTextPressColor
+      color: j.LightMode.HighlightTextPressColor,
     }
     rules[LABEL_LIGHT_HIGHLIGHT] = {
-      color: j.LightMode.HighlightLabelColor
+      color: j.LightMode.HighlightLabelColor,
     }
     rules[COMMENT_LIGHT_HIGHLIGHT] = {
-      color: j.LightMode.HighlightCommentColor
+      color: j.LightMode.HighlightCommentColor,
     }
     rules[HEADER_LIGHT_BACKGROUND] = {
-      'background-color': j.LightMode.PanelColor
+      'background-color': j.LightMode.PanelColor,
     }
     rules[HOVERABLES_LIGHT_BACKGROUND] = {
       // With background image, discard panel color for unselected candidates
-      'background-color': lightBackgroundColor
+      'background-color': lightBackgroundColor,
     }
     rules[TEXT_LIGHT] = {
-      color: j.LightMode.TextColor
+      color: j.LightMode.TextColor,
     }
     rules[LABEL_LIGHT] = {
-      color: j.LightMode.LabelColor
+      color: j.LightMode.LabelColor,
     }
     rules[COMMENT_LIGHT] = {
-      color: j.LightMode.CommentColor
+      color: j.LightMode.CommentColor,
     }
     rules[PAGING_BUTTON_LIGHT] = {
-      color: j.LightMode.PagingButtonColor
+      color: j.LightMode.PagingButtonColor,
     }
     rules[PAGING_BUTTON_DISABLED_LIGHT] = {
-      color: j.LightMode.DisabledPagingButtonColor
+      color: j.LightMode.DisabledPagingButtonColor,
     }
     rules[PREEDIT_LIGHT] = {
-      color: j.LightMode.PreeditColor
+      color: j.LightMode.PreeditColor,
     }
     rules[CURSOR_NO_TEXT_LIGHT] = {
-      'background-color': j.LightMode.PreeditColor
+      'background-color': j.LightMode.PreeditColor,
     }
     rules[PREEDIT_PRE_CURSOR_LIGHT] = {
-      color: j.LightMode.PreeditColorPreCursor
+      color: j.LightMode.PreeditColorPreCursor,
     }
     rules[PANEL_LIGHT] = {
-      'border-color': j.LightMode.BorderColor
+      'border-color': j.LightMode.BorderColor,
     }
     rules[PANEL_LIGHT_DIVIDER_MIDDLE] = {
-      'background-color': j.LightMode.DividerColor
+      'background-color': j.LightMode.DividerColor,
     }
     rules[PANEL_LIGHT_DIVIDER_SIDE] = {
-      'background-color': lightBackgroundColor
+      'background-color': lightBackgroundColor,
     }
     rules[PANEL_LIGHT_SCROLL_DIVIDER] = rules[PANEL_LIGHT_SCROLL_TRACK] = {
-      'background-color': lightBackgroundColor
+      'background-color': lightBackgroundColor,
     }
     rules[HIGHLIGHT_MARK_LIGHT] = {
-      [markKey]: j.LightMode.HighlightMarkColor
+      [markKey]: j.LightMode.HighlightMarkColor,
     }
     if (j.Highlight.HoverBehavior === 'Add') {
       rules[PANEL_LIGHT_OTHER_HOVER] = {
-        'background-color': j.LightMode.HighlightColor
+        'background-color': j.LightMode.HighlightColor,
       }
       rules[PANEL_LIGHT_OTHER_PRESS] = {
-        'background-color': j.LightMode.HighlightHoverColor
+        'background-color': j.LightMode.HighlightHoverColor,
       }
     }
   }
@@ -301,7 +304,7 @@ export function setStyle (style: string) {
         PANEL_LIGHT_DIVIDER_SIDE,
         PANEL_LIGHT_SCROLL_DIVIDER,
         PANEL_LIGHT_SCROLL_TRACK,
-        HIGHLIGHT_MARK_LIGHT
+        HIGHLIGHT_MARK_LIGHT,
       ]
       if (j.Highlight.HoverBehavior === 'Add') {
         // This is the behavior of MSPY
@@ -310,81 +313,82 @@ export function setStyle (style: string) {
       for (const key of keys) {
         rules[lightToDark(key)] = rules[key]
       }
-    } else {
+    }
+    else {
       const darkBackgroundColor = hasBackgroundImage ? 'inherit' : j.DarkMode.PanelColor
 
       rules[PANEL_DARK_HIGHLIGHT] = {
-        'background-color': j.DarkMode.HighlightColor
+        'background-color': j.DarkMode.HighlightColor,
       }
       rules[PANEL_DARK_HIGHLIGHT_HOVER] = {
-        'background-color': j.DarkMode.HighlightHoverColor
+        'background-color': j.DarkMode.HighlightHoverColor,
       }
       rules[PANEL_DARK_HIGHLIGHT_PRESS] = {
-        'background-color': j.DarkMode.HighlightColor
+        'background-color': j.DarkMode.HighlightColor,
       }
       rules[TEXT_DARK_HIGHLIGHT] = {
-        color: j.DarkMode.HighlightTextColor
+        color: j.DarkMode.HighlightTextColor,
       }
       rules[TEXT_DARK_PRESS] = {
-        color: j.DarkMode.HighlightTextPressColor
+        color: j.DarkMode.HighlightTextPressColor,
       }
       rules[LABEL_DARK_HIGHLIGHT] = {
-        color: j.DarkMode.HighlightLabelColor
+        color: j.DarkMode.HighlightLabelColor,
       }
       rules[COMMENT_DARK_HIGHLIGHT] = {
-        color: j.DarkMode.HighlightCommentColor
+        color: j.DarkMode.HighlightCommentColor,
       }
       rules[HEADER_DARK_BACKGROUND] = {
-        'background-color': j.DarkMode.PanelColor
+        'background-color': j.DarkMode.PanelColor,
       }
       rules[HOVERABLES_DARK_BACKGROUND] = {
-        'background-color': darkBackgroundColor
+        'background-color': darkBackgroundColor,
       }
       rules[TEXT_DARK] = {
-        color: j.DarkMode.TextColor
+        color: j.DarkMode.TextColor,
       }
       rules[LABEL_DARK] = {
-        color: j.DarkMode.LabelColor
+        color: j.DarkMode.LabelColor,
       }
       rules[COMMENT_DARK] = {
-        color: j.DarkMode.CommentColor
+        color: j.DarkMode.CommentColor,
       }
       rules[PAGING_BUTTON_DARK] = {
-        color: j.DarkMode.PagingButtonColor
+        color: j.DarkMode.PagingButtonColor,
       }
       rules[PAGING_BUTTON_DISABLED_DARK] = {
-        color: j.DarkMode.DisabledPagingButtonColor
+        color: j.DarkMode.DisabledPagingButtonColor,
       }
       rules[PREEDIT_DARK] = {
-        color: j.DarkMode.PreeditColor
+        color: j.DarkMode.PreeditColor,
       }
       rules[CURSOR_NO_TEXT_DARK] = {
-        'background-color': j.DarkMode.PreeditColor
+        'background-color': j.DarkMode.PreeditColor,
       }
       rules[PREEDIT_PRE_CURSOR_DARK] = {
-        color: j.DarkMode.PreeditColorPreCursor
+        color: j.DarkMode.PreeditColorPreCursor,
       }
       rules[PANEL_DARK] = {
-        'border-color': j.DarkMode.BorderColor
+        'border-color': j.DarkMode.BorderColor,
       }
       rules[PANEL_DARK_DIVIDER_MIDDLE] = {
-        'background-color': j.DarkMode.DividerColor
+        'background-color': j.DarkMode.DividerColor,
       }
       rules[PANEL_DARK_DIVIDER_SIDE] = {
-        'background-color': darkBackgroundColor
+        'background-color': darkBackgroundColor,
       }
       rules[PANEL_DARK_SCROLL_DIVIDER] = rules[PANEL_DARK_SCROLL_TRACK] = {
-        'background-color': darkBackgroundColor
+        'background-color': darkBackgroundColor,
       }
       rules[HIGHLIGHT_MARK_DARK] = {
-        [markKey]: j.DarkMode.HighlightMarkColor
+        [markKey]: j.DarkMode.HighlightMarkColor,
       }
       if (j.Highlight.HoverBehavior === 'Add') {
         rules[PANEL_DARK_OTHER_HOVER] = {
-          'background-color': j.DarkMode.HighlightColor
+          'background-color': j.DarkMode.HighlightColor,
         }
         rules[PANEL_DARK_OTHER_PRESS] = {
-          'background-color': j.DarkMode.HighlightHoverColor
+          'background-color': j.DarkMode.HighlightHoverColor,
         }
       }
     }
@@ -405,7 +409,8 @@ export function setStyle (style: string) {
   if (j.Background.Blur === 'True') {
     setBlur(true)
     rules['.fcitx-blur'] = { '-webkit-backdrop-filter': `blur(${px(j.Background.BlurRadius)})` }
-  } else {
+  }
+  else {
     setBlur(false)
     document.querySelector('fcitx-.panel-blur-outer')?.classList.remove('fcitx-blur')
     document.querySelector('.fcitx-panel-blur-outer')?.classList.remove('fcitx-blur')
@@ -443,25 +448,25 @@ export function setStyle (style: string) {
   if (j.Size.HorizontalDividerWidth === '0') {
     rules[VERTICAL_CANDIDATE_INNER] = {
       'margin-block-start': halfMargin,
-      'margin-block-end': halfMargin
+      'margin-block-end': halfMargin,
     }
     rules[VERTICAL_FIRST_CANDIDATE_INNER] = {
-      'margin-block-start': px(j.Size.Margin)
+      'margin-block-start': px(j.Size.Margin),
     }
     rules[VERTICAL_LAST_CANDIDATE_INNER] = {
-      'margin-block-end': px(j.Size.Margin)
+      'margin-block-end': px(j.Size.Margin),
     }
   }
   // Unconditional since there is no vertical divider between candidates.
   rules[HORIZONTAL_CANDIDATE_INNER] = {
     'margin-inline-start': halfMargin,
-    'margin-inline-end': halfMargin
+    'margin-inline-end': halfMargin,
   }
   rules[HORIZONTAL_FIRST_CANDIDATE_INNER] = {
-    'margin-inline-start': px(j.Size.Margin)
+    'margin-inline-start': px(j.Size.Margin),
   }
   rules[HORIZONTAL_LAST_CANDIDATE_INNER] = {
-    'margin-inline-end': px(j.Size.Margin)
+    'margin-inline-end': px(j.Size.Margin),
   }
 
   rules[PAGING_OUTER].margin = px(j.Size.Margin)
@@ -472,23 +477,23 @@ export function setStyle (style: string) {
   rules[CANDIDATE_INNER]['padding-inline-start'] = px(j.Size.LeftPadding)
   rules[CANDIDATE_INNER].gap = px(j.Size.LabelTextGap)
   rules[PANEL_VERTICAL_CANDIDATE] = {
-    'min-inline-size': px(j.Size.VerticalMinWidth)
+    'min-inline-size': px(j.Size.VerticalMinWidth),
   }
   rules[PANEL_HORIZONTAL_DIVIDER] = {
-    'block-size': px(j.Size.HorizontalDividerWidth)
+    'block-size': px(j.Size.HorizontalDividerWidth),
   }
   rules[PANEL_HORIZONTAL_DIVIDER_SIDE] = {
-    'inline-size': px(j.Size.Margin)
+    'inline-size': px(j.Size.Margin),
   }
   rules[PANEL_VERTICAL_DIVIDER_SIDE] = {
-    'block-size': px(j.Size.Margin)
+    'block-size': px(j.Size.Margin),
   }
 
   const basic = document.head.querySelector('#fcitx-basic')
   if (basic) {
     basic.innerHTML = Object.entries(rules).map(([selector, block]) =>
-      `${selector} {` + Object.entries(block).map(([key, value]) =>
-        `${key}: ${value};`).join('\n') + '}').join('\n')
+      `${selector} {${Object.entries(block).map(([key, value]) =>
+        `${key}: ${value};`).join('\n')}}`).join('\n')
   }
 
   document.head.querySelector('#fcitx-user')?.setAttribute('href', noCache(j.Advanced.UserCss))

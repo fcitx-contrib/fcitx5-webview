@@ -1,14 +1,14 @@
 import {
-  theme,
-  panel,
-  decoration,
-  contextmenu,
-  hoverables
-} from './selector'
-import {
+  expand,
   getScrollState,
-  expand
 } from './scroll'
+import {
+  contextmenu,
+  decoration,
+  hoverables,
+  panel,
+  theme,
+} from './selector'
 
 const DRAG_THRESHOLD = 10
 
@@ -23,27 +23,27 @@ let dragOffset = 0
 
 // 0: reset, 1: initial (when window is shown even if no mouse move there will be a mousemove event), 2+: moved
 let mouseMoveState = 0
-export function resetMouseMoveState () {
+export function resetMouseMoveState() {
   mouseMoveState = 0
   hoverables.classList.remove('fcitx-mousemoved')
 }
 
-type ShadowBox = {
-  anchorTop: number,
-  anchorRight: number,
-  anchorLeft: number,
-  right: number,
+interface ShadowBox {
+  anchorTop: number
+  anchorRight: number
+  anchorLeft: number
+  right: number
   bottom: number
 }
 
-export function resize (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
-  function adaptWindowSize (reserveSpaceForContextmenu: boolean) {
+export function resize(dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
+  function adaptWindowSize(reserveSpaceForContextmenu: boolean) {
     let {
       anchorTop,
       anchorRight,
       anchorLeft,
       right,
-      bottom
+      bottom,
     } = getBoundingRectWithShadow(panel)
 
     // Account for window decorations.
@@ -66,10 +66,11 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
     if (reserveSpaceForContextmenu) {
       right += 100
       bottom += 100
-    } else if (contextmenu.style.display === 'block') {
+    }
+    else if (contextmenu.style.display === 'block') {
       const {
         right: r,
-        bottom: b
+        bottom: b,
       } = getBoundingRectWithShadow(contextmenu)
       right = Math.max(right, r)
       bottom = Math.max(bottom, b)
@@ -89,12 +90,12 @@ export function resize (dx: number, dy: number, dragging: boolean, hasContextmen
   }
 }
 
-function getBoundingRectWithShadow (element: Element): ShadowBox {
+function getBoundingRectWithShadow(element: Element): ShadowBox {
   const rect = element.getBoundingClientRect()
   let xHi = rect.right
   let yHi = rect.bottom
 
-  const vals = window.getComputedStyle(element).boxShadow.split(' ').map(parseFloat)
+  const vals = window.getComputedStyle(element).boxShadow.split(' ').map(Number.parseFloat)
   // The format of computed style is 'rgb(255, 0, 0) 10px 5px 5px 0px, rgb(255, 0, 0) 10px 5px 5px 0px'
   // Therefore, vals has exactly (7*n) elements, and vals[7*i] will be NaN.
   for (let i = 0; i < vals.length / 7; i += 1) {
@@ -106,8 +107,10 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
     const deltaY = offsetY + blurRadius + spreadRadius
     const shadowXHi = rect.right + (deltaX > 0 ? deltaX : 0)
     const shadowYHi = rect.bottom + (deltaY > 0 ? deltaY : 0)
-    if (shadowXHi > xHi) xHi = shadowXHi
-    if (shadowYHi > yHi) yHi = shadowYHi
+    if (shadowXHi > xHi)
+      xHi = shadowXHi
+    if (shadowYHi > yHi)
+      yHi = shadowYHi
   }
   // Extend the rect to contain the shadow.
   return {
@@ -115,21 +118,21 @@ function getBoundingRectWithShadow (element: Element): ShadowBox {
     anchorRight: rect.right,
     anchorLeft: rect.left,
     right: xHi,
-    bottom: yHi
+    bottom: yHi,
   }
 }
 
-export function div (...classList: string[]) {
+export function div(...classList: string[]) {
   const element = document.createElement('div')
   element.classList.add(...classList)
   return element
 }
 
-function isInsideHoverables (target: Element) {
+function isInsideHoverables(target: Element) {
   return target !== hoverables && hoverables.contains(target)
 }
 
-function getCandidateIndex (target: Element) {
+function getCandidateIndex(target: Element) {
   const allCandidates = hoverables.querySelectorAll('.fcitx-candidate')
   for (let i = 0; i < allCandidates.length; ++i) {
     if (allCandidates[i] === target) {
@@ -139,7 +142,7 @@ function getCandidateIndex (target: Element) {
   return -1
 }
 
-export function showContextmenu (x: number, y: number, index: number, actions: CandidateAction[]) {
+export function showContextmenu(x: number, y: number, index: number, actions: CandidateAction[]) {
   contextmenu.innerHTML = ''
   for (const action of actions) {
     const item = div('fcitx-menu-item')
@@ -156,14 +159,14 @@ export function showContextmenu (x: number, y: number, index: number, actions: C
   resize(0, 0, false, true)
 }
 
-export function hideContextmenu () {
+export function hideContextmenu() {
   contextmenu.innerHTML = ''
   contextmenu.style.display = 'none'
 }
 
 const receiver = (window.fcitx.distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
 
-receiver.addEventListener('mousedown', e => {
+receiver.addEventListener('mousedown', (e) => {
   if (e.button !== 0) {
     return
   }
@@ -175,7 +178,7 @@ receiver.addEventListener('mousedown', e => {
   dragOffset = 0
 })
 
-receiver.addEventListener('mousemove', e => {
+receiver.addEventListener('mousemove', (e) => {
   if (++mouseMoveState >= 2) {
     hoverables.classList.add('fcitx-mousemoved')
   }
@@ -198,7 +201,7 @@ receiver.addEventListener('mousemove', e => {
   resize(dx, dy, true, false)
 })
 
-receiver.addEventListener('mouseup', e => {
+receiver.addEventListener('mouseup', (e) => {
   if (e.button !== 0) {
     return
   }
@@ -216,9 +219,11 @@ receiver.addEventListener('mouseup', e => {
   while (target.parentElement !== hoverables) {
     if (target.classList.contains('fcitx-prev')) {
       return window.fcitx._page(false)
-    } else if (target.classList.contains('fcitx-next')) {
+    }
+    else if (target.classList.contains('fcitx-next')) {
       return window.fcitx._page(true)
-    } else if (target.classList.contains('fcitx-expand')) {
+    }
+    else if (target.classList.contains('fcitx-expand')) {
       return expand()
     }
     target = target.parentElement!
@@ -230,7 +235,7 @@ receiver.addEventListener('mouseup', e => {
 })
 
 let actions: CandidateAction[][] = []
-export function setActions (newActions: CandidateAction[][]) {
+export function setActions(newActions: CandidateAction[][]) {
   actions = newActions
 }
 
@@ -238,11 +243,11 @@ let actionX = 0
 let actionY = 0
 let actionIndex = 0
 
-export function answerActions (actions: CandidateAction[]) {
+export function answerActions(actions: CandidateAction[]) {
   showContextmenu(actionX, actionY, actionIndex, actions)
 }
 
-receiver.addEventListener('contextmenu', e => {
+receiver.addEventListener('contextmenu', (e) => {
   e.preventDefault()
   let target = e.target as Element
   if (!isInsideHoverables(target)) {
@@ -260,13 +265,14 @@ receiver.addEventListener('contextmenu', e => {
   }
   if (i >= 0 && actions[i].length > 0) {
     showContextmenu(e.clientX, e.clientY, i, actions[i])
-  } else {
+  }
+  else {
     hideContextmenu()
   }
 })
 
 let blurEnabled = true
-export function setBlur (enabled: boolean) {
+export function setBlur(enabled: boolean) {
   blurEnabled = enabled
 }
 
@@ -274,14 +280,15 @@ export function setBlur (enabled: boolean) {
 let blurSwitch = false
 const panelBlurOuter = document.querySelector('.fcitx-panel-blur-outer')!
 const panelBlurInner = document.querySelector('.fcitx-panel-blur-inner')!
-function redrawBlur () {
+function redrawBlur() {
   if (!blurEnabled || !theme.classList.contains('fcitx-macos')) {
     return
   }
   if (blurSwitch) {
     panelBlurOuter.classList.add('fcitx-blur')
     panelBlurInner.classList.remove('fcitx-blur')
-  } else {
+  }
+  else {
     panelBlurInner.classList.add('fcitx-blur')
     panelBlurOuter.classList.remove('fcitx-blur')
   }
@@ -290,11 +297,12 @@ function redrawBlur () {
 
 if (window.location.href.startsWith('http')) { // fcitx5-js
   redrawBlur()
-} else { // fcitx5-macos
+}
+else { // fcitx5-macos
   setInterval(redrawBlur, 40)
 }
 
-export function showCursor (show: boolean) {
+export function showCursor(show: boolean) {
   const cursor = document.querySelector('.fcitx-cursor')
   if (cursor) {
     (<HTMLElement>cursor).style.opacity = show ? '1' : '0'
@@ -302,7 +310,7 @@ export function showCursor (show: boolean) {
 }
 
 let blinkEnabled = true
-export function setBlink (enabled: boolean) {
+export function setBlink(enabled: boolean) {
   blinkEnabled = enabled
   if (!enabled) {
     showCursor(true)
@@ -320,18 +328,18 @@ setInterval(() => {
 
 export type HOVER_BEHAVIOR = 'None' | 'Move' | 'Add'
 let hoverBehavior: HOVER_BEHAVIOR = 'None'
-export function setHoverBehavior (behavior: HOVER_BEHAVIOR) {
+export function setHoverBehavior(behavior: HOVER_BEHAVIOR) {
   hoverBehavior = behavior
 }
-export function getHoverBehavior () {
+export function getHoverBehavior() {
   return hoverBehavior
 }
 
 export type PAGING_BUTTONS_STYLE = 'None' | 'Arrow' | 'Triangle'
 let pagingButtonsStyle: PAGING_BUTTONS_STYLE = 'Arrow'
-export function setPagingButtonsStyle (style: PAGING_BUTTONS_STYLE) {
+export function setPagingButtonsStyle(style: PAGING_BUTTONS_STYLE) {
   pagingButtonsStyle = style
 }
-export function getPagingButtonsStyle () {
+export function getPagingButtonsStyle() {
   return pagingButtonsStyle
 }

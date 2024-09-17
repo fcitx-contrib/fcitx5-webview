@@ -1,16 +1,16 @@
 import {
+  expect,
   test,
-  expect
 } from '@playwright/test'
 import {
-  setCandidates,
-  setLayout,
-  theme,
-  panel,
   candidate,
   getBox,
   getCppCalls,
-  init
+  init,
+  panel,
+  setCandidates,
+  setLayout,
+  theme,
 } from './util'
 
 test('HTML structure', async ({ page }) => {
@@ -23,10 +23,10 @@ test('HTML structure', async ({ page }) => {
   })
   await setCandidates(page, [
     { text: '页面结构', label: '1', comment: 'c', actions: [] },
-    { text: '测试', label: '2', comment: '', actions: [] }], 0)
+    { text: '测试', label: '2', comment: '', actions: [] },
+  ], 0)
 
-  const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><')
-    .replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
+  const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><').replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
 <div id="fcitx-theme" class="fcitx-basic fcitx-blue fcitx-dark">
   <div class="fcitx-decoration">
@@ -83,7 +83,8 @@ test('Select candidate', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
     { text: '点击', label: '1', comment: '', actions: [] },
-    { text: '候选词', label: '2', comment: '', actions: [] }], 0)
+    { text: '候选词', label: '2', comment: '', actions: [] },
+  ], 0)
 
   await candidate(page, 1).click()
   const cppCalls = await getCppCalls(page)
@@ -93,7 +94,8 @@ test('Select candidate', async ({ page }) => {
 test('Candidate action', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
-    { text: '可遗忘', label: '1', comment: '', actions: [{ id: 1, text: '忘记' }] }], 0)
+    { text: '可遗忘', label: '1', comment: '', actions: [{ id: 1, text: '忘记' }] },
+  ], 0)
 
   await candidate(page, 0).click({ button: 'right' })
   await page.getByText('忘记').click()
@@ -105,7 +107,8 @@ test('Drag should not select candidate', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
     { text: '拖动', label: '1', comment: '', actions: [] },
-    { text: '不选词', label: '2', comment: '', actions: [] }], 0)
+    { text: '不选词', label: '2', comment: '', actions: [] },
+  ], 0)
 
   const box = await getBox(candidate(page, 0))
   const centerX = box.x + box.width / 2
@@ -123,7 +126,8 @@ test('But micro drag is tolerated', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
     { text: '微动', label: '1', comment: '', actions: [] },
-    { text: '选词', label: '2', comment: '', actions: [] }], 0)
+    { text: '选词', label: '2', comment: '', actions: [] },
+  ], 0)
 
   const box = await getBox(candidate(page, 0))
   const centerX = box.x + box.width / 2
@@ -144,12 +148,14 @@ test('Set layout', async ({ page }) => {
     { text: '横', label: '1', comment: '', actions: [] },
     { text: '竖', label: '1', comment: '', actions: [] },
     { text: '分', label: '1', comment: '', actions: [] },
-    { text: '明', label: '1', comment: '', actions: [] }], 0)
+    { text: '明', label: '1', comment: '', actions: [] },
+  ], 0)
 
   await setLayout(page, 1)
   const verticalBox = await getBox(panel(page))
   expect(verticalBox).toMatchObject({
-    x: 25, y: 39 // shadow and inline-grid
+    x: 25,
+    y: 39, // shadow and inline-grid
   })
   expect(verticalBox.width).toBeGreaterThan(197)
   expect(verticalBox.width).toBeLessThan(207)
@@ -159,7 +165,8 @@ test('Set layout', async ({ page }) => {
   await setLayout(page, 0)
   const horizontalBox = await getBox(panel(page))
   expect(horizontalBox).toMatchObject({
-    x: 25, y: 39
+    x: 25,
+    y: 39,
   })
   expect(horizontalBox.width).toBeGreaterThan(170)
   expect(horizontalBox.width).toBeLessThan(186)

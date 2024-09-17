@@ -1,37 +1,38 @@
 import {
-  theme
+  theme,
 } from './selector'
 
 const darkMQL = window.matchMedia('(prefers-color-scheme: dark)')
 let isSystemDark = darkMQL.matches
 let followSystemTheme = true
 
-function setLightTheme () {
+function setLightTheme() {
   theme.classList.remove('fcitx-dark')
   theme.classList.add('fcitx-light')
 }
 
-function setDarkTheme () {
+function setDarkTheme() {
   theme.classList.remove('fcitx-light')
   theme.classList.add('fcitx-dark')
 }
 
-function systemThemeHandler () {
+function systemThemeHandler() {
   if (isSystemDark) {
     setDarkTheme()
-  } else {
+  }
+  else {
     setLightTheme()
   }
 }
 
-darkMQL.addEventListener('change', event => {
+darkMQL.addEventListener('change', (event) => {
   isSystemDark = event.matches
   if (followSystemTheme) {
     systemThemeHandler()
   }
 })
 
-export function setTheme (theme: 0 | 1 | 2) {
+export function setTheme(theme: 0 | 1 | 2) {
   switch (theme) {
     case 0:
       followSystemTheme = true
@@ -48,7 +49,6 @@ export function setTheme (theme: 0 | 1 | 2) {
   }
 }
 
-/* eslint-disable quote-props */
 const accentColorMap = {
   'null': 'blue',
   '-1': 'graphite',
@@ -58,19 +58,20 @@ const accentColorMap = {
   '3': 'green',
   '4': 'blue',
   '5': 'purple',
-  '6': 'pink'
+  '6': 'pink',
 }
-/* eslint-enable quote-props */
+
 type ACCENT_COLOR = keyof typeof accentColorMap
 
 let accentColor: ACCENT_COLOR = 'null'
 
-export function setAccentColor (color: number | null) {
+export function setAccentColor(color: number | null) {
   theme.classList.remove(`fcitx-${accentColorMap[accentColor]}`)
   const key = String(color)
   if (key in accentColorMap) {
     accentColor = key as ACCENT_COLOR
-  } else {
+  }
+  else {
     accentColor = '4'
   }
   theme.classList.add(`fcitx-${accentColorMap[accentColor]}`)

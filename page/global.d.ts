@@ -1,10 +1,10 @@
 declare global {
-  type CandidateAction = {
+  interface CandidateAction {
     id: number
     text: string
   }
 
-  type Candidate = {
+  interface Candidate {
     text: string
     label: string
     comment: string
@@ -16,12 +16,12 @@ declare global {
   type SCROLL_MOVE_HIGHLIGHT = 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17
   type SCROLL_KEY_ACTION = SCROLL_SELECT | SCROLL_MOVE_HIGHLIGHT | 20
 
-  type FcitxPlugin = {
+  interface FcitxPlugin {
     load: () => void
     unload: () => void
   }
 
-  type FCITX = {
+  interface FCITX {
     distribution: string
 
     // C++ APIs that api.ts calls

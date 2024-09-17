@@ -7,8 +7,8 @@
     "dev": "parcel page/index.html",
     "lint": "pnpm run eslint && pnpm run stylelint",
     "lint:fix": "pnpm run eslint:fix && pnpm run stylelint:fix",
-    "eslint": "eslint --ext .ts,.html page tests",
-    "eslint:fix": "eslint --fix --ext .ts,.html page tests",
+    "eslint": "eslint page tests",
+    "eslint:fix": "eslint --fix page tests",
     "stylelint": "stylelint page/*.scss",
     "stylelint:fix": "stylelint --fix page/*.scss",
     "check": "tsc --noEmit",
@@ -18,16 +18,15 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "@antfu/eslint-config": "^3.6.2",
     "@parcel/transformer-sass": "^2.12.0",
-    "@playwright/test": "^1.42.1",
-    "@types/node": "^20.11.24",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "eslint": "^8.57.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-html": "^8.0.0",
+    "@playwright/test": "^1.47.1",
+    "@types/node": "^22.5.5",
+    "eslint": "^9.10.0",
+    "eslint-plugin-format": "^0.1.2",
     "parcel": "^2.12.0",
-    "stylelint": "^16.2.1",
-    "stylelint-config-standard-scss": "^13.0.0",
-    "typescript": "^5.3.3"
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "typescript": "^5.6.2"
   }
 }
