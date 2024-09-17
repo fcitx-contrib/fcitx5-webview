@@ -1,47 +1,47 @@
 import { fcitx } from './distribution'
-import {
-  panel,
-  hoverables,
-  preedit,
-  auxUp,
-  auxDown
-} from './selector'
-import {
-  div,
-  setActions,
-  answerActions,
-  hideContextmenu,
-  getHoverBehavior,
-  getPagingButtonsStyle,
-  resetMouseMoveState,
-  resize
-} from './ux'
-import {
-  setTheme,
-  setAccentColor
-} from './theme'
-import { setStyle } from './customize'
+import { setStyle } from './customize' // eslint-disable-line perfectionist/sort-imports
 import { fcitxLog } from './log'
 import {
+  loadPlugins,
+  pluginManager,
+  unloadPlugins,
+} from './plugin'
+import {
+  fetchComplete,
   getScrollState,
-  setScrollState,
-  setScrollEnd,
   recalculateScroll,
   scrollKeyAction,
-  fetchComplete
+  setScrollEnd,
+  setScrollState,
 } from './scroll'
 import {
-  pluginManager,
-  loadPlugins,
-  unloadPlugins
-} from './plugin'
+  auxDown,
+  auxUp,
+  hoverables,
+  panel,
+  preedit,
+} from './selector'
+import {
+  setAccentColor,
+  setTheme,
+} from './theme'
+import {
+  answerActions,
+  div,
+  getHoverBehavior,
+  getPagingButtonsStyle,
+  hideContextmenu,
+  resetMouseMoveState,
+  resize,
+  setActions,
+} from './ux'
 
-function escapeWS (s: string) {
+function escapeWS(s: string) {
   // XXX: &emsp; is broken in Safari
   return s.replaceAll(' ', '&nbsp;').replaceAll('\n', '<br>').replaceAll('\t', '&emsp;')
 }
 
-function divider (paging: boolean = false) {
+function divider(paging: boolean = false) {
   const e = div('fcitx-divider')
   // Is this divider between candidates and paging buttons?
   if (paging) {
@@ -54,7 +54,7 @@ function divider (paging: boolean = false) {
   return e
 }
 
-function setLayout (layout : 0 | 1) {
+function setLayout(layout: 0 | 1) {
   switch (layout) {
     case 0:
       hoverables.classList.remove('fcitx-vertical')
@@ -66,18 +66,19 @@ function setLayout (layout : 0 | 1) {
   }
 }
 
-function setWritingMode (mode: 0 | 1 | 2) {
+function setWritingMode(mode: 0 | 1 | 2) {
   const classes = ['fcitx-horizontal-tb', 'fcitx-vertical-rl', 'fcitx-vertical-lr']
   for (let i = 0; i < classes.length; ++i) {
     if (mode === i) {
       panel.classList.add(classes[i])
-    } else {
+    }
+    else {
       panel.classList.remove(classes[i])
     }
   }
 }
 
-function moveHighlight (from: Element | null, to: Element | null) {
+function moveHighlight(from: Element | null, to: Element | null) {
   from?.classList.remove('fcitx-highlighted')
   to?.classList.add('fcitx-highlighted')
   // In vertical or scroll mode, there are multiple marks,
@@ -102,7 +103,7 @@ const caretRight = common.replace('{}', '0 0 192 512').replace('{}', 'M0 384.662
 const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z')
 const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
-function setCandidates (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
+function setCandidates(cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
   resetMouseMoveState()
   hideContextmenu()
   setScrollState(scrollState)
@@ -110,13 +111,15 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
   if (scrollState !== 2 || scrollStart) {
     hoverables.innerHTML = ''
     hoverables.scrollTop = 0 // Otherwise last scroll position will be kept.
-  } else {
+  }
+  else {
     fetchComplete()
   }
   if (scrollState === 2) {
     hoverables.classList.add('fcitx-horizontal-scroll')
     setScrollEnd(scrollEnd)
-  } else {
+  }
+  else {
     hoverables.classList.remove('fcitx-horizontal-scroll')
   }
   for (let i = 0; i < cands.length; ++i) {
@@ -138,7 +141,8 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
       const mark = div('fcitx-mark')
       if (markText === '') {
         mark.classList.add('fcitx-no-text')
-      } else {
+      }
+      else {
         mark.innerHTML = markText
       }
       candidateInner.append(mark)
@@ -180,7 +184,8 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     const paging = div('fcitx-paging', 'fcitx-scroll', 'fcitx-hoverable')
     paging.append(expand)
     hoverables.append(paging)
-  } else if (scrollState === 0 && pageable) {
+  }
+  else if (scrollState === 0 && pageable) {
     const isArrow = getPagingButtonsStyle() === 'Arrow'
     hoverables.append(divider(true))
 
@@ -203,13 +208,15 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
     const paging = div('fcitx-paging')
     if (isArrow) {
       paging.classList.add('fcitx-arrow')
-    } else {
+    }
+    else {
       paging.classList.add('fcitx-triangle')
     }
     paging.appendChild(prev)
     paging.appendChild(next)
     hoverables.appendChild(paging)
-  } else if (scrollState === 2) {
+  }
+  else if (scrollState === 2) {
     window.requestAnimationFrame(() => {
       recalculateScroll(scrollStart)
     })
@@ -226,23 +233,24 @@ function setCandidates (cands: Candidate[], highlighted: number, markText: strin
   }
 }
 
-function updateElement (element: Element, innerHTML: string) {
+function updateElement(element: Element, innerHTML: string) {
   if (innerHTML === '') {
     element.classList.add('fcitx-hidden')
-  } else {
+  }
+  else {
     element.innerHTML = innerHTML
     element.classList.remove('fcitx-hidden')
   }
 }
 
-function updateInputPanel (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) {
+function updateInputPanel(preeditHTML: string, auxUpHTML: string, auxDownHTML: string) {
   hideContextmenu()
   updateElement(preedit, preeditHTML)
   updateElement(auxUp, auxUpHTML)
   updateElement(auxDown, auxDownHTML)
 }
 
-function copyHTML () {
+function copyHTML() {
   const html = document.documentElement.outerHTML
   fcitx._copyHTML(html)
 }
@@ -256,7 +264,7 @@ hoverables.addEventListener('mouseleave', () => {
   }
 })
 
-hoverables.addEventListener('wheel', e => {
+hoverables.addEventListener('wheel', (e) => {
   if (getScrollState() === 2) {
     return
   }
@@ -277,15 +285,15 @@ fcitx.scrollKeyAction = scrollKeyAction
 fcitx.answerActions = answerActions
 
 Object.defineProperty(fcitx, 'pluginManager', {
-  value: pluginManager
+  value: pluginManager,
 })
 
 Object.defineProperty(fcitx, 'loadPlugins', {
-  value: loadPlugins
+  value: loadPlugins,
 })
 
 Object.defineProperty(fcitx, 'unloadPlugins', {
-  value: unloadPlugins
+  value: unloadPlugins,
 })
 
 fcitx.fcitxLog = fcitxLog

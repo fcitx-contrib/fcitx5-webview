@@ -1,12 +1,13 @@
 // Must be imported first
 
-const distribution = <string>process.env.FCITX_DISTRIBUTION ?? ''
+const distribution = <string>process.env.FCITX_DISTRIBUTION ?? '' // eslint-disable-line node/prefer-global/process
 
-let fcitx: FCITX
+let fcitx: FCITX // eslint-disable-line import/no-mutable-exports
 
 if (distribution === 'fcitx5-js') {
   fcitx = window.fcitx
-} else {
+}
+else {
   // @ts-expect-error f5m binds C++ function to JS global function, but we want to call fcitx._select for both f5m and f5j.
   fcitx = window
   window.fcitx = fcitx
@@ -19,8 +20,8 @@ if (distribution === 'fcitx5-js') {
     width, height: big enough, disregard window size
   */
   const style = document.createElement('style')
-  style.innerHTML =
-`body {
+  style.innerHTML
+= `body {
   background: rgb(0 0 0 / 0%);
   margin: 0;
   overflow: hidden;
@@ -33,5 +34,5 @@ if (distribution === 'fcitx5-js') {
 fcitx.distribution = distribution
 
 export {
-  fcitx
+  fcitx,
 }

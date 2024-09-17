@@ -1,8 +1,8 @@
 import {
-  hoverables
+  hoverables,
 } from './selector'
 import {
-  hideContextmenu
+  hideContextmenu,
 } from './ux'
 
 const MAX_ROW = 6
@@ -10,43 +10,43 @@ const MAX_COLUMN = 6
 
 let scrollState: SCROLL_STATE = 0
 
-export function getScrollState () {
+export function getScrollState() {
   return scrollState
 }
 
-export function setScrollState (state: SCROLL_STATE) {
+export function setScrollState(state: SCROLL_STATE) {
   scrollState = state
 }
 
 let scrollEnd = false
 
-export function setScrollEnd (end: boolean) {
+export function setScrollEnd(end: boolean) {
   scrollEnd = end
 }
 
 // A lock that prevents fetching same candidates simultaneously.
 let fetching = false
 
-export function fetchComplete () {
+export function fetchComplete() {
   fetching = false
 }
 
-export function expand () {
+export function expand() {
   window.fcitx._scroll(0, (MAX_ROW + 1) * MAX_COLUMN) // visible rows plus 1 hidden row
 }
 
-function collapse () {
+function collapse() {
   window.fcitx._scroll(-1, 0)
 }
 
 let rowItemCount: number[] = []
 let highlighted = 0
 
-function itemCountInFirstNRows (n: number): number {
+function itemCountInFirstNRows(n: number): number {
   return rowItemCount.slice(0, n).reduce((sum, count) => sum + count, 0)
 }
 
-function getRowOf (index: number): number {
+function getRowOf(index: number): number {
   let skipped = 0
   for (let i = 0; i < rowItemCount.length - 1; ++i) {
     const end = skipped + rowItemCount[i]
@@ -58,15 +58,15 @@ function getRowOf (index: number): number {
   return rowItemCount.length - 1
 }
 
-function getHighlightedRow (): number {
+function getHighlightedRow(): number {
   return getRowOf(highlighted)
 }
 
-function distanceToTop (element: Element, basis: 'top' | 'bottom') {
+function distanceToTop(element: Element, basis: 'top' | 'bottom') {
   return element.getBoundingClientRect()[basis] - hoverables.getBoundingClientRect().top
 }
 
-function scrollForHighlight () {
+function scrollForHighlight() {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
 
   const bottomOffset = distanceToTop(candidates[highlighted], 'bottom') - hoverables.clientHeight
@@ -82,7 +82,7 @@ function scrollForHighlight () {
   }
 }
 
-function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
+function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   if (clearOld) {
     const highlightedRow = getHighlightedRow()
@@ -107,7 +107,7 @@ function renderHighlightAndLabels (newHighlighted: number, clearOld: boolean) {
   candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
 
-export function recalculateScroll (scrollStart: boolean) {
+export function recalculateScroll(scrollStart: boolean) {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   let currentY = candidates[0].getBoundingClientRect().y
   rowItemCount = []
@@ -117,7 +117,8 @@ export function recalculateScroll (scrollStart: boolean) {
     const { y } = candidate.getBoundingClientRect()
     if (y === currentY) {
       ++itemCount
-    } else {
+    }
+    else {
       rowItemCount.push(itemCount)
       itemCount = 1
       currentY = y
@@ -137,13 +138,13 @@ export function recalculateScroll (scrollStart: boolean) {
   }
 }
 
-function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {
+function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {
   const row = getRowOf(index)
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   const { left, right } = candidates[index].getBoundingClientRect()
   const mid = (left + right) / 2
 
-  function helper (row: number) {
+  function helper(row: number) {
     if (row < 0 || row === rowItemCount.length) {
       return -1
     }
@@ -196,7 +197,7 @@ function getNeighborCandidate (index: number, direction: SCROLL_MOVE_HIGHLIGHT):
   }
 }
 
-export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
+export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
   hideContextmenu()
   if (action >= 1 && action <= 6) {
     const highlightedRow = getHighlightedRow()
@@ -227,7 +228,8 @@ export function scrollKeyAction (action: SCROLL_KEY_ACTION) {
             window.fcitx._scroll(itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
           }
         }
-      } else if ([10, 16].includes(action) && getHighlightedRow() === 0) {
+      }
+      else if ([10, 16].includes(action) && getHighlightedRow() === 0) {
         collapse()
       }
       break

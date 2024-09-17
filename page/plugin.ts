@@ -11,10 +11,10 @@ Object.defineProperty(pluginManager, 'register', {
     }
     unloaders.push(plugin.unload)
     plugin.load()
-  }
+  },
 })
 
-function loadPlugins (names: string[]) {
+function loadPlugins(names: string[]) {
   for (const name of names) {
     window.fcitx.fcitxLog(`Loading plugin ${name}`)
     const script = document.createElement('script')
@@ -24,11 +24,12 @@ function loadPlugins (names: string[]) {
   }
 }
 
-function unloadPlugins () {
+function unloadPlugins() {
   for (const unloader of unloaders.reverse()) {
     try {
       unloader()
-    } catch (e) {
+    }
+    catch (e) {
       window.fcitx.fcitxLog(`Error unloading plugin: ${e}`)
     }
   }
@@ -37,7 +38,7 @@ function unloadPlugins () {
 }
 
 export {
-  pluginManager,
   loadPlugins,
-  unloadPlugins
+  pluginManager,
+  unloadPlugins,
 }

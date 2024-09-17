@@ -1,4 +1,4 @@
-export function fcitxLog (...args: unknown[]) {
+export function fcitxLog(...args: unknown[]) {
   for (let i = 0; i < args.length; ++i) {
     if (i > 0) {
       window.fcitx._log(' ')
@@ -8,7 +8,8 @@ export function fcitxLog (...args: unknown[]) {
     if (typeof arg === 'object') {
       try {
         serialized = JSON.stringify(arg)
-      } catch {}
+      }
+      catch {}
     }
     window.fcitx._log(serialized || String(arg))
   }

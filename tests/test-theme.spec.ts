@@ -1,10 +1,10 @@
 import {
+  expect,
   test,
-  expect
 } from '@playwright/test'
 import {
+  init,
   theme,
-  init
 } from './util'
 
 test('Set accent color', async ({ page }) => {
@@ -19,7 +19,7 @@ test('Set accent color', async ({ page }) => {
     [3, 'fcitx-green'],
     [4, 'fcitx-blue'],
     [5, 'fcitx-purple'],
-    [6, 'fcitx-pink']
+    [6, 'fcitx-pink'],
   ] as [number | null, string][]
 
   for (const [value, color] of cases) {
