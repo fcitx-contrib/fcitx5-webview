@@ -177,7 +177,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
 
   setActions(cands.map(c => c.actions))
 
-  if (scrollState === 1) {
+  if (scrollState === 1 && getPagingButtonsStyle() !== 'None') {
     hoverables.append(divider(true))
     const expand = div('fcitx-expand', 'fcitx-paging-inner', 'fcitx-hoverable-inner')
     expand.innerHTML = arrowForward
