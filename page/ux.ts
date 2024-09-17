@@ -253,18 +253,22 @@ receiver.addEventListener('contextmenu', (e) => {
   if (!isInsideHoverables(target)) {
     return
   }
+
+  const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
+  const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
+
   while (target.parentElement !== hoverables) {
     target = target.parentElement!
   }
   const i = getCandidateIndex(target)
   if (i >= 0 && getScrollState() === 2) {
-    actionX = e.clientX
-    actionY = e.clientY
+    actionX = x
+    actionY = y
     actionIndex = i
     return window.fcitx._askActions(i)
   }
   if (i >= 0 && actions[i].length > 0) {
-    showContextmenu(e.clientX, e.clientY, i, actions[i])
+    showContextmenu(x, y, i, actions[i])
   }
   else {
     hideContextmenu()
