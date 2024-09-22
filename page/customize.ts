@@ -408,7 +408,8 @@ export function setStyle(style: string) {
 
   if (j.Background.Blur === 'True') {
     setBlur(true)
-    rules['.fcitx-blur'] = { '-webkit-backdrop-filter': `blur(${px(j.Background.BlurRadius)})` }
+    const blur = `blur(${px(j.Background.BlurRadius)})`
+    rules['.fcitx-blur'] = { '-webkit-backdrop-filter': blur, 'backdrop-filter': blur }
   }
   else {
     setBlur(false)

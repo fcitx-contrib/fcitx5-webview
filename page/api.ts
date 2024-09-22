@@ -297,5 +297,6 @@ Object.defineProperty(fcitx, 'unloadPlugins', {
 })
 
 fcitx.fcitxLog = fcitxLog
+// needed when JS execution is async with C++ (macOS)
 fcitx._onload && fcitx._onload()
 setTheme(0)
