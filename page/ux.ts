@@ -76,7 +76,13 @@ export function resize(dx: number, dy: number, dragging: boolean, hasContextmenu
       bottom = Math.max(bottom, b)
     }
 
-    window.fcitx._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, right, bottom, dragging)
+    let pRect = panel.getBoundingClientRect()
+    let pRadius = parseFloat(getComputedStyle(panel).borderRadius)
+    window.fcitx._resize(dx, dy,
+                         anchorTop, anchorRight, anchorBottom, anchorLeft,
+                         pRect.top, pRect.right, pRect.bottom, pRect.left,
+                         pRadius,
+                         right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {
@@ -278,7 +284,7 @@ receiver.addEventListener('contextmenu', (e) => {
 const panelBlurOuter = document.querySelector('.fcitx-panel-blur-outer')!
 const panelBlurInner = document.querySelector('.fcitx-panel-blur-inner')!
 
-let blurEnabled = true
+let blurEnabled = false
 export function setBlur(enabled: boolean) {
   blurEnabled = enabled
   if (window.fcitx.distribution === 'fcitx5-js') {

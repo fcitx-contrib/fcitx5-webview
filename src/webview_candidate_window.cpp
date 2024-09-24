@@ -45,10 +45,13 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_resize",
          [this](double dx, double dy, double anchor_top, double anchor_right,
-                double anchor_bottom, double anchor_left, double width,
-                double height, bool dragging) {
+                double anchor_bottom, double anchor_left, double panel_top,
+                double panel_right, double panel_bottom, double panel_left,
+                double panel_radius, double width, double height,
+                bool dragging) {
              resize(dx, dy, anchor_top, anchor_right, anchor_bottom,
-                    anchor_left, width, height, dragging);
+                    anchor_left, panel_top, panel_right, panel_bottom,
+                    panel_left, panel_radius, width, height, dragging);
          });
 
     bind("_select", [this](int i) { select_callback(i); });
