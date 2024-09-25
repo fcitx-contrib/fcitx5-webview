@@ -83,7 +83,7 @@ export function resize(
     }
 
     const pRect = panel.getBoundingClientRect()
-    const pRadius = Number.parseFloat(getComputedStyle(panel).borderRadius)
+    const pRadius = Math.max(...getComputedStyle(panel).borderRadius.split(' ').map(Number.parseFloat))
     window.fcitx._resize(call_id, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
