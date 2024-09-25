@@ -1,5 +1,5 @@
 /* use Digital Color Meter with sRGB mode to get correct color */
-$panel-alpha: 0.0; /* TODO: use the correct value 0.8125 */
+$panel-alpha: 0.8125;
 
 /* light */
 $panel-color-light: rgba(240, 240, 240, $panel-alpha);
