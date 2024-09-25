@@ -164,7 +164,7 @@ export function showContextmenu(x: number, y: number, index: number, actions: Ca
   contextmenu.style.top = `${y}px`
   contextmenu.style.left = `${x}px`
   contextmenu.style.display = 'block'
-  resize(0, 0, false, true)
+  resize(0, 0, 0, false, true)
 }
 
 export function hideContextmenu() {
@@ -206,7 +206,7 @@ receiver.addEventListener('mousemove', (e) => {
   dX += dx
   dY += dy
   dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
-  resize(dx, dy, true, false)
+  resize(0, dx, dy, true, false)
 })
 
 receiver.addEventListener('mouseup', (e) => {

@@ -40,7 +40,7 @@ declare global {
     setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
     setLayout: (layout: 0 | 1) => void
     updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void
-    resize: (dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void
+    resize: (call_id: number, dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null) => void
     setStyle: (style: string) => void
