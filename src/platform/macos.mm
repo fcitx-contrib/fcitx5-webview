@@ -231,8 +231,8 @@ void WebviewCandidateWindow::write_clipboard(const std::string &html) {
     [pasteboard setString:s forType:NSPasteboardTypeString];
 }
 
-void WebviewCandidateWindow::resize(unsigned long long call_id,
-                                    double dx, double dy, double anchor_top,
+void WebviewCandidateWindow::resize(unsigned long long call_id, double dx,
+                                    double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,
@@ -295,9 +295,10 @@ void WebviewCandidateWindow::resize(unsigned long long call_id,
     panel_top += 1;
     panel_bottom -= 1;
     auto blurView = window.blurView;
-    NSRect blurViewRect = NSMakeRect(panel_left, height - panel_bottom,
-                                     std::min(panel_right - panel_left, width),
-                                     std::min(panel_bottom - panel_top, height));
+    NSRect blurViewRect =
+        NSMakeRect(panel_left, height - panel_bottom,
+                   std::min(panel_right - panel_left, width),
+                   std::min(panel_bottom - panel_top, height));
     if (blurView.hidden) {
         window.blurViewRect = blurViewRect;
     } else {

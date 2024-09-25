@@ -77,11 +77,11 @@ class WebviewCandidateWindow : public CandidateWindow {
     /* Platform-specific interfaces (implemented in 'platform') */
     void *create_window();
     void set_transparent_background();
-    void resize(unsigned long long call_id, double dx, double dy, double anchor_top, double anchor_right,
-                double anchor_bottom, double anchor_left, double panel_top,
-                double panel_right, double panel_bottom, double panel_left,
-                double panel_radius, double width, double height,
-                bool dragging);
+    void resize(unsigned long long call_id, double dx, double dy,
+                double anchor_top, double anchor_right, double anchor_bottom,
+                double anchor_left, double panel_top, double panel_right,
+                double panel_bottom, double panel_left, double panel_radius,
+                double width, double height, bool dragging);
     void write_clipboard(const std::string &html);
 
     void *platform_data = nullptr;
