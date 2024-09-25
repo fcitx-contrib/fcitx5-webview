@@ -36,7 +36,13 @@ interface ShadowBox {
   bottom: number
 }
 
-export function resize(dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) {
+export function resize(
+  call_id: number,
+  dx: number,
+  dy: number,
+  dragging: boolean,
+  hasContextmenu: boolean,
+) {
   function adaptWindowSize(reserveSpaceForContextmenu: boolean) {
     let {
       anchorTop,
@@ -78,7 +84,7 @@ export function resize(dx: number, dy: number, dragging: boolean, hasContextmenu
 
     const pRect = panel.getBoundingClientRect()
     const pRadius = Number.parseFloat(getComputedStyle(panel).borderRadius)
-    window.fcitx._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, right, bottom, dragging)
+    window.fcitx._resize(call_id, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {

@@ -44,12 +44,12 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     update_accent_color();
 
     bind("_resize",
-         [this](double dx, double dy, double anchor_top, double anchor_right,
-                double anchor_bottom, double anchor_left, double panel_top,
-                double panel_right, double panel_bottom, double panel_left,
-                double panel_radius, double width, double height,
-                bool dragging) {
-             resize(dx, dy, anchor_top, anchor_right, anchor_bottom,
+         [this](double call_id, double dx, double dy, double anchor_top,
+                double anchor_right, double anchor_bottom, double anchor_left,
+                double panel_top, double panel_right, double panel_bottom,
+                double panel_left, double panel_radius, double width,
+                double height, bool dragging) {
+             resize(call_id, dx, dy, anchor_top, anchor_right, anchor_bottom,
                     anchor_left, panel_top, panel_right, panel_bottom,
                     panel_left, panel_radius, width, height, dragging);
          });
@@ -143,7 +143,8 @@ void WebviewCandidateWindow::show(double x, double y) {
         // warmed-up yet, and it won't be updated until user changes color.
         set_accent_color();
     }
-    invoke_js("resize", 0., 0., false);
+    version_++;
+    invoke_js("resize", version_, 0., 0., false);
 }
 
 static void build_html_open_tags(std::stringstream &ss, int flags) {

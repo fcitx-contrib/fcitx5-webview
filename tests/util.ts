@@ -10,7 +10,7 @@ export async function init(page: Page) {
   await page.evaluate(() => {
     window.fcitx.setTheme(2)
     window.cppCalls = []
-    window.fcitx._resize = (dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, panelRadius: number, fullWidth: number, fullHeight: number, dragging: boolean) => {
+    window.fcitx._resize = (call_id: number, dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, panelRadius: number, fullWidth: number, fullHeight: number, dragging: boolean) => {
       window.cppCalls.push({
         resize: [dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, panelTop, panelRight, panelBottom, panelLeft, panelRadius, fullWidth, fullHeight, dragging],
       })

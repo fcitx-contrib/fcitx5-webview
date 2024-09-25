@@ -41,7 +41,8 @@ void WebviewCandidateWindow::hide() {}
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 
-void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
+void WebviewCandidateWindow::resize(unsigned long long call_id, double dx,
+                                    double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,
@@ -50,4 +51,8 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     bool dragging) {
     gtk_widget_show_all(static_cast<GtkWidget *>(w_->window()));
 }
+
+void WebviewCandidateWindow::set_native_blur(bool enabled) {}
+
+void WebviewCandidateWindow::set_native_shadow(bool enabled) {}
 } // namespace candidate_window

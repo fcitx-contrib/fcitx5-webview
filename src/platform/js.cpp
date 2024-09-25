@@ -22,7 +22,8 @@ void WebviewCandidateWindow::hide() { EM_ASM(fcitx.hidePanel()); }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 
-void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
+void WebviewCandidateWindow::resize(unsigned long long call_id, double dx,
+                                    double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,
@@ -31,5 +32,13 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     bool dragging) {
     EM_ASM(fcitx.placePanel($0, $1, $2, $3, $4), dx, dy, anchor_top,
            anchor_left, dragging);
+}
+
+void WebviewCandidateWindow::set_native_blur(bool enabled) {
+    // Not supported.
+}
+
+void WebviewCandidateWindow::set_native_shadow(bool enabled) {
+    // Not supported.
 }
 } // namespace candidate_window
