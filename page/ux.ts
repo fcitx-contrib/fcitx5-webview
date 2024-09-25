@@ -206,7 +206,7 @@ receiver.addEventListener('mousemove', (e) => {
   dX += dx
   dY += dy
   dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
-  resize(0, dx, dy, true, false)
+  resize(-1, dx, dy, true, false)
 })
 
 receiver.addEventListener('mouseup', (e) => {
