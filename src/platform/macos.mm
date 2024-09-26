@@ -221,7 +221,6 @@ void WebviewCandidateWindow::hide() {
     [window orderBack:nil];
     [window setIsVisible:NO];
     hidden_ = true;
-    version_++;
 }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {
@@ -231,20 +230,13 @@ void WebviewCandidateWindow::write_clipboard(const std::string &html) {
     [pasteboard setString:s forType:NSPasteboardTypeString];
 }
 
-void WebviewCandidateWindow::resize(unsigned long long call_id, double dx,
-                                    double dy, double anchor_top,
+void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,
                                     double panel_left, double panel_radius,
                                     double width, double height,
                                     bool dragging) {
-    // It's possible that the JS returns at a much later point.
-    // E.g.: C++ show_1 -> JS resize_1 -> C++ hide_2 -> C++ resize_1 (wtf?!)
-    // Drop outdated results.
-    if (call_id < version_)
-        return;
-
     const int gap = 4;
     const int preedit_height = 24;
     NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);

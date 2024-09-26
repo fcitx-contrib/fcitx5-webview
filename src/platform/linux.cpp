@@ -41,8 +41,7 @@ void WebviewCandidateWindow::hide() {}
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 
-void WebviewCandidateWindow::resize(unsigned long long call_id, double dx,
-                                    double dy, double anchor_top,
+void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,

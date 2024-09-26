@@ -37,7 +37,6 @@ interface ShadowBox {
 }
 
 export function resize(
-  call_id: number,
   dx: number,
   dy: number,
   dragging: boolean,
@@ -84,7 +83,7 @@ export function resize(
 
     const pRect = panel.getBoundingClientRect()
     const pRadius = Math.max(...getComputedStyle(panel).borderRadius.split(' ').map(Number.parseFloat))
-    window.fcitx._resize(call_id, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, right, bottom, dragging)
+    window.fcitx._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {
@@ -164,7 +163,7 @@ export function showContextmenu(x: number, y: number, index: number, actions: Ca
   contextmenu.style.top = `${y}px`
   contextmenu.style.left = `${x}px`
   contextmenu.style.display = 'block'
-  resize(0, 0, 0, false, true)
+  resize(0, 0, false, true)
 }
 
 export function hideContextmenu() {
@@ -206,7 +205,7 @@ receiver.addEventListener('mousemove', (e) => {
   dX += dx
   dY += dy
   dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
-  resize(-1, dx, dy, true, false)
+  resize(dx, dy, true, false)
 })
 
 receiver.addEventListener('mouseup', (e) => {
