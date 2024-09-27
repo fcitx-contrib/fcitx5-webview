@@ -17,9 +17,6 @@ test('HTML structure', async ({ page }) => {
   await init(page)
   await page.evaluate(() => {
     document.querySelector('#fcitx-theme')?.classList.remove('fcitx-macos')
-    for (const klass of ['.fcitx-panel-blur-outer', '.fcitx-panel-blur-inner']) {
-      document.querySelector(klass)?.classList.remove('fcitx-blur')
-    }
   })
   await setCandidates(page, [
     { text: '页面结构', label: '1', comment: 'c', actions: [] },
@@ -36,32 +33,30 @@ test('HTML structure', async ({ page }) => {
     <div class="fcitx-panel-left"></div>
     <div class="fcitx-panel-center">
       <div class="fcitx-horizontal-tb fcitx-panel">
-        <div class="fcitx-panel-blur-outer">
-          <div class="fcitx-panel-blur-inner">
-            <div class="fcitx-header">
-              <div class="fcitx-aux-up fcitx-hidden"></div>
-              <div class="fcitx-hidden fcitx-preedit"></div>
+        <div class="fcitx-panel-blur">
+          <div class="fcitx-header">
+            <div class="fcitx-aux-up fcitx-hidden"></div>
+            <div class="fcitx-hidden fcitx-preedit"></div>
+          </div>
+          <div class="fcitx-aux-down fcitx-hidden"></div>
+          <div class="fcitx-horizontal fcitx-hoverables">
+            <div class="fcitx-candidate fcitx-candidate-first fcitx-highlighted fcitx-highlighted-original fcitx-hoverable">
+              <div class="fcitx-candidate-inner fcitx-hoverable-inner">
+                <div class="fcitx-mark fcitx-no-text"></div>
+                <div class="fcitx-label">1</div>
+                <div class="fcitx-text">页面结构</div>
+                <div class="fcitx-comment">c</div>
+              </div>
             </div>
-            <div class="fcitx-aux-down fcitx-hidden"></div>
-            <div class="fcitx-horizontal fcitx-hoverables">
-              <div class="fcitx-candidate fcitx-candidate-first fcitx-highlighted fcitx-highlighted-original fcitx-hoverable">
-                <div class="fcitx-candidate-inner fcitx-hoverable-inner">
-                  <div class="fcitx-mark fcitx-no-text"></div>
-                  <div class="fcitx-label">1</div>
-                  <div class="fcitx-text">页面结构</div>
-                  <div class="fcitx-comment">c</div>
-                </div>
-              </div>
-              <div class="fcitx-divider">
-                <div class="fcitx-divider-side"></div>
-                <div class="fcitx-divider-middle"></div>
-                <div class="fcitx-divider-side"></div>
-              </div>
-              <div class="fcitx-candidate fcitx-candidate-last fcitx-hoverable">
-                <div class="fcitx-candidate-inner fcitx-hoverable-inner">
-                  <div class="fcitx-label">2</div>
-                  <div class="fcitx-text">测试</div>
-                </div>
+            <div class="fcitx-divider">
+              <div class="fcitx-divider-side"></div>
+              <div class="fcitx-divider-middle"></div>
+              <div class="fcitx-divider-side"></div>
+            </div>
+            <div class="fcitx-candidate fcitx-candidate-last fcitx-hoverable">
+              <div class="fcitx-candidate-inner fcitx-hoverable-inner">
+                <div class="fcitx-label">2</div>
+                <div class="fcitx-text">测试</div>
               </div>
             </div>
           </div>

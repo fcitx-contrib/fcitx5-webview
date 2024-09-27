@@ -282,41 +282,15 @@ receiver.addEventListener('contextmenu', (e) => {
   }
 })
 
-const panelBlurOuter = document.querySelector('.fcitx-panel-blur-outer')!
-const panelBlurInner = document.querySelector('.fcitx-panel-blur-inner')!
+const panelBlur = document.querySelector('.fcitx-panel-blur')!
 
-let blurEnabled = false
 export function setBlur(enabled: boolean) {
-  blurEnabled = enabled
-  if (window.fcitx.distribution === 'fcitx5-js') {
-    if (enabled) {
-      panelBlurInner.classList.add('fcitx-blur')
-    }
-    else {
-      panelBlurInner.classList.remove('fcitx-blur')
-    }
-  }
-}
-
-// HACK: force redraw blur every 40ms so that window background change counts
-let blurSwitch = false
-function redrawBlur() {
-  if (!blurEnabled || !theme.classList.contains('fcitx-macos')) {
-    return
-  }
-  if (blurSwitch) {
-    panelBlurOuter.classList.add('fcitx-blur')
-    panelBlurInner.classList.remove('fcitx-blur')
+  if (enabled) {
+    panelBlur.classList.add('fcitx-blur')
   }
   else {
-    panelBlurInner.classList.add('fcitx-blur')
-    panelBlurOuter.classList.remove('fcitx-blur')
+    panelBlur.classList.remove('fcitx-blur')
   }
-  blurSwitch = !blurSwitch
-}
-
-if (window.fcitx.distribution !== 'fcitx5-js') { // macOS <= 14
-  setInterval(redrawBlur, 40)
 }
 
 export function showCursor(show: boolean) {

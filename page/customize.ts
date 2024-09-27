@@ -406,15 +406,15 @@ export function setStyle(style: string) {
     rules[HOVERABLES]['background-size'] = 'cover'
   }
 
-  if (j.Background.Blur === 'True') {
-    setBlur(true)
-    const blur = `blur(${px(j.Background.BlurRadius)})`
-    rules['.fcitx-blur'] = { '-webkit-backdrop-filter': blur, 'backdrop-filter': blur }
-  }
-  else {
-    setBlur(false)
-    document.querySelector('fcitx-.panel-blur-outer')?.classList.remove('fcitx-blur')
-    document.querySelector('.fcitx-panel-blur-outer')?.classList.remove('fcitx-blur')
+  if (window.fcitx.distribution === 'fcitx5-js') {
+    if (j.Background.Blur === 'True') {
+      setBlur(true)
+      const blur = `blur(${px(j.Background.BlurRadius)})`
+      rules['.fcitx-blur'] = { '-webkit-backdrop-filter': blur, 'backdrop-filter': blur }
+    }
+    else {
+      setBlur(false)
+    }
   }
 
   if (j.Background.Shadow === 'False') {
