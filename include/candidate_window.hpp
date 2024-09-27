@@ -78,6 +78,8 @@ class CandidateWindow {
     virtual void set_style(const void *style) = 0;
     virtual void show(double x, double y) = 0;
     virtual void hide() = 0;
+    virtual void set_native_blur(bool enabled) = 0;
+    virtual void set_native_shadow(bool enabled) = 0;
 
     void set_init_callback(std::function<void()> callback) {
         init_callback = callback;

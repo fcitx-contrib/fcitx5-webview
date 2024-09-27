@@ -23,6 +23,9 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 
 @interface HoverableWindow : NSWindow
 
+@property(nonatomic) NSRect blurViewRect;
+@property(nonatomic, strong) NSVisualEffectView *blurView;
+
 @end
 
 @implementation HoverableWindow
@@ -135,9 +138,9 @@ void WebviewCandidateWindow::platform_init() {
 void *WebviewCandidateWindow::create_window() {
     auto window =
         [[HoverableWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
-                                           styleMask:NSWindowStyleMaskBorderless
+                                           styleMask:0
                                              backing:NSBackingStoreBuffered
-                                               defer:NO];
+                                               defer:YES];
     [window setLevel:NSPopUpMenuWindowLevel];
     return window;
 }
@@ -149,13 +152,53 @@ WebviewCandidateWindow::~WebviewCandidateWindow() {
 }
 
 void WebviewCandidateWindow::set_transparent_background() {
+    HoverableWindow *win = static_cast<HoverableWindow *>(w_->window());
+
     // Transparent NSWindow
-    [static_cast<NSWindow *>(w_->window())
-        setBackgroundColor:[NSColor colorWithRed:0 green:0 blue:0 alpha:0]];
+    win.opaque = NO;
+    [win setBackgroundColor:[NSColor clearColor]];
+
     // Transparent WKWebView
     WKWebView *webView = static_cast<WKWebView *>(w_->widget());
     [webView setValue:@NO forKey:@"drawsBackground"];
     [webView setUnderPageBackgroundColor:[NSColor clearColor]];
+
+    // From now on, replace the old contentView of the window (which
+    // happens to be exactly webView) with a new content view. Our view
+    // hierarchy is: NSWindow
+    // +--- NSView (contentView)
+    //      +--- NSVisualEffectView (blurView)
+    //      +--- WKWebView (webView)
+    // both blurView and webView fill the entire contentView,
+    // but blurView is at the bottom.
+    [webView removeFromSuperview];
+
+    auto contentView = [NSView new];
+    contentView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+
+    auto blurView = [NSVisualEffectView new];
+    blurView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    blurView.material = NSVisualEffectMaterialHUDWindow;
+    blurView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+    blurView.state = NSVisualEffectStateActive;
+    blurView.wantsLayer = YES;
+    blurView.translatesAutoresizingMaskIntoConstraints = NO;
+    blurView.hidden = YES;
+    win.blurView = blurView;
+
+    [contentView addSubview:webView];
+    win.contentView = contentView;
+
+    // Fix the layout for webView; make sure it fills the entire container.
+    webView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [webView.leadingAnchor
+            constraintEqualToAnchor:contentView.leadingAnchor],
+        [webView.trailingAnchor
+            constraintEqualToAnchor:contentView.trailingAnchor],
+        [webView.topAnchor constraintEqualToAnchor:contentView.topAnchor],
+        [webView.bottomAnchor constraintEqualToAnchor:contentView.bottomAnchor]
+    ]];
 }
 
 void WebviewCandidateWindow::update_accent_color() {
@@ -185,8 +228,11 @@ void WebviewCandidateWindow::write_clipboard(const std::string &html) {
 
 void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double anchor_right, double anchor_bottom,
-                                    double anchor_left, double width,
-                                    double height, bool dragging) {
+                                    double anchor_left, double panel_top,
+                                    double panel_right, double panel_bottom,
+                                    double panel_left, double panel_radius,
+                                    double width, double height,
+                                    bool dragging) {
     const int gap = 4;
     const int preedit_height = 24;
     NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);
@@ -227,9 +273,27 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
         }
     }
     hidden_ = false;
-    NSWindow *window = static_cast<NSWindow *>(w_->window());
+    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
     [window setFrame:NSMakeRect(x_, y_, width, height) display:YES animate:NO];
     [window orderFront:nil];
+
+    // Update the blur view
+    panel_right -= 1; // Shrink the blur view a bit
+    panel_left += 1;  // to avoid the border being too thick.
+    panel_top += 1;
+    panel_bottom -= 1;
+    auto blurView = window.blurView;
+    NSRect blurViewRect =
+        NSMakeRect(panel_left, height - panel_bottom,
+                   std::min(panel_right - panel_left, width),
+                   std::min(panel_bottom - panel_top, height));
+    if (blurView.hidden) {
+        window.blurViewRect = blurViewRect;
+    } else {
+        [window.blurView setFrame:blurViewRect];
+        window.blurView.layer.cornerRadius = panel_radius;
+    }
+
     // A User reported Bob.app called out by shortcut is above candidate
     // window on M1. While I can't reproduce it on Intel, he tested this and
     // belived it's fixed. This trick is learned from vChewing.
@@ -239,5 +303,34 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                    kCGPopUpMenuWindowLevel) +
                      1];
     [window setIsVisible:YES];
+}
+
+void WebviewCandidateWindow::set_native_blur(bool enabled) {
+    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (enabled) {
+          WKWebView *webView = static_cast<WKWebView *>(w_->widget());
+          NSView *contentView = window.contentView;
+          [contentView addSubview:window.blurView
+                       positioned:NSWindowBelow
+                       relativeTo:webView];
+          [window.blurView setFrame:window.blurViewRect];
+          window.blurView.hidden = NO;
+      } else {
+          window.blurView.hidden = YES;
+          [window.blurView removeFromSuperview];
+      }
+    });
+}
+
+void WebviewCandidateWindow::set_native_shadow(bool enabled) {
+    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (enabled) {
+          [window setHasShadow:YES];
+      } else {
+          [window setHasShadow:NO];
+      }
+    });
 }
 } // namespace candidate_window
