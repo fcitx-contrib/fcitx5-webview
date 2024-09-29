@@ -231,8 +231,8 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,
                                     double panel_left, double panel_radius,
-                                    double width, double height,
-                                    bool dragging) {
+                                    double border_width, double width,
+                                    double height, bool dragging) {
     const int gap = 4;
     const int preedit_height = 24;
     NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);
@@ -278,10 +278,10 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
     [window orderFront:nil];
 
     // Update the blur view
-    panel_right -= 1; // Shrink the blur view a bit
-    panel_left += 1;  // to avoid the border being too thick.
-    panel_top += 1;
-    panel_bottom -= 1;
+    panel_right -= border_width; // Shrink the blur view a bit
+    panel_left += border_width;  // to avoid the border being too thick.
+    panel_top += border_width;
+    panel_bottom -= border_width;
     auto blurView = window.blurView;
     NSRect blurViewRect =
         NSMakeRect(panel_left, height - panel_bottom,
