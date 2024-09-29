@@ -5,8 +5,12 @@ import {
   hideContextmenu,
 } from './ux'
 
-const MAX_ROW = 6
+let MAX_ROW = 6
 const MAX_COLUMN = 6
+
+export function setMaxRow(n: number) {
+  MAX_ROW = n
+}
 
 let scrollState: SCROLL_STATE = 0
 
@@ -244,7 +248,7 @@ hoverables.addEventListener('scroll', () => {
   if (scrollEnd || fetching) {
     return
   }
-  // This is safe since there are at least 7 lines.
+  // This is safe since there are at least 2 lines.
   const bottomRightIndex = itemCountInFirstNRows(rowItemCount.length - 1) - 1
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   const bottomRight = candidates[bottomRightIndex]

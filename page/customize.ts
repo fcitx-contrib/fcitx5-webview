@@ -2,6 +2,7 @@ import type {
   HOVER_BEHAVIOR,
   PAGING_BUTTONS_STYLE,
 } from './ux'
+import { setMaxRow } from './scroll'
 import {
   setBlink,
   setBlur,
@@ -41,6 +42,9 @@ interface STYLE_JSON {
   }
   Typography: {
     PagingButtonsStyle: PAGING_BUTTONS_STYLE
+  }
+  ScrollMode: {
+    MaxRowCount: string
   }
   Background: {
     ImageUrl: string
@@ -108,6 +112,7 @@ const PAGING_OUTER = `${PANEL} :is(.fcitx-prev, .fcitx-next)`
 const PAGING_INNER = `${PANEL} .fcitx-paging-inner`
 const HIGHLIGHT_MARK = `${PANEL} .fcitx-highlighted .fcitx-mark`
 const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .fcitx-highlighted-original .fcitx-mark`
+const HORIZONTAL_SCROLL = `${PANEL} .fcitx-hoverables.fcitx-horizontal-scroll`
 
 const PANEL_LIGHT = `.fcitx-light${PANEL}`
 const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner`
@@ -395,6 +400,12 @@ export function setStyle(style: string) {
   }
 
   setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
+
+  const maxRow = Number(j.ScrollMode.MaxRowCount)
+  setMaxRow(maxRow)
+  rules[HORIZONTAL_SCROLL] = {
+    'max-block-size': px(maxRow * 30),
+  }
 
   if (j.Background.ImageUrl) {
     let url = j.Background.ImageUrl
