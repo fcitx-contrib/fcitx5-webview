@@ -27,8 +27,8 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double anchor_left, double panel_top,
                                     double panel_right, double panel_bottom,
                                     double panel_left, double panel_radius,
-                                    double width, double height,
-                                    bool dragging) {
+                                    double border_width, double width,
+                                    double height, bool dragging) {
     EM_ASM(fcitx.placePanel($0, $1, $2, $3, $4), dx, dy, anchor_top,
            anchor_left, dragging);
 }
