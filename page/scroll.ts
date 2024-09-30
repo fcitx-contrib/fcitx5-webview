@@ -126,6 +126,12 @@ export function recalculateScroll(scrollStart: boolean) {
       rowItemCount.push(itemCount)
       itemCount = 1
       currentY = y
+      const previousDivider = candidate.previousElementSibling!
+      if (previousDivider.getBoundingClientRect().y === y) {
+        // The element in previous row is too long so the divider goes to the next row.
+        // The fix should not affect how many candidates in a row.
+        previousDivider.setAttribute('style', 'flex-grow: 0')
+      }
     }
   }
   rowItemCount.push(itemCount)
