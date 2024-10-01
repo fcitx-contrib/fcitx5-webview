@@ -44,11 +44,17 @@ WebviewCandidateWindow::WebviewCandidateWindow()
     update_accent_color();
 
     bind("_resize",
-         [this](double dx, double dy, double anchor_top, double anchor_right,
-                double anchor_bottom, double anchor_left, double panel_top,
-                double panel_right, double panel_bottom, double panel_left,
-                double panel_radius, double border_width, double width,
-                double height, bool dragging) {
+         [this](uint32_t result_epoch, double dx, double dy, double anchor_top,
+                double anchor_right, double anchor_bottom, double anchor_left,
+                double panel_top, double panel_right, double panel_bottom,
+                double panel_left, double panel_radius, double border_width,
+                double width, double height, bool dragging) {
+             // Drop results from previous epochs. This can happen
+             // because JS code runs in another thread and can be slow
+             // sometimes.
+             // NOTE: accept result_epoch=0 because of wrapping.
+             if (result_epoch != 0 && result_epoch < epoch)
+                 return;
              resize(dx, dy, anchor_top, anchor_right, anchor_bottom,
                     anchor_left, panel_top, panel_right, panel_bottom,
                     panel_left, panel_radius, border_width, width, height,
@@ -144,7 +150,8 @@ void WebviewCandidateWindow::show(double x, double y) {
         // warmed-up yet, and it won't be updated until user changes color.
         set_accent_color();
     }
-    invoke_js("resize", 0., 0., false);
+    epoch += 1;
+    invoke_js("resize", epoch, 0., 0., false);
 }
 
 static void build_html_open_tags(std::stringstream &ss, int flags) {

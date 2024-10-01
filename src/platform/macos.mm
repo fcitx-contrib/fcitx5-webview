@@ -217,6 +217,7 @@ void WebviewCandidateWindow::hide() {
     [window orderBack:nil];
     [window setIsVisible:NO];
     hidden_ = true;
+    epoch += 1;
 }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {

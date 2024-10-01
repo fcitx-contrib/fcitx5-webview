@@ -8,6 +8,7 @@
 #else
 #include "webview.h"
 #endif
+#include <cstdint>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
@@ -67,6 +68,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     int accent_color_ = 0;
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
+    uint32_t epoch = 0; // A timestamp for async results from
+                        // webview
 
   private:
     /* Platform-specific interfaces (implemented in 'platform') */
