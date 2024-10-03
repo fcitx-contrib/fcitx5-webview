@@ -37,7 +37,7 @@ void WebviewCandidateWindow::set_transparent_background() {
 
 void WebviewCandidateWindow::update_accent_color() {}
 
-void WebviewCandidateWindow::hide() {}
+void WebviewCandidateWindow::hide() { epoch += 1; }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 

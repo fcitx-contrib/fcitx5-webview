@@ -12,6 +12,7 @@ import {
 
 const DRAG_THRESHOLD = 10
 
+let epoch = 0
 let pressed = false
 let dragging = false
 let startX = 0
@@ -37,11 +38,13 @@ interface ShadowBox {
 }
 
 export function resize(
+  new_epoch: number,
   dx: number,
   dy: number,
   dragging: boolean,
   hasContextmenu: boolean,
 ) {
+  epoch = new_epoch
   function adaptWindowSize(reserveSpaceForContextmenu: boolean) {
     let {
       anchorTop,
@@ -85,7 +88,7 @@ export function resize(
     const { borderRadius, borderWidth } = getComputedStyle(panel)
     const bWidth = Math.max(...borderWidth.split(' ').map(Number.parseFloat))
     const pRadius = Math.max(...borderRadius.split(' ').map(Number.parseFloat))
-    window.fcitx._resize(dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, bWidth, right, bottom, dragging)
+    window.fcitx._resize(epoch, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, bWidth, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   if (!dragging) {
@@ -165,7 +168,7 @@ export function showContextmenu(x: number, y: number, index: number, actions: Ca
   contextmenu.style.top = `${y}px`
   contextmenu.style.left = `${x}px`
   contextmenu.style.display = 'block'
-  resize(0, 0, false, true)
+  resize(epoch, 0, 0, false, true)
 }
 
 export function hideContextmenu() {
@@ -207,7 +210,7 @@ receiver.addEventListener('mousemove', (e) => {
   dX += dx
   dY += dy
   dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
-  resize(dx, dy, true, false)
+  resize(epoch, dx, dy, true, false)
 })
 
 receiver.addEventListener('mouseup', (e) => {
