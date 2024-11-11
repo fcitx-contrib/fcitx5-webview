@@ -137,8 +137,8 @@ export function recalculateScroll(scrollStart: boolean) {
   rowItemCount.push(itemCount)
   renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
 
-  // Manually adjust last row so that candidates align left.
-  if (scrollEnd) {
+  // Manually adjust last row if less than MAX_COLUMN candidates so that they align left.
+  if (scrollEnd && rowItemCount[rowItemCount.length - 1] < MAX_COLUMN) {
     const dividers = hoverables.querySelectorAll('.fcitx-divider')
     const skipped = itemCountInFirstNRows(rowItemCount.length - 1)
     const { width } = dividers[skipped - 1].getBoundingClientRect() // Don't use clientWidth as it rounds to integer.
