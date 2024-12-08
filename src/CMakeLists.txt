@@ -8,7 +8,7 @@ if(NOT EMSCRIPTEN)
     list(APPEND WCW_SRC curl.cpp)
 endif()
 
-add_library(WebviewCandidateWindow ${WCW_SRC})
+add_library(WebviewCandidateWindow STATIC ${WCW_SRC})
 target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview")
 target_link_libraries(WebviewCandidateWindow ${LIBS})
 if(APPLE)
