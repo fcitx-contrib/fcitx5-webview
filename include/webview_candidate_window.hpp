@@ -65,7 +65,8 @@ class WebviewCandidateWindow : public CandidateWindow {
     bool hidden_ = true;
     bool was_above_ = false;
     bool accent_color_nil_ = false;
-    int accent_color_ = 0;
+    // Fallback to macOS default blue on platforms with no accent color support.
+    int accent_color_ = 4;
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
     uint32_t epoch = 0; // A timestamp for async results from
