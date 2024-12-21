@@ -60,6 +60,7 @@ jobs:
       - name: Install dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
+          sudo apt update
           sudo apt install -y ninja-build \
             nlohmann-json3-dev \
             libwebkit2gtk-4.1-dev \
@@ -69,10 +70,9 @@ jobs:
       - name: Configure (macOS)
         if: startsWith(matrix.os, 'macos')
         run: |
-          PKG_CONFIG_PATH=/tmp/fcitx5/lib/pkgconfig cmake -B build -G Ninja \
+          cmake -B build -G Ninja \
             -DWKWEBVIEW_PROTOCOL="fcitx" \
             -DWEBVIEW_WWW_PATH=".local/share/fcitx5/www" \
-            -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Configure (Ubuntu)
