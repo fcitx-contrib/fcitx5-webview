@@ -25,11 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-13, ubuntu-24.04]
-        include:
-          - { os: macos-14, arch: arm64 }
-          - { os: macos-13, arch: x86_64 }
-          - { os: ubuntu-24.04, arch: x86_64 }
+        os: [macos-15, macos-13, ubuntu-24.04]
 
     steps:
       - uses: actions/checkout@v4
@@ -54,12 +50,12 @@ jobs:
       - name: Install dependencies (macOS)
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install ninja
-          ./install-deps.sh ${{ matrix.arch }}
+          brew install ninja nlohmann-json
 
       - name: Install dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
+          sudo apt update
           sudo apt install -y ninja-build \
             nlohmann-json3-dev \
             libwebkit2gtk-4.1-dev \
@@ -69,10 +65,9 @@ jobs:
       - name: Configure (macOS)
         if: startsWith(matrix.os, 'macos')
         run: |
-          PKG_CONFIG_PATH=/tmp/fcitx5/lib/pkgconfig cmake -B build -G Ninja \
+          cmake -B build -G Ninja \
             -DWKWEBVIEW_PROTOCOL="fcitx" \
             -DWEBVIEW_WWW_PATH=".local/share/fcitx5/www" \
-            -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Configure (Ubuntu)
