@@ -26,10 +26,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-15, macos-13, ubuntu-24.04]
-        include:
-          - { os: macos-15, arch: arm64 }
-          - { os: macos-13, arch: x86_64 }
-          - { os: ubuntu-24.04, arch: x86_64 }
 
     steps:
       - uses: actions/checkout@v4
@@ -54,8 +50,7 @@ jobs:
       - name: Install dependencies (macOS)
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install ninja
-          ./install-deps.sh ${{ matrix.arch }}
+          brew install ninja nlohmann-json
 
       - name: Install dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu')
