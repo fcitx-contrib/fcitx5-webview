@@ -50,6 +50,7 @@
   align-items: center; /* English words have lower height */
   line-height: 1em; /* align label and candidates */
   position: relative; /* for absolute position of mark */
+  box-sizing: content-box; /* f5j: vitepress sets border-box for * which makes candidate shorter */
 }
 
 .fcitx-label {
