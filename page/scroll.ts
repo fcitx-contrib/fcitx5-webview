@@ -141,9 +141,12 @@ export function recalculateScroll(scrollStart: boolean) {
   if (scrollEnd && rowItemCount[rowItemCount.length - 1] < MAX_COLUMN) {
     const dividers = hoverables.querySelectorAll('.fcitx-divider')
     const skipped = itemCountInFirstNRows(rowItemCount.length - 1)
-    const { width } = dividers[skipped - 1].getBoundingClientRect() // Don't use clientWidth as it rounds to integer.
-    for (let i = skipped; i < skipped + rowItemCount[rowItemCount.length - 1] - 1; ++i) {
-      dividers[i].setAttribute('style', `flex-grow: 0; flex-basis: ${width}px`)
+    const { width: gapOfPreviousRow } = dividers[skipped - 1].getBoundingClientRect() // Don't use clientWidth as it rounds to integer.
+    const { width: gapOfLastRow } = dividers[skipped].getBoundingClientRect()
+    if (gapOfLastRow > gapOfPreviousRow) {
+      for (let i = skipped; i < skipped + rowItemCount[rowItemCount.length - 1] - 1; ++i) {
+        dividers[i].setAttribute('style', `flex-grow: 0; flex-basis: ${gapOfPreviousRow}px`)
+      }
     }
   }
 }
