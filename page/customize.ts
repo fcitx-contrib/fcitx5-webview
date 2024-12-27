@@ -3,6 +3,7 @@ import type {
   PAGING_BUTTONS_STYLE,
 } from './ux'
 import { setMaxRow } from './scroll'
+import { hoverables } from './selector'
 import {
   setBlink,
   setBlur,
@@ -115,7 +116,8 @@ const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .fcitx-highlighted-original .fcitx-mar
 const HORIZONTAL_SCROLL = `${PANEL} .fcitx-hoverables.fcitx-horizontal-scroll`
 
 const PANEL_LIGHT = `.fcitx-light${PANEL}`
-const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner`
+// Not sure why but considering Margin only for initial state (i.e., not hover or press) is good enough for eliminating ghost stripes.
+const PANEL_LIGHT_HIGHLIGHT = `${PANEL_LIGHT} :is(.fcitx-no-margin .fcitx-hoverable.fcitx-highlighted, .fcitx-margin .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner)`
 const PANEL_LIGHT_HIGHLIGHT_HOVER = `${PANEL_LIGHT} .fcitx-mousemoved .fcitx-hoverable.fcitx-highlighted:hover .fcitx-hoverable-inner`
 const PANEL_LIGHT_HIGHLIGHT_PRESS = `${PANEL_LIGHT} .fcitx-hoverable.fcitx-highlighted:active .fcitx-hoverable-inner`
 const PANEL_LIGHT_OTHER_HOVER = `${PANEL_LIGHT} .fcitx-mousemoved .fcitx-hoverable:not(.fcitx-highlighted):hover .fcitx-hoverable-inner`
@@ -144,6 +146,18 @@ const PANEL_DARK = `.fcitx-dark${PANEL}`
 
 function lightToDark(light: string) {
   return light.replace(PANEL_LIGHT, PANEL_DARK)
+}
+
+// For eliminating ghost stripes. See macos.scss for details.
+function setMargin(hasMargin: boolean) {
+  if (hasMargin) {
+    hoverables.classList.add('fcitx-margin')
+    hoverables.classList.remove('fcitx-no-margin')
+  }
+  else {
+    hoverables.classList.remove('fcitx-margin')
+    hoverables.classList.add('fcitx-no-margin')
+  }
 }
 
 const PANEL_DARK_HIGHLIGHT = lightToDark(PANEL_LIGHT_HIGHLIGHT)
@@ -400,6 +414,8 @@ export function setStyle(style: string) {
   }
 
   setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
+
+  setMargin(j.Size.Margin !== '0')
 
   const maxRow = Number(j.ScrollMode.MaxRowCount)
   setMaxRow(maxRow)
