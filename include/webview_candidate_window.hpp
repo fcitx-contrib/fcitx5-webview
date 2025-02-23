@@ -134,7 +134,7 @@ class WebviewCandidateWindow : public CandidateWindow {
     template <typename F> inline void bind(const std::string &name, F f) {
         using Ret = typename function_traits<F>::return_type;
         using ArgsTp = typename function_traits<F>::args_tuple;
-        auto handler = [=](std::string args_json) -> std::string {
+        auto handler = [=, this](std::string args_json) -> std::string {
             auto j = nlohmann::json::parse(args_json);
             ArgsTp args;
             if (std::tuple_size<ArgsTp>() > j.size()) {
