@@ -1,3 +1,5 @@
+import type { COLLAPSE, COMMIT, DOWN, END, HOME, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, SCROLLING, UP } from './constant'
+
 declare global {
   interface CandidateAction {
     id: number
@@ -11,10 +13,10 @@ declare global {
     actions: CandidateAction[]
   }
 
-  type SCROLL_STATE = 0 | 1 | 2
+  type SCROLL_STATE = typeof SCROLL_NONE | typeof SCROLL_READY | typeof SCROLLING
   type SCROLL_SELECT = 1 | 2 | 3 | 4 | 5 | 6
-  type SCROLL_MOVE_HIGHLIGHT = 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17
-  type SCROLL_KEY_ACTION = SCROLL_SELECT | SCROLL_MOVE_HIGHLIGHT | 20
+  type SCROLL_MOVE_HIGHLIGHT = typeof UP | typeof DOWN | typeof LEFT | typeof RIGHT | typeof HOME | typeof END | typeof PAGE_UP | typeof PAGE_DOWN
+  type SCROLL_KEY_ACTION = SCROLL_SELECT | SCROLL_MOVE_HIGHLIGHT | typeof COLLAPSE | typeof COMMIT
 
   interface FcitxPlugin {
     load: () => void

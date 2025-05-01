@@ -297,7 +297,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
 
     // A User reported Bob.app called out by shortcut is above candidate
     // window on M1. While I can't reproduce it on Intel, he tested this and
-    // belived it's fixed. This trick is learned from vChewing.
+    // believed it's fixed. This trick is learned from vChewing.
     // CGShieldingWindowLevel returns 2147483628, while
     // kCGPopUpMenuWindowLevel is 101 (same with window level without this).
     [window setLevel:std::max<int>(CGShieldingWindowLevel(),

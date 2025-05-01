@@ -90,6 +90,7 @@
 
   &.fcitx-horizontal-scroll {
     max-block-size: 180px; /* For default 6 rows. If block-size, 2 rows will have 90px each. */
+    transition: max-block-size 300ms;
     inline-size: 400px;
     flex-wrap: wrap;
     overflow-y: auto;

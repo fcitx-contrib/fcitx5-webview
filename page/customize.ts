@@ -2,7 +2,7 @@ import type {
   HOVER_BEHAVIOR,
   PAGING_BUTTONS_STYLE,
 } from './ux'
-import { setMaxRow } from './scroll'
+import { setAnimation, setMaxRow } from './scroll'
 import { hoverables } from './selector'
 import {
   setBlink,
@@ -46,6 +46,7 @@ interface STYLE_JSON {
   }
   ScrollMode: {
     MaxRowCount: string
+    Animation: CONFIG_BOOL
   }
   Background: {
     ImageUrl: string
@@ -419,8 +420,11 @@ export function setStyle(style: string) {
 
   const maxRow = Number(j.ScrollMode.MaxRowCount)
   setMaxRow(maxRow)
+  const animation = j.ScrollMode.Animation === 'True'
+  setAnimation(animation)
   rules[HORIZONTAL_SCROLL] = {
     'max-block-size': px(maxRow * 30),
+    'transition': animation ? 'max-block-size 300ms' : 'none',
   }
 
   if (j.Background.ImageUrl) {

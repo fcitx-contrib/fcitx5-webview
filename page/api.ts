@@ -1,3 +1,4 @@
+import { SCROLL_NONE, SCROLL_READY, SCROLLING } from './constant'
 import { fcitx } from './distribution'
 import { setStyle } from './customize' // eslint-disable-line perfectionist/sort-imports
 import { fcitxLog } from './log'
@@ -108,29 +109,40 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
   hideContextmenu()
   setScrollState(scrollState)
   // Clear existing candidates when scroll continues.
-  if (scrollState !== 2 || scrollStart) {
+  if (scrollState !== SCROLLING || scrollStart) {
     hoverables.innerHTML = ''
     hoverables.scrollTop = 0 // Otherwise last scroll position will be kept.
   }
   else {
     fetchComplete()
   }
-  if (scrollState === 2) {
+  if (scrollState === SCROLLING) {
     hoverables.classList.add('fcitx-horizontal-scroll')
+    hoverables.style.maxBlockSize = '' // Fallback to non-inline larger max-block-size.
     setScrollEnd(scrollEnd)
   }
   else {
     hoverables.classList.remove('fcitx-horizontal-scroll')
+    if (scrollState === SCROLL_READY) {
+      requestAnimationFrame(() => {
+        // Set max-block-size as the actual value to enable expand animation.
+        hoverables.style.maxBlockSize = `${hoverables.getBoundingClientRect().height}px`
+      })
+    }
+    else {
+      // Cleanup all leftovers.
+      hoverables.style.maxBlockSize = ''
+    }
   }
   for (let i = 0; i < cands.length; ++i) {
     const candidate = div('fcitx-candidate', 'fcitx-hoverable')
-    if (i === 0 && scrollState !== 2) {
+    if (i === 0 && scrollState !== SCROLLING) {
       candidate.classList.add('fcitx-candidate-first')
     }
     if (i === highlighted) {
       candidate.classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
     }
-    if (i === cands.length - 1 && scrollState !== 2) {
+    if (i === cands.length - 1 && scrollState !== SCROLLING) {
       candidate.classList.add('fcitx-candidate-last')
     }
 
@@ -148,7 +160,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
       candidateInner.append(mark)
     }
 
-    if (cands[i].label || scrollState === 2) {
+    if (cands[i].label || scrollState === SCROLLING) {
       const label = div('fcitx-label')
       label.innerHTML = escapeWS(cands[i].label || '0')
       candidateInner.append(label)
@@ -170,14 +182,14 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     // No divider after last element in non-scroll mode,
     // but for scroll mode it needs to fill the row when
     // candidates are not enough.
-    if (scrollState === 2 || i !== cands.length - 1) {
+    if (scrollState === SCROLLING || i !== cands.length - 1) {
       hoverables.append(divider())
     }
   }
 
   setActions(cands.map(c => c.actions))
 
-  if (scrollState === 1 && getPagingButtonsStyle() !== 'None') {
+  if (scrollState === SCROLL_READY && getPagingButtonsStyle() !== 'None') {
     hoverables.append(divider(true))
     const expand = div('fcitx-expand', 'fcitx-paging-inner', 'fcitx-hoverable-inner')
     expand.innerHTML = arrowForward
@@ -185,7 +197,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     paging.append(expand)
     hoverables.append(paging)
   }
-  else if (scrollState === 0 && pageable) {
+  else if (scrollState === SCROLL_NONE && pageable) {
     const isArrow = getPagingButtonsStyle() === 'Arrow'
     hoverables.append(divider(true))
 
@@ -216,7 +228,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     paging.appendChild(next)
     hoverables.appendChild(paging)
   }
-  else if (scrollState === 2) {
+  else if (scrollState === SCROLLING) {
     window.requestAnimationFrame(() => {
       recalculateScroll(scrollStart)
     })
@@ -265,7 +277,7 @@ hoverables.addEventListener('mouseleave', () => {
 })
 
 hoverables.addEventListener('wheel', (e) => {
-  if (getScrollState() === 2) {
+  if (getScrollState() === SCROLLING) {
     return
   }
   fcitx._page((<WheelEvent>e).deltaY > 0)

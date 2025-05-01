@@ -91,16 +91,10 @@ export function resize(
     window.fcitx._resize(epoch, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, bWidth, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
-  if (!dragging) {
-    // Sometimes getBoundingClientRect is called when the element is not fully rendered.
-    window.requestAnimationFrame(() => {
-      adaptWindowSize(hasContextmenu)
-      if (hasContextmenu) {
-        adaptWindowSize(false)
-      }
-    })
-  }
+  // With ResizeObserver, we probably don't need to call adaptWindowSize again by requestAnimationFrame.
 }
+
+export const resizeForAnimation = () => resize(epoch, 0, 0, false, false)
 
 function getBoundingRectWithShadow(element: Element): ShadowBox {
   const rect = element.getBoundingClientRect()
