@@ -25,6 +25,11 @@ export async function init(page: Page) {
         action: [index, id],
       })
     }
+    window.fcitx._highlight = (index: number) => {
+      window.cppCalls.push({
+        highlight: index,
+      })
+    }
     window.fcitx._log = () => {}
   })
 }
@@ -32,6 +37,12 @@ export async function init(page: Page) {
 export function setCandidates(page: Page, cands: Candidate[], highlighted: number) {
   return page.evaluate(({ cands, highlighted }) =>
     window.fcitx.setCandidates(cands, highlighted, '', false, false, false, 0, false, false), { cands, highlighted })
+}
+
+export function scrollExpand(page: Page, texts: string[]) {
+  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [] }))
+  return page.evaluate(({ cands }) =>
+    window.fcitx.setCandidates(cands, -1, '', false, false, false, 2, false, false), { cands })
 }
 
 export function setLayout(page: Page, layout: 0 | 1) {

@@ -104,6 +104,7 @@ function scrollForHighlight() {
 }
 
 function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
+  window.fcitx._highlight(newHighlighted) // Call it on both expand and highlight move.
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   if (clearOld) {
     const highlightedRow = getHighlightedRow()
@@ -248,7 +249,6 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
     case PAGE_DOWN: {
       const newHighlighted = getNeighborCandidate(highlighted, action)
       if (newHighlighted >= 0) {
-        window.fcitx._highlight(newHighlighted)
         renderHighlightAndLabels(newHighlighted, true)
         scrollForHighlight()
         if (!scrollEnd && !fetching) {

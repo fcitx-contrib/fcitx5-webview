@@ -5,6 +5,8 @@ declare global {
     select: number
   } | {
     action: [number, number]
+  } | {
+    highlight: number
   }
 
   interface Window {
