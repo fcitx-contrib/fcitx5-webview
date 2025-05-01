@@ -1,8 +1,10 @@
+import { COLLAPSE, COMMIT, DOWN, END, HOME, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, UP } from './constant'
 import {
   hoverables,
 } from './selector'
 import {
   hideContextmenu,
+  resizeForAnimation,
 } from './ux'
 
 let MAX_ROW = 6
@@ -12,7 +14,14 @@ export function setMaxRow(n: number) {
   MAX_ROW = n
 }
 
-let scrollState: SCROLL_STATE = 0
+let animation = true
+let collapseHeight = 0
+
+export function setAnimation(enable: boolean) {
+  animation = enable
+}
+
+let scrollState: SCROLL_STATE = SCROLL_NONE
 
 export function getScrollState() {
   return scrollState
@@ -40,7 +49,15 @@ export function expand() {
 }
 
 function collapse() {
-  window.fcitx._scroll(-1, 0)
+  if (animation) {
+    hoverables.style.maxBlockSize = `${collapseHeight}px`
+    setTimeout(() => {
+      window.fcitx._scroll(-1, 0)
+    }, 290) // Less than 300ms to give engine some time to generate candidates.
+  }
+  else {
+    window.fcitx._scroll(-1, 0)
+  }
 }
 
 let rowItemCount: number[] = []
@@ -174,27 +191,27 @@ function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): 
   }
 
   switch (direction) {
-    case 10: {
+    case UP: {
       return helper(row - 1)
     }
-    case 11: {
+    case DOWN: {
       return helper(row + 1)
     }
-    case 12:
+    case LEFT:
       return index - 1
-    case 13:
+    case RIGHT:
       if (index + 1 < itemCountInFirstNRows(rowItemCount.length + 1)) {
         return index + 1
       }
       return -1
-    case 14:
-    case 15: {
+    case HOME:
+    case END: {
       const skipped = itemCountInFirstNRows(row)
-      return direction === 14 ? skipped : skipped + rowItemCount[row] - 1
+      return direction === HOME ? skipped : skipped + rowItemCount[row] - 1
     }
-    case 16:
-    case 17: {
-      const d = direction === 16 ? 10 : 11
+    case PAGE_UP:
+    case PAGE_DOWN: {
+      const d = direction === PAGE_UP ? UP : DOWN
       let step = MAX_ROW
       let intermediateIndex = index
       let newIndex: number
@@ -221,14 +238,14 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
     return window.fcitx._select(itemCountInFirstNRows(highlightedRow) + action - 1)
   }
   switch (action) {
-    case 10:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 17: {
+    case UP:
+    case DOWN:
+    case LEFT:
+    case RIGHT:
+    case HOME:
+    case END:
+    case PAGE_UP:
+    case PAGE_DOWN: {
       const newHighlighted = getNeighborCandidate(highlighted, action)
       if (newHighlighted >= 0) {
         window.fcitx._highlight(newHighlighted)
@@ -242,12 +259,15 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
           }
         }
       }
-      else if ([10, 16].includes(action) && getHighlightedRow() === 0) {
+      else if ([UP, PAGE_UP].includes(action) && getHighlightedRow() === 0) {
         collapse()
       }
       break
     }
-    case 20:
+    case COLLAPSE:
+      collapse()
+      break
+    case COMMIT:
       window.fcitx._select(highlighted)
       break
   }
@@ -266,3 +286,12 @@ hoverables.addEventListener('scroll', () => {
     window.fcitx._scroll(candidates.length, MAX_ROW * MAX_COLUMN)
   }
 })
+
+// Expand/collapse animation. Sync with native window for position, size and blur.
+const resizeObserver = new ResizeObserver((entries) => {
+  if (scrollState === SCROLL_READY) {
+    collapseHeight = entries[0].contentRect.height
+  }
+  resizeForAnimation()
+})
+resizeObserver.observe(hoverables)

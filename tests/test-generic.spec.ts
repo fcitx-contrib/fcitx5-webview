@@ -83,7 +83,9 @@ test('Select candidate', async ({ page }) => {
 
   await candidate(page, 1).click()
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls).toEqual([{ select: 1 }])
+  expect(cppCalls).toHaveLength(2)
+  expect(cppCalls[0]).toHaveProperty('resize')
+  expect(cppCalls[1]).toEqual({ select: 1 })
 })
 
 test('Candidate action', async ({ page }) => {
@@ -113,8 +115,9 @@ test('Drag should not select candidate', async ({ page }) => {
   await page.mouse.move(centerX, centerY + 10)
   await page.mouse.up()
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls).toHaveLength(1)
-  expect(cppCalls[0]).toHaveProperty('resize')
+  expect(cppCalls).toHaveLength(2)
+  expect(cppCalls[0]).toHaveProperty('resize') // ResizeObserver
+  expect(cppCalls[1]).toHaveProperty('resize') // drag
 })
 
 test('But micro drag is tolerated', async ({ page }) => {
@@ -127,14 +130,15 @@ test('But micro drag is tolerated', async ({ page }) => {
   const box = await getBox(candidate(page, 0))
   const centerX = box.x + box.width / 2
   const centerY = box.y + box.height / 2
-  await page.mouse.move(centerX, centerY + 1)
+  await page.mouse.move(centerX, centerY)
   await page.mouse.down()
   await page.mouse.move(centerX, centerY + 1)
   await page.mouse.up()
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls).toHaveLength(2)
-  expect(cppCalls[0]).toHaveProperty('resize')
-  expect(cppCalls[1]).toEqual({ select: 0 })
+  expect(cppCalls).toHaveLength(3)
+  expect(cppCalls[0]).toHaveProperty('resize') // ResizeObserver
+  expect(cppCalls[1]).toHaveProperty('resize') // drag
+  expect(cppCalls[2]).toEqual({ select: 0 })
 })
 
 test('Set layout', async ({ page }) => {
