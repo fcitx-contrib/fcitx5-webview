@@ -34,6 +34,11 @@ export async function init(page: Page) {
   })
 }
 
+export function updateInputPanel(page: Page, preedit: string, auxUp: string, auxDown: string) {
+  return page.evaluate(({ preedit, auxUp, auxDown }) =>
+    window.fcitx.updateInputPanel(preedit, auxUp, auxDown), { preedit, auxUp, auxDown })
+}
+
 export function setCandidates(page: Page, cands: Candidate[], highlighted: number) {
   return page.evaluate(({ cands, highlighted }) =>
     window.fcitx.setCandidates(cands, highlighted, '', false, false, false, 0, false, false), { cands, highlighted })
@@ -64,6 +69,15 @@ export function candidate(page: Page, index: number) {
 
 export async function getBox(locator: Locator) {
   return (await locator.boundingBox())!
+}
+
+export async function getTextBox(locator: Locator, index: number) {
+  return locator.evaluate((el, index) => {
+    const range = document.createRange()
+    range.setStart(el.firstChild!, index)
+    range.setEnd(el.firstChild!, index + 1)
+    return range.getBoundingClientRect()
+  }, index)
 }
 
 export function getCppCalls(page: Page) {

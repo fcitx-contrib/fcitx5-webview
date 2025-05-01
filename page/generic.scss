@@ -27,12 +27,15 @@
 .fcitx-preedit, .fcitx-aux-up {
   display: inline-flex; /* put the cursor on the same line with preedit */
   align-items: center;
-  justify-content: center;
   line-height: 1em; /* align preedit and text cursor */
 
   &.fcitx-hidden {
     display: none; /* needed because the above display has higher precedence than .hidden's */
   }
+}
+
+.fcitx-aux-up {
+  justify-content: center;
 }
 
 .fcitx-aux-down {
