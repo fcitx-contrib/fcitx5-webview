@@ -1,3 +1,7 @@
+// LAYOUT
+export const HORIZONTAL = 0
+export const VERTICAL = 1
+
 // SCROLL_STATE
 export const SCROLL_NONE = 0
 export const SCROLL_READY = 1

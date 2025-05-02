@@ -316,7 +316,6 @@ setInterval(() => {
   blinkSwitch = !blinkSwitch
 }, 500)
 
-export type HOVER_BEHAVIOR = 'None' | 'Move' | 'Add'
 let hoverBehavior: HOVER_BEHAVIOR = 'None'
 export function setHoverBehavior(behavior: HOVER_BEHAVIOR) {
   hoverBehavior = behavior
@@ -325,7 +324,6 @@ export function getHoverBehavior() {
   return hoverBehavior
 }
 
-export type PAGING_BUTTONS_STYLE = 'None' | 'Arrow' | 'Triangle'
 let pagingButtonsStyle: PAGING_BUTTONS_STYLE = 'Arrow'
 export function setPagingButtonsStyle(style: PAGING_BUTTONS_STYLE) {
   pagingButtonsStyle = style

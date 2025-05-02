@@ -1,7 +1,3 @@
-import type {
-  HOVER_BEHAVIOR,
-  PAGING_BUTTONS_STYLE,
-} from './ux'
 import { setAnimation, setMaxRow } from './scroll'
 import { hoverables } from './selector'
 import {
@@ -10,84 +6,6 @@ import {
   setHoverBehavior,
   setPagingButtonsStyle,
 } from './ux'
-
-type CONFIG_BOOL = 'False' | 'True'
-
-interface LIGHT_MODE {
-  OverrideDefault: CONFIG_BOOL
-  HighlightColor: string
-  HighlightHoverColor: string
-  HighlightTextColor: string
-  HighlightTextPressColor: string
-  HighlightLabelColor: string
-  HighlightCommentColor: string
-  HighlightMarkColor: string
-  PanelColor: string
-  TextColor: string
-  LabelColor: string
-  CommentColor: string
-  PagingButtonColor: string
-  DisabledPagingButtonColor: string
-  PreeditColor: string
-  PreeditColorPreCursor: string
-  BorderColor: string
-  DividerColor: string
-}
-
-interface FONT_FAMILY { [key: string]: string }
-
-interface STYLE_JSON {
-  LightMode: LIGHT_MODE
-  DarkMode: LIGHT_MODE & {
-    SameWithLightMode: CONFIG_BOOL
-  }
-  Typography: {
-    PagingButtonsStyle: PAGING_BUTTONS_STYLE
-  }
-  ScrollMode: {
-    MaxRowCount: string
-    Animation: CONFIG_BOOL
-  }
-  Background: {
-    ImageUrl: string
-    Blur: CONFIG_BOOL
-    BlurRadius: string
-    Shadow: CONFIG_BOOL
-  }
-  Font: {
-    TextFontFamily: FONT_FAMILY
-    TextFontSize: string
-    LabelFontFamily: FONT_FAMILY
-    LabelFontSize: string
-    CommentFontFamily: FONT_FAMILY
-    CommentFontSize: string
-    PreeditFontFamily: FONT_FAMILY
-    PreeditFontSize: string
-  }
-  Cursor: {
-    Style: 'Blink' | 'Static' | 'Text'
-  }
-  Highlight: {
-    MarkStyle: 'None' | 'Bar' | 'Text'
-    HoverBehavior: HOVER_BEHAVIOR
-  }
-  Size: {
-    BorderWidth: string
-    BorderRadius: string
-    Margin: string
-    HighlightRadius: string
-    TopPadding: string
-    RightPadding: string
-    BottomPadding: string
-    LeftPadding: string
-    LabelTextGap: string
-    VerticalMinWidth: string
-    HorizontalDividerWidth: string
-  }
-  Advanced: {
-    UserCss: string
-  }
-}
 
 const PANEL = '.fcitx-basic .fcitx-panel'
 const PANEL_VERTICAL_CANDIDATE = `${PANEL}.fcitx-horizontal-tb .fcitx-vertical .fcitx-candidate`
@@ -107,7 +25,7 @@ const LAST_CANDIDATE_INNER = '.fcitx-candidate-last .fcitx-candidate-inner'
 const VERTICAL_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-vertical .fcitx-candidate-inner`
 const VERTICAL_FIRST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-vertical ${FIRST_CANDIDATE_INNER}`
 const VERTICAL_LAST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-vertical ${LAST_CANDIDATE_INNER}`
-const HORIZONTAL_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal .fcitx-candidate-inner`
+const HORIZONTAL_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate-inner`
 const HORIZONTAL_FIRST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal ${FIRST_CANDIDATE_INNER}`
 const HORIZONTAL_LAST_CANDIDATE_INNER = `${PANEL} .fcitx-hoverables.fcitx-horizontal ${LAST_CANDIDATE_INNER}`
 const PAGING_OUTER = `${PANEL} :is(.fcitx-prev, .fcitx-next)`
@@ -440,7 +358,7 @@ export function setStyle(style: string) {
   if (window.fcitx.distribution === 'fcitx5-js') {
     if (j.Background.Blur === 'True') {
       setBlur(true)
-      const blur = `blur(${px(j.Background.BlurRadius)})`
+      const blur = `blur(${px(j.Background.BlurRadius!)})`
       rules['.fcitx-blur'] = { '-webkit-backdrop-filter': blur, 'backdrop-filter': blur }
     }
     else {

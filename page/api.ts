@@ -1,4 +1,4 @@
-import { SCROLL_NONE, SCROLL_READY, SCROLLING } from './constant'
+import { HORIZONTAL, SCROLL_NONE, SCROLL_READY, SCROLLING, VERTICAL } from './constant'
 import { fcitx } from './distribution'
 import { setStyle } from './customize' // eslint-disable-line perfectionist/sort-imports
 import { fcitxLog } from './log'
@@ -55,15 +55,16 @@ function divider(paging: boolean = false) {
   return e
 }
 
-function setLayout(layout: 0 | 1) {
+function setLayout(layout: LAYOUT) {
   switch (layout) {
-    case 0:
+    case HORIZONTAL:
       hoverables.classList.remove('fcitx-vertical')
       hoverables.classList.add('fcitx-horizontal')
       break
-    case 1:
+    case VERTICAL:
       hoverables.classList.remove('fcitx-horizontal')
       hoverables.classList.add('fcitx-vertical')
+      break
   }
 }
 
