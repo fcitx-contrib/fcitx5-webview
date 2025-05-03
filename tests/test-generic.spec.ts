@@ -2,6 +2,7 @@ import {
   expect,
   test,
 } from '@playwright/test'
+import { HORIZONTAL, VERTICAL } from '../page/constant'
 import {
   candidate,
   getBox,
@@ -150,7 +151,7 @@ test('Set layout', async ({ page }) => {
     { text: '明', label: '1', comment: '', actions: [] },
   ], 0)
 
-  await setLayout(page, 1)
+  await setLayout(page, VERTICAL)
   const verticalBox = await getBox(panel(page))
   expect(verticalBox).toMatchObject({
     x: 25,
@@ -161,7 +162,7 @@ test('Set layout', async ({ page }) => {
   expect(verticalBox.height).toBeGreaterThan(120)
   expect(verticalBox.height).toBeLessThan(130)
 
-  await setLayout(page, 0)
+  await setLayout(page, HORIZONTAL)
   const horizontalBox = await getBox(panel(page))
   expect(horizontalBox).toMatchObject({
     x: 25,
