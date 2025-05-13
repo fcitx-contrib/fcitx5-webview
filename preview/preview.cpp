@@ -9,7 +9,7 @@
 #include <iostream>
 #include <thread>
 
-std::unique_ptr<candidate_window::CandidateWindow> candidateWindow;
+std::unique_ptr<candidate_window::WebviewCandidateWindow> candidateWindow;
 
 void doPreview() {
     candidateWindow =
