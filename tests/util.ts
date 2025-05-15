@@ -44,10 +44,12 @@ export function setCandidates(page: Page, cands: Candidate[], highlighted: numbe
     window.fcitx.setCandidates(cands, highlighted, '', false, false, false, 0, false, false), { cands, highlighted })
 }
 
-export function scrollExpand(page: Page, texts: string[]) {
+export async function scrollExpand(page: Page, texts: string[]) {
   const cands = texts.map(text => ({ text, label: '', comment: '', actions: [] }))
+  await page.evaluate(({ cands }) =>
+    window.fcitx.setCandidates(cands, 0, '', false, false, false, 1, false, false), { cands })
   return page.evaluate(({ cands }) =>
-    window.fcitx.setCandidates(cands, -1, '', false, false, false, 2, false, false), { cands })
+    window.fcitx.setCandidates(cands, -1, '', false, false, false, 2, true, false), { cands })
 }
 
 export function setLayout(page: Page, layout: LAYOUT) {
