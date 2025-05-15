@@ -6,7 +6,8 @@ test('Passively expand', async ({ page }) => {
   await scrollExpand(page, ['1', '2', '3', '4', '5', '6', '7'])
   await expect(candidate(page, 0)).toContainClass('fcitx-highlighted')
   const cppCalls = await page.evaluate(() => window.cppCalls)
-  expect(cppCalls[0], 'Highlight is set on expand').toEqual({ highlight: 0 })
+  // Order of highlight and resize event is random.
+  expect(cppCalls.filter(call => JSON.stringify(call) === '{"highlight":0}').length, 'Highlight is set on expand').toEqual(1)
 })
 
 test('With less candidates, scroll bar shows in animation and hides when done, but should not cause layout shift.', async ({ page }) => {

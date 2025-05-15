@@ -65,7 +65,12 @@ type ACCENT_COLOR = keyof typeof accentColorMap
 
 let accentColor: ACCENT_COLOR = 'null'
 
-export function setAccentColor(color: number | null) {
+export function setAccentColor(color: number | null | string) {
+  if (typeof color === 'string') {
+    theme.style.setProperty('--accent-color', color)
+    return
+  }
+  theme.style.setProperty('--accent-color', '')
   theme.classList.remove(`fcitx-${accentColorMap[accentColor]}`)
   const key = String(color)
   if (key in accentColorMap) {

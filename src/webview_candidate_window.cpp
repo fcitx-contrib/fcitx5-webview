@@ -89,9 +89,20 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 #endif
 }
 
+void WebviewCandidateWindow::apply_app_accent_color(
+    const std::string &accent_color) {
+    app_accent_color_ = accent_color;
+    // Set immediately (usually on focus in) to avoid flicker.
+    set_accent_color();
+}
+
 void WebviewCandidateWindow::set_accent_color() {
-    if (accent_color_nil_) {
-        invoke_js("setAccentColor", nullptr);
+    if (accent_color_nil_) { // multi-color
+        if (app_accent_color_.empty()) {
+            invoke_js("setAccentColor", nullptr);
+        } else {
+            invoke_js("setAccentColor", app_accent_color_);
+        }
     } else {
         invoke_js("setAccentColor", accent_color_);
     }
