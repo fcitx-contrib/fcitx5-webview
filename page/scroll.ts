@@ -293,5 +293,11 @@ const resizeObserver = new ResizeObserver((entries) => {
     collapseHeight = entries[0].contentRect.height
   }
   resizeForAnimation()
+  if (hoverables.clientHeight === hoverables.scrollHeight) {
+    hoverables.classList.remove('fcitx-has-scrollbar')
+  }
+  else {
+    hoverables.classList.add('fcitx-has-scrollbar')
+  }
 })
 resizeObserver.observe(hoverables)
