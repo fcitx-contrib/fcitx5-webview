@@ -1,4 +1,4 @@
-export const theme = document.querySelector('#fcitx-theme')!
+export const theme = document.querySelector('#fcitx-theme') as HTMLElement
 export const decoration = document.querySelector('.fcitx-decoration') as HTMLElement
 export const panel = document.querySelector('.fcitx-panel')!
 export const hoverables = panel.querySelector('.fcitx-hoverables') as HTMLElement

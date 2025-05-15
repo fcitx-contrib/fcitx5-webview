@@ -97,7 +97,10 @@ class WebviewCandidateWindow {
     void show(double x, double y);
     void hide();
 
+    // Fetch system accent color.
     void update_accent_color();
+    // color is either #RRGGBBAA or "" meaning app has no accent color.
+    void apply_app_accent_color(const std::string &color);
     void set_accent_color();
     void copy_html();
 
@@ -159,6 +162,7 @@ class WebviewCandidateWindow {
     bool accent_color_nil_ = false;
     // Fallback to macOS default blue on platforms with no accent color support.
     int accent_color_ = 4;
+    std::string app_accent_color_ = "";
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
     uint32_t epoch = 0; // A timestamp for async results from

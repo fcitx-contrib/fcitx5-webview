@@ -126,7 +126,7 @@ declare global {
     updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void
     resize: (new_epoch: number, dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void
     setTheme: (theme: 0 | 1 | 2) => void
-    setAccentColor: (color: number | null) => void
+    setAccentColor: (color: number | null | string) => void
     setStyle: (style: string) => void
     setWritingMode: (mode: 0 | 1 | 2) => void
     copyHTML: () => void

@@ -1,11 +1,5 @@
-import {
-  expect,
-  test,
-} from '@playwright/test'
-import {
-  init,
-  theme,
-} from './util'
+import { expect, test } from '@playwright/test'
+import { candidate, init, setCandidates, theme } from './util'
 
 test('Set accent color', async ({ page }) => {
   await init(page)
@@ -26,4 +20,18 @@ test('Set accent color', async ({ page }) => {
     await page.evaluate(value => window.fcitx.setAccentColor(value), value)
     await expect(theme(page)).toContainClass(color)
   }
+})
+
+test('Set App accent color', async ({ page }) => {
+  await init(page)
+  await page.evaluate(() => window.fcitx.setAccentColor('#12345678'))
+  await setCandidates(page, [
+    { text: '高亮', label: '1', comment: '', actions: [] },
+    { text: '普通', label: '2', comment: '', actions: [] },
+  ], 0)
+  const highlightedCandidate = candidate(page, 0)
+  await expect(highlightedCandidate).toHaveCSS('background-color', 'rgba(18, 52, 86, 0.47)')
+
+  await page.evaluate(() => window.fcitx.setAccentColor(null))
+  await expect(highlightedCandidate).toHaveCSS('background-color', 'rgb(0, 89, 208)')
 })
