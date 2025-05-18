@@ -9,6 +9,7 @@ import {
 
 let MAX_ROW = 6
 const MAX_COLUMN = 6
+const UNIT_WIDTH = 65 // Math.floor((400 - 8)/MAX_COLUMN)
 
 export function setMaxRow(n: number) {
   MAX_ROW = n
@@ -129,44 +130,34 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
 
+function enlargeDivider(divider: Element) {
+  divider.setAttribute('style', 'flex-grow: 1')
+}
+
 export function recalculateScroll(scrollStart: boolean) {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
-  let currentY = candidates[0].getBoundingClientRect().y
   rowItemCount = []
   let itemCount = 0
+  let unitCount = 0
   for (const candidate of candidates) {
     candidate.classList.remove('fcitx-highlighted-row')
-    const { y } = candidate.getBoundingClientRect()
-    if (y === currentY) {
+    const { width } = candidate.getBoundingClientRect()
+    const nUnits = Math.min(Math.ceil(width / UNIT_WIDTH), MAX_COLUMN)
+    candidate.setAttribute('style', `width: ${nUnits * UNIT_WIDTH}px`)
+    unitCount += nUnits
+    if (unitCount <= MAX_COLUMN) {
       ++itemCount
     }
     else {
       rowItemCount.push(itemCount)
+      enlargeDivider(candidate.previousElementSibling!)
       itemCount = 1
-      currentY = y
-      const previousDivider = candidate.previousElementSibling!
-      if (previousDivider.getBoundingClientRect().y === y) {
-        // The element in previous row is too long so the divider goes to the next row.
-        // The fix should not affect how many candidates in a row.
-        previousDivider.setAttribute('style', 'flex-grow: 0')
-      }
+      unitCount = nUnits
     }
   }
   rowItemCount.push(itemCount)
+  enlargeDivider(candidates[candidates.length - 1].nextElementSibling!)
   renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
-
-  // Manually adjust last row if less than MAX_COLUMN candidates so that they align left.
-  if (scrollEnd && rowItemCount[rowItemCount.length - 1] < MAX_COLUMN) {
-    const dividers = hoverables.querySelectorAll('.fcitx-divider')
-    const skipped = itemCountInFirstNRows(rowItemCount.length - 1)
-    const { width: gapOfPreviousRow } = dividers[skipped - 1].getBoundingClientRect() // Don't use clientWidth as it rounds to integer.
-    const { width: gapOfLastRow } = dividers[skipped].getBoundingClientRect()
-    if (gapOfLastRow > gapOfPreviousRow) {
-      for (let i = skipped; i < skipped + rowItemCount[rowItemCount.length - 1] - 1; ++i) {
-        dividers[i].setAttribute('style', `flex-grow: 0; flex-basis: ${gapOfPreviousRow}px`)
-      }
-    }
-  }
 }
 
 function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {

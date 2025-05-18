@@ -230,9 +230,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     hoverables.appendChild(paging)
   }
   else if (scrollState === SCROLLING) {
-    window.requestAnimationFrame(() => {
-      recalculateScroll(scrollStart)
-    })
+    recalculateScroll(scrollStart)
   }
 
   for (const hoverable of hoverables.querySelectorAll('.fcitx-hoverable')) {

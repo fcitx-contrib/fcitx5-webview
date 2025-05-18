@@ -32,6 +32,7 @@ _page = console.log
 _resize = console.log
 _scroll = console.log
 _action = console.log
+_highlight = console.log
 _log = console.log
 
 // Show candidates with labels, and highlight the first one.
