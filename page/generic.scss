@@ -121,10 +121,6 @@
   }
 }
 
-.fcitx-hoverables.fcitx-horizontal-scroll:not(.fcitx-has-scrollbar) {
-  inline-size: 392px; /* 400px - 8px scrollbar to make sure no layout shift */
-}
-
 :is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-paging svg {
   transform: rotate(90deg);
 }
