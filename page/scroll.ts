@@ -282,6 +282,8 @@ hoverables.addEventListener('scroll', () => {
 const resizeObserver = new ResizeObserver((entries) => {
   if (scrollState === SCROLL_READY) {
     collapseHeight = entries[0].contentRect.height
+    // Set max-block-size as the actual value to enable expand animation.
+    hoverables.style.maxBlockSize = `${collapseHeight}px`
   }
   resizeForAnimation()
 })
