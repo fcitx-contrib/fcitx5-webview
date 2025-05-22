@@ -124,13 +124,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
   }
   else {
     hoverables.classList.remove('fcitx-horizontal-scroll')
-    if (scrollState === SCROLL_READY) {
-      requestAnimationFrame(() => {
-        // Set max-block-size as the actual value to enable expand animation.
-        hoverables.style.maxBlockSize = `${hoverables.getBoundingClientRect().height}px`
-      })
-    }
-    else {
+    if (scrollState !== SCROLL_READY) {
       // Cleanup all leftovers.
       hoverables.style.maxBlockSize = ''
     }
