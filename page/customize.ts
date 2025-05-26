@@ -340,8 +340,9 @@ export function setStyle(style: string) {
   setMaxRow(maxRow)
   const animation = j.ScrollMode.Animation === 'True'
   setAnimation(animation)
+  const candidateHeight = Math.max(24 /* min-block-size of .fcitx-candidate-inner */, Number(j.Font.TextFontSize)) + Number(j.Size.TopPadding) + Number(j.Size.BottomPadding) + 2 * Number(j.Size.Margin)
   rules[HORIZONTAL_SCROLL] = {
-    'max-block-size': px(maxRow * 30),
+    'max-block-size': px(maxRow * candidateHeight),
     'transition': animation ? 'max-block-size 300ms' : 'none',
   }
 

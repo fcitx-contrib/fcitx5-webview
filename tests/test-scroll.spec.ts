@@ -1,13 +1,33 @@
 import test, { expect } from '@playwright/test'
-import { candidate, getBox, init, scrollExpand } from './util'
+import { candidate, getBox, init, panel, scrollExpand, setStyle } from './util'
 
 test('Passively expand', async ({ page }) => {
   await init(page)
   await scrollExpand(page, ['1', '2', '3', '4', '5', '6', '7'])
+  const pane = panel(page)
+  await expect(pane, 'Height of 2 rows').toHaveCSS('height', '60px')
+  await expect(pane).toHaveCSS('width', '400px')
   await expect(candidate(page, 0)).toContainClass('fcitx-highlighted')
   const cppCalls = await page.evaluate(() => window.cppCalls)
   // Order of highlight and resize event is random.
   expect(cppCalls.filter(call => JSON.stringify(call) === '{"highlight":0}').length, 'Highlight is set on expand').toEqual(1)
+})
+
+test('Max height', async ({ page }) => {
+  await init(page)
+  await scrollExpand(page, Array.from({ length: 66 }).map((_, i) => (i + 1).toString()))
+  const pane = panel(page)
+  await expect(pane, 'Height of 6 rows').toHaveCSS('height', '180px')
+  await expect(pane).toHaveCSS('width', '400px')
+
+  await setStyle(page, { ScrollMode: { MaxRowCount: '10' } })
+  await expect(pane, 'Height of 10 rows').toHaveCSS('height', '300px')
+
+  await setStyle(page, { Size: { Margin: '4', TopPadding: '1', BottomPadding: '1' } })
+  await expect(pane, 'Height of 6 rows with win11 theme').toHaveCSS('height', '204px')
+
+  await setStyle(page, { Font: { TextFontSize: '32' } })
+  await expect(pane, 'Height of 6 rows with big font size').toHaveCSS('height', '228px')
 })
 
 test('Grid alignment', async ({ page }) => {
