@@ -94,7 +94,7 @@ class WebviewCandidateWindow {
     void set_style(const void *style);
     void set_native_blur(bool enabled);
     void set_native_shadow(bool enabled);
-    void show(double x, double y);
+    void show(double x, double y, double height);
     void hide();
 
     // Fetch system accent color.
@@ -155,6 +155,7 @@ class WebviewCandidateWindow {
 #endif
     double cursor_x_ = 0;
     double cursor_y_ = 0;
+    double cursor_height_ = 0;
     double x_ = 0;
     double y_ = 0;
     bool hidden_ = true;

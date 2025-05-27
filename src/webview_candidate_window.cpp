@@ -151,9 +151,10 @@ void WebviewCandidateWindow::set_style(const void *style) {
     invoke_js("setStyle", static_cast<const char *>(style));
 }
 
-void WebviewCandidateWindow::show(double x, double y) {
+void WebviewCandidateWindow::show(double x, double y, double height) {
     cursor_x_ = x;
     cursor_y_ = y;
+    cursor_height_ = height;
     // It's _resize which is called by resize that actually shows the window
     if (hidden_) {
         // Ideally this could be called only on first draw since we listen on

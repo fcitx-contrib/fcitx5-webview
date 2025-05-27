@@ -32,7 +32,7 @@ void doPreview() {
              {"制\t表\t符\n多 空  格", "2", ""}},
             0, candidate_window::scroll_state_t::none, false, false);
         candidateWindow->set_theme(candidate_window::theme_t::light);
-        candidateWindow->show(100, 200);
+        candidateWindow->show(100, 200, 18);
     });
 }
 
