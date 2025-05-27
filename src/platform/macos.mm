@@ -235,7 +235,6 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double border_width, double width,
                                     double height, bool dragging) {
     const int gap = 4;
-    const int preedit_height = 24;
     NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);
     double left = NSMinX(frame);
     double right = NSMaxX(frame);
@@ -264,7 +263,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
         if (anchor_bottom - anchor_top + gap >
                 adjusted_y - bottom        // No enough space underneath
             || (!hidden_ && was_above_)) { // It was above, avoid flicker
-            y_ = std::max<double>(adjusted_y + preedit_height + gap, bottom) -
+            y_ = std::max<double>(adjusted_y + cursor_height_ + gap, bottom) -
                  (height - anchor_bottom);
             y_ = std::min<double>(y_, top - (height - anchor_top));
             was_above_ = true;
