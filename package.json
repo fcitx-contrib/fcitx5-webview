@@ -22,6 +22,7 @@
     "@parcel/transformer-sass": "^2.14.4",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.3",
+    "emoji-regex": "^10.4.0",
     "eslint": "^9.25.1",
     "eslint-plugin-format": "^1.0.1",
     "parcel": "^2.14.4",

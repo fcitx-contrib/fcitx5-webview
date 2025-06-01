@@ -57,6 +57,11 @@ export function setLayout(page: Page, layout: LAYOUT) {
     window.fcitx.setLayout(layout), { layout })
 }
 
+export function setWritingMode(page: Page, mode: WRITING_MODE) {
+  return page.evaluate(({ mode }) =>
+    window.fcitx.setWritingMode(mode), { mode })
+}
+
 const defaultStyle: STYLE_JSON = {
   Advanced: {
     UserCss: '',
