@@ -1,5 +1,7 @@
+import emojiRegex from 'emoji-regex'
 import { HORIZONTAL, SCROLL_NONE, SCROLL_READY, SCROLLING, VERTICAL } from './constant'
 import { fcitx } from './distribution'
+// Must be put after fcitx import.
 import { setStyle } from './customize' // eslint-disable-line perfectionist/sort-imports
 import { fcitxLog } from './log'
 import {
@@ -37,6 +39,14 @@ import {
   setActions,
 } from './ux'
 
+const regex = emojiRegex()
+const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+
+function isSingleEmoji(text: string) {
+  regex.lastIndex = 0
+  return Array.from(segmenter.segment(text)).length === 1 && regex.test(text)
+}
+
 function escapeWS(s: string) {
   // XXX: &emsp; is broken in Safari
   return s.replaceAll(' ', '&nbsp;').replaceAll('\n', '<br>').replaceAll('\t', '&emsp;')
@@ -68,7 +78,7 @@ function setLayout(layout: LAYOUT) {
   }
 }
 
-function setWritingMode(mode: 0 | 1 | 2) {
+function setWritingMode(mode: WRITING_MODE) {
   const classes = ['fcitx-horizontal-tb', 'fcitx-vertical-rl', 'fcitx-vertical-lr']
   for (let i = 0; i < classes.length; ++i) {
     if (mode === i) {
@@ -163,6 +173,12 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
 
     const text = div('fcitx-text')
     text.innerHTML = escapeWS(cands[i].text)
+    if (isSingleEmoji(cands[i].text)) {
+      // Hack: for vertical-lr writing mode, 🙅‍♂️ is rotated on Safari and split to 🙅 and ♂ on Chrome.
+      // Can't find a way that works for text that contains not only emoji (e.g. for preedit) but
+      // it's a rare case for candidates so should be acceptable.
+      text.style.writingMode = 'horizontal-tb'
+    }
     candidateInner.append(text)
 
     if (cands[i].comment) {

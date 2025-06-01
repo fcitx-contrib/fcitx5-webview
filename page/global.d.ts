@@ -1,4 +1,4 @@
-import type { COLLAPSE, COMMIT, DOWN, END, HOME, HORIZONTAL, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, SCROLLING, UP, VERTICAL } from './constant'
+import type { COLLAPSE, COMMIT, DOWN, END, HOME, HORIZONTAL, HORIZONTAL_TB, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, SCROLLING, UP, VERTICAL, VERTICAL_LR, VERTICAL_RL } from './constant'
 
 declare global {
   type CONFIG_BOOL = 'False' | 'True'
@@ -94,6 +94,7 @@ declare global {
   }
 
   type LAYOUT = typeof HORIZONTAL | typeof VERTICAL
+  type WRITING_MODE = typeof HORIZONTAL_TB | typeof VERTICAL_RL | typeof VERTICAL_LR
 
   type SCROLL_STATE = typeof SCROLL_NONE | typeof SCROLL_READY | typeof SCROLLING
   type SCROLL_SELECT = 1 | 2 | 3 | 4 | 5 | 6
@@ -128,7 +129,7 @@ declare global {
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null | string) => void
     setStyle: (style: string) => void
-    setWritingMode: (mode: 0 | 1 | 2) => void
+    setWritingMode: (mode: WRITING_MODE) => void
     copyHTML: () => void
     scrollKeyAction: (action: SCROLL_KEY_ACTION) => void
     answerActions: (actions: CandidateAction[]) => void

@@ -2,6 +2,11 @@
 export const HORIZONTAL = 0
 export const VERTICAL = 1
 
+// WRITING_MODE
+export const HORIZONTAL_TB = 0
+export const VERTICAL_RL = 1
+export const VERTICAL_LR = 2
+
 // SCROLL_STATE
 export const SCROLL_NONE = 0
 export const SCROLL_READY = 1
