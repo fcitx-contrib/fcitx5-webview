@@ -30,6 +30,11 @@ export async function init(page: Page) {
         highlight: index,
       })
     }
+    window.fcitx._scroll = (start: number, length: number) => {
+      window.cppCalls.push({
+        scroll: [start, length],
+      })
+    }
     window.fcitx._log = () => {}
   })
 }

@@ -55,13 +55,6 @@ $dark-graphite: rgb(105 105 105);
                 0 0 25px rgb(0 0 0 / 12%);
   }
 
-  .fcitx-panel {
-    &:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
-      border-start-end-radius: 15px;
-      border-end-end-radius: 15px;
-    }
-  }
-
   .fcitx-horizontal .fcitx-paging.fcitx-arrow {
     flex-direction: column;
     justify-content: center;

@@ -7,6 +7,8 @@ declare global {
     action: [number, number]
   } | {
     highlight: number
+  } | {
+    scroll: [number, number]
   }
 
   interface Window {
