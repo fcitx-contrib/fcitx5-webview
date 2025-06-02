@@ -1,5 +1,19 @@
 import test, { expect } from '@playwright/test'
-import { candidate, getBox, init, panel, scrollExpand, setStyle } from './util'
+import { candidate, getBox, getCppCalls, init, panel, scrollExpand, setStyle } from './util'
+
+test('Actively expand', async ({ page }) => {
+  await init(page)
+
+  await page.evaluate(() =>
+    window.fcitx.setCandidates([{ text: '1', label: '1', comment: '', actions: [] }], 0, '', true, false, true, 1, false, false))
+  const pane = panel(page)
+  await expect(pane).toHaveCSS('border-start-end-radius', '15px')
+  await expect(pane).toHaveCSS('border-end-end-radius', '15px')
+
+  await page.locator('.fcitx-expand').click()
+  const cppCalls = await getCppCalls(page)
+  expect(cppCalls.filter(call => JSON.stringify(call) === '{"scroll":[0,42]}').length, 'Highlight is set on expand').toEqual(1)
+})
 
 test('Passively expand', async ({ page }) => {
   await init(page)
@@ -8,7 +22,7 @@ test('Passively expand', async ({ page }) => {
   await expect(pane, 'Height of 2 rows').toHaveCSS('height', '60px')
   await expect(pane).toHaveCSS('width', '400px')
   await expect(candidate(page, 0)).toContainClass('fcitx-highlighted')
-  const cppCalls = await page.evaluate(() => window.cppCalls)
+  const cppCalls = await getCppCalls(page)
   // Order of highlight and resize event is random.
   expect(cppCalls.filter(call => JSON.stringify(call) === '{"highlight":0}').length, 'Highlight is set on expand').toEqual(1)
 })

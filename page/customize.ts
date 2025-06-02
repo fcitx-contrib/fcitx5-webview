@@ -33,6 +33,7 @@ const PAGING_INNER = `${PANEL} .fcitx-paging-inner`
 const HIGHLIGHT_MARK = `${PANEL} .fcitx-highlighted .fcitx-mark`
 const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .fcitx-highlighted-original .fcitx-mark`
 const HORIZONTAL_SCROLL = `${PANEL} .fcitx-hoverables.fcitx-horizontal-scroll`
+const HORIZONTAL_CORNER = `${PANEL}:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll))`
 
 const PANEL_LIGHT = `.fcitx-light${PANEL}`
 // Not sure why but considering Margin only for initial state (i.e., not hover or press) is good enough for eliminating ghost stripes.
@@ -344,6 +345,10 @@ export function setStyle(style: string) {
   rules[HORIZONTAL_SCROLL] = {
     'max-block-size': px(maxRow * candidateHeight),
     'transition': animation ? 'max-block-size 300ms' : 'none',
+  }
+  rules[HORIZONTAL_CORNER] = {
+    'border-start-end-radius': px(candidateHeight / 2),
+    'border-end-end-radius': px(candidateHeight / 2),
   }
 
   if (j.Background.ImageUrl) {
