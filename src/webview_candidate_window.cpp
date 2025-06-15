@@ -152,9 +152,9 @@ void WebviewCandidateWindow::set_style(const void *style) {
 }
 
 void WebviewCandidateWindow::show(double x, double y, double height) {
-    cursor_x_ = x;
-    cursor_y_ = y;
-    cursor_height_ = height;
+    caret_x_ = x;
+    caret_y_ = y;
+    caret_height_ = height;
     // It's _resize which is called by resize that actually shows the window
     if (hidden_) {
         // Ideally this could be called only on first draw since we listen on
@@ -193,35 +193,35 @@ static void build_html_close_tags(std::stringstream &ss, int flags) {
 }
 
 static std::string formatted_to_html(const formatted<std::string> &f,
-                                     const std::string &cursor_text = "",
-                                     int cursor = -1) {
+                                     const std::string &caret_text = "",
+                                     int caret = -1) {
     std::stringstream ss;
-    int cursor_pos = 0;
-    if (cursor >= 0) {
-        ss << "<div class=\"fcitx-pre-cursor\">";
+    int caret_pos = 0;
+    if (caret >= 0) {
+        ss << "<div class=\"fcitx-pre-caret\">";
     }
     for (const auto &slice : f) {
         build_html_open_tags(ss, slice.second);
         auto size =
             (int)slice.first
-                .size(); // ensure signed comparison since cursor may be -1
-        if (cursor_pos <= cursor && cursor <= cursor_pos + size) {
-            ss << escape_html(slice.first.substr(0, cursor - cursor_pos));
-            if (cursor_text.empty()) {
-                ss << "</div><div class=\"fcitx-cursor fcitx-no-text\">";
+                .size(); // ensure signed comparison since caret may be -1
+        if (caret_pos <= caret && caret <= caret_pos + size) {
+            ss << escape_html(slice.first.substr(0, caret - caret_pos));
+            if (caret_text.empty()) {
+                ss << "</div><div class=\"fcitx-caret fcitx-no-text\">";
             } else {
-                ss << "</div><div class=\"fcitx-cursor\">";
-                ss << escape_html(cursor_text);
+                ss << "</div><div class=\"fcitx-caret\">";
+                ss << escape_html(caret_text);
             }
-            ss << "</div><div class=\"fcitx-post-cursor\">";
-            ss << escape_html(slice.first.substr(cursor - cursor_pos));
-            // Do not draw cursor again when it's at the end of current slice
-            cursor = -1;
+            ss << "</div><div class=\"fcitx-post-caret\">";
+            ss << escape_html(slice.first.substr(caret - caret_pos));
+            // Do not draw caret again when it's at the end of current slice
+            caret = -1;
         } else {
             ss << escape_html(slice.first);
-            cursor_pos += size;
+            caret_pos += size;
         }
-        if (cursor >= 0) {
+        if (caret >= 0) {
             ss << "</div>";
         }
         build_html_close_tags(ss, slice.second);
@@ -230,11 +230,11 @@ static std::string formatted_to_html(const formatted<std::string> &f,
 }
 
 void WebviewCandidateWindow::update_input_panel(
-    const formatted<std::string> &preedit, int preedit_cursor,
+    const formatted<std::string> &preedit, int caret,
     const formatted<std::string> &auxUp,
     const formatted<std::string> &auxDown) {
     invoke_js("updateInputPanel",
-              formatted_to_html(preedit, cursor_text_, preedit_cursor),
+              formatted_to_html(preedit, caret_text_, caret),
               formatted_to_html(auxUp), formatted_to_html(auxDown));
 }
 

@@ -20,8 +20,10 @@ declare global {
     CommentColor: string
     PagingButtonColor: string
     DisabledPagingButtonColor: string
-    PreeditColor: string
-    PreeditColorPreCursor: string
+    AuxColor: string
+    PreeditColorPreCaret: string
+    PreeditColorCaret: string
+    PreeditColorPostCaret: string
     BorderColor: string
     DividerColor: string
   }
@@ -56,7 +58,7 @@ declare global {
       PreeditFontFamily: FONT_FAMILY
       PreeditFontSize: string
     }
-    Cursor: {
+    Caret: {
       Style: 'Blink' | 'Static' | 'Text'
     }
     Highlight: {

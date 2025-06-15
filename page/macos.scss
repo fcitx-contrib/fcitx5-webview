@@ -75,7 +75,7 @@ $dark-graphite: rgb(105 105 105);
     backdrop-filter: blur(16px);
   }
 
-  .fcitx-cursor.fcitx-no-text {
+  .fcitx-caret.fcitx-no-text {
     inline-size: 1px;
     block-size: 16px;
     margin-inline: 1px;
@@ -165,7 +165,7 @@ $dark-graphite: rgb(105 105 105);
     border-color: $panel-border-color-light;
   }
 
-  .fcitx-cursor.fcitx-no-text {
+  .fcitx-caret.fcitx-no-text {
     background-color: $text-color-light;
   }
 
@@ -261,7 +261,7 @@ $dark-graphite: rgb(105 105 105);
     border-color: $panel-border-color-dark;
   }
 
-  .fcitx-cursor.fcitx-no-text {
+  .fcitx-caret.fcitx-no-text {
     background-color: $text-color-dark;
   }
 

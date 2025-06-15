@@ -18,7 +18,7 @@ const LABEL = `${PANEL} .fcitx-label`
 const TEXT = `${PANEL} .fcitx-text`
 const COMMENT = `${PANEL} .fcitx-comment`
 const PREEDIT = `${PANEL} .fcitx-preedit`
-const CURSOR_NO_TEXT = `${PANEL} .fcitx-cursor.fcitx-no-text`
+const CARET_NO_TEXT = `${PANEL} .fcitx-caret.fcitx-no-text`
 const CANDIDATE_INNER = `${PANEL} .fcitx-candidate-inner`
 const FIRST_CANDIDATE_INNER = '.fcitx-candidate-first .fcitx-candidate-inner'
 const LAST_CANDIDATE_INNER = '.fcitx-candidate-last .fcitx-candidate-inner'
@@ -51,15 +51,17 @@ const LABEL_LIGHT = `${PANEL_LIGHT} .fcitx-label`
 const COMMENT_LIGHT = `${PANEL_LIGHT} .fcitx-comment`
 const PAGING_BUTTON_LIGHT = `${PANEL_LIGHT} .fcitx-paging .fcitx-hoverable-inner svg`
 const PAGING_BUTTON_DISABLED_LIGHT = `${PANEL_LIGHT} .fcitx-paging svg`
-const PREEDIT_LIGHT = `${PANEL_LIGHT} :is(.fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down)`
-const PREEDIT_PRE_CURSOR_LIGHT = `${PANEL_LIGHT} .fcitx-pre-cursor`
+const AUX_LIGHT = `${PANEL_LIGHT} :is(.fcitx-aux-up, .fcitx-aux-down)`
+const CARET_LIGHT = `${PANEL_LIGHT} .fcitx-caret`
+const PREEDIT_PRE_CARET_LIGHT = `${PANEL_LIGHT} .fcitx-pre-caret`
+const PREEDIT_POST_CARET_LIGHT = `${PANEL_LIGHT} .fcitx-post-caret`
 const HEADER_LIGHT_BACKGROUND = `${PANEL_LIGHT} :is(.fcitx-header, .fcitx-aux-down)`
 const HOVERABLES_LIGHT_BACKGROUND = `${PANEL_LIGHT} .fcitx-hoverables :is(.fcitx-candidate, .fcitx-paging)`
 const PANEL_LIGHT_DIVIDER_MIDDLE = `${PANEL_LIGHT} .fcitx-hoverables .fcitx-divider .fcitx-divider-middle`
 const PANEL_LIGHT_DIVIDER_SIDE = `${PANEL_LIGHT} .fcitx-hoverables .fcitx-divider .fcitx-divider-side`
 const PANEL_LIGHT_SCROLL_DIVIDER = `${PANEL_LIGHT} .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider-middle`
 const PANEL_LIGHT_SCROLL_TRACK = `${PANEL_LIGHT} .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track`
-const CURSOR_NO_TEXT_LIGHT = `${PANEL_LIGHT} .fcitx-cursor.fcitx-no-text`
+const CARET_NO_TEXT_LIGHT = `${PANEL_LIGHT} .fcitx-caret.fcitx-no-text`
 const HIGHLIGHT_MARK_LIGHT = `${PANEL_LIGHT} .fcitx-highlighted .fcitx-mark`
 
 const PANEL_DARK = `.fcitx-dark${PANEL}`
@@ -94,15 +96,17 @@ const LABEL_DARK = lightToDark(LABEL_LIGHT)
 const COMMENT_DARK = lightToDark(COMMENT_LIGHT)
 const PAGING_BUTTON_DARK = lightToDark(PAGING_BUTTON_LIGHT)
 const PAGING_BUTTON_DISABLED_DARK = lightToDark(PAGING_BUTTON_DISABLED_LIGHT)
-const PREEDIT_DARK = lightToDark(PREEDIT_LIGHT)
-const PREEDIT_PRE_CURSOR_DARK = lightToDark(PREEDIT_PRE_CURSOR_LIGHT)
+const AUX_DARK = lightToDark(AUX_LIGHT)
+const CARET_DARK = lightToDark(CARET_LIGHT)
+const PREEDIT_PRE_CARET_DARK = lightToDark(PREEDIT_PRE_CARET_LIGHT)
+const PREEDIT_POST_CARET_DARK = lightToDark(PREEDIT_POST_CARET_LIGHT)
 const HEADER_DARK_BACKGROUND = lightToDark(HEADER_LIGHT_BACKGROUND)
 const HOVERABLES_DARK_BACKGROUND = lightToDark(HOVERABLES_LIGHT_BACKGROUND)
 const PANEL_DARK_DIVIDER_MIDDLE = lightToDark(PANEL_LIGHT_DIVIDER_MIDDLE)
 const PANEL_DARK_DIVIDER_SIDE = lightToDark(PANEL_LIGHT_DIVIDER_SIDE)
 const PANEL_DARK_SCROLL_DIVIDER = lightToDark(PANEL_LIGHT_SCROLL_DIVIDER)
 const PANEL_DARK_SCROLL_TRACK = lightToDark(PANEL_LIGHT_SCROLL_TRACK)
-const CURSOR_NO_TEXT_DARK = lightToDark(CURSOR_NO_TEXT_LIGHT)
+const CARET_NO_TEXT_DARK = lightToDark(CARET_NO_TEXT_LIGHT)
 const HIGHLIGHT_MARK_DARK = lightToDark(HIGHLIGHT_MARK_LIGHT)
 
 function px(n: string | number) {
@@ -131,7 +135,7 @@ export function setStyle(style: string) {
   rules[LABEL] = {}
   rules[COMMENT] = {}
   rules[PREEDIT] = {}
-  rules[CURSOR_NO_TEXT] = {}
+  rules[CARET_NO_TEXT] = {}
   rules[HIGHLIGHT_MARK] = {}
   rules[HIGHLIGHT_ORIGINAL_MARK] = {}
   rules[CANDIDATE_INNER] = {}
@@ -184,14 +188,20 @@ export function setStyle(style: string) {
     rules[PAGING_BUTTON_DISABLED_LIGHT] = {
       color: j.LightMode.DisabledPagingButtonColor,
     }
-    rules[PREEDIT_LIGHT] = {
-      color: j.LightMode.PreeditColor,
+    rules[AUX_LIGHT] = {
+      color: j.LightMode.AuxColor,
     }
-    rules[CURSOR_NO_TEXT_LIGHT] = {
-      'background-color': j.LightMode.PreeditColor,
+    rules[CARET_LIGHT] = {
+      color: j.LightMode.PreeditColorCaret,
     }
-    rules[PREEDIT_PRE_CURSOR_LIGHT] = {
-      color: j.LightMode.PreeditColorPreCursor,
+    rules[CARET_NO_TEXT_LIGHT] = {
+      'background-color': j.LightMode.PreeditColorCaret,
+    }
+    rules[PREEDIT_PRE_CARET_LIGHT] = {
+      color: j.LightMode.PreeditColorPreCaret,
+    }
+    rules[PREEDIT_POST_CARET_LIGHT] = {
+      color: j.LightMode.PreeditColorPostCaret,
     }
     rules[PANEL_LIGHT] = {
       'border-color': j.LightMode.BorderColor,
@@ -235,9 +245,11 @@ export function setStyle(style: string) {
         COMMENT_LIGHT,
         PAGING_BUTTON_LIGHT,
         PAGING_BUTTON_DISABLED_LIGHT,
-        PREEDIT_LIGHT,
-        PREEDIT_PRE_CURSOR_LIGHT,
-        CURSOR_NO_TEXT_LIGHT,
+        AUX_LIGHT,
+        CARET_LIGHT,
+        PREEDIT_PRE_CARET_LIGHT,
+        PREEDIT_POST_CARET_LIGHT,
+        CARET_NO_TEXT_LIGHT,
         PANEL_LIGHT,
         PANEL_LIGHT_DIVIDER_MIDDLE,
         PANEL_LIGHT_DIVIDER_SIDE,
@@ -298,14 +310,20 @@ export function setStyle(style: string) {
       rules[PAGING_BUTTON_DISABLED_DARK] = {
         color: j.DarkMode.DisabledPagingButtonColor,
       }
-      rules[PREEDIT_DARK] = {
-        color: j.DarkMode.PreeditColor,
+      rules[AUX_DARK] = {
+        color: j.DarkMode.AuxColor,
       }
-      rules[CURSOR_NO_TEXT_DARK] = {
-        'background-color': j.DarkMode.PreeditColor,
+      rules[CARET_DARK] = {
+        color: j.DarkMode.PreeditColorCaret,
       }
-      rules[PREEDIT_PRE_CURSOR_DARK] = {
-        color: j.DarkMode.PreeditColorPreCursor,
+      rules[CARET_NO_TEXT_DARK] = {
+        'background-color': j.DarkMode.PreeditColorCaret,
+      }
+      rules[PREEDIT_PRE_CARET_DARK] = {
+        color: j.DarkMode.PreeditColorPreCaret,
+      }
+      rules[PREEDIT_POST_CARET_DARK] = {
+        color: j.DarkMode.PreeditColorPostCaret,
       }
       rules[PANEL_DARK] = {
         'border-color': j.DarkMode.BorderColor,
@@ -387,10 +405,10 @@ export function setStyle(style: string) {
 
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
   rules[PREEDIT]['font-size'] = rules[PREEDIT]['line-height'] = px(j.Font.PreeditFontSize)
-  // Cursor height should be the same with preedit
-  rules[CURSOR_NO_TEXT]['block-size'] = px(j.Font.PreeditFontSize)
+  // Caret height should be the same with preedit
+  rules[CARET_NO_TEXT]['block-size'] = px(j.Font.PreeditFontSize)
 
-  setBlink(j.Cursor.Style === 'Blink')
+  setBlink(j.Caret.Style === 'Blink')
 
   rules[j.Highlight.HoverBehavior === 'Add' ? HIGHLIGHT_ORIGINAL_MARK : HIGHLIGHT_MARK].opacity = j.Highlight.MarkStyle === 'None' ? '0' : '1'
   setHoverBehavior(j.Highlight.HoverBehavior)

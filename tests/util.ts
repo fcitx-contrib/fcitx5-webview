@@ -76,7 +76,7 @@ const defaultStyle: STYLE_JSON = {
     ImageUrl: '',
     Shadow: 'True',
   },
-  Cursor: {
+  Caret: {
     Style: 'Blink',
   },
   DarkMode: {
@@ -95,8 +95,10 @@ const defaultStyle: STYLE_JSON = {
     OverrideDefault: 'False',
     PagingButtonColor: '#ffffff',
     PanelColor: '#000000',
-    PreeditColor: '#ffffff',
-    PreeditColorPreCursor: '#ffffff',
+    AuxColor: '#ffffff',
+    PreeditColorPreCaret: '#ffffff',
+    PreeditColorCaret: '#ffffff',
+    PreeditColorPostCaret: '#ffffff',
     SameWithLightMode: 'False',
     TextColor: '#ffffff',
   },
@@ -138,8 +140,10 @@ const defaultStyle: STYLE_JSON = {
     OverrideDefault: 'False',
     PagingButtonColor: '#000000',
     PanelColor: '#ffffff',
-    PreeditColor: '#000000',
-    PreeditColorPreCursor: '#000000',
+    AuxColor: '#000000',
+    PreeditColorPreCaret: '#000000',
+    PreeditColorCaret: '#000000',
+    PreeditColorPostCaret: '#000000',
     TextColor: '#000000',
   },
   ScrollMode: {
@@ -185,7 +189,9 @@ function deepMerge<T>(base: T, overrides: DeepPartial<T>): T {
   return result
 }
 
-export function setStyle(page: Page, style: DeepPartial<STYLE_JSON>) {
+export type PartialStyle = DeepPartial<STYLE_JSON>
+
+export function setStyle(page: Page, style: PartialStyle) {
   return page.evaluate(({ style }) =>
     window.fcitx.setStyle(JSON.stringify(style)), { style: deepMerge(defaultStyle, style) })
 }

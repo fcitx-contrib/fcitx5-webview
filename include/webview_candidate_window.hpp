@@ -80,8 +80,7 @@ class WebviewCandidateWindow {
     WebviewCandidateWindow();
     ~WebviewCandidateWindow();
     void set_layout(layout_t layout);
-    void update_input_panel(const formatted<std::string> &preedit,
-                            int preedit_cursor,
+    void update_input_panel(const formatted<std::string> &preedit, int caret,
                             const formatted<std::string> &auxUp,
                             const formatted<std::string> &auxDown);
     void set_candidates(const std::vector<Candidate> &candidates,
@@ -122,7 +121,7 @@ class WebviewCandidateWindow {
         highlight_callback = callback;
     }
 
-    void set_cursor_text(const std::string &text) { cursor_text_ = text; }
+    void set_caret_text(const std::string &text) { caret_text_ = text; }
     void set_highlight_mark_text(const std::string &text) {
         highlight_mark_text_ = text;
     }
@@ -153,9 +152,9 @@ class WebviewCandidateWindow {
 #ifndef __EMSCRIPTEN__
     std::shared_ptr<webview::webview> w_;
 #endif
-    double cursor_x_ = 0;
-    double cursor_y_ = 0;
-    double cursor_height_ = 0;
+    double caret_x_ = 0;
+    double caret_y_ = 0;
+    double caret_height_ = 0;
     double x_ = 0;
     double y_ = 0;
     bool hidden_ = true;
@@ -177,7 +176,7 @@ class WebviewCandidateWindow {
     std::function<void(int, int)> scroll_callback = [](int, int) {};
     std::function<void(int index)> ask_actions_callback = [](int) {};
     std::function<void(int index, int id)> action_callback = [](int, int) {};
-    std::string cursor_text_ = "";
+    std::string caret_text_ = "";
     std::string highlight_mark_text_ = "";
     bool pageable_ = false;
     bool has_prev_ = false;
