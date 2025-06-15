@@ -405,7 +405,7 @@ export function setStyle(style: string) {
 
   setFontFamily(rules[PREEDIT], j.Font.PreeditFontFamily)
   rules[PREEDIT]['font-size'] = rules[PREEDIT]['line-height'] = px(j.Font.PreeditFontSize)
-  // CARET height should be the same with preedit
+  // Caret height should be the same with preedit
   rules[CARET_NO_TEXT]['block-size'] = px(j.Font.PreeditFontSize)
 
   setBlink(j.Caret.Style === 'Blink')
