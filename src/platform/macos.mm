@@ -235,14 +235,14 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
                                     double border_width, double width,
                                     double height, bool dragging) {
     const int gap = 4;
-    NSRect frame = getNearestScreenFrame(cursor_x_, cursor_y_);
+    NSRect frame = getNearestScreenFrame(caret_x_, caret_y_);
     double left = NSMinX(frame);
     double right = NSMaxX(frame);
     double top = NSMaxY(frame);
     double bottom = NSMinY(frame);
-    // Yes, there is no guarantee that cursor is within the screen.
-    double adjusted_x = std::min(std::max(cursor_x_, left), right);
-    double adjusted_y = std::min(std::max(cursor_y_, bottom), top);
+    // Yes, there is no guarantee that caret is within the screen.
+    double adjusted_x = std::min(std::max(caret_x_, left), right);
+    double adjusted_y = std::min(std::max(caret_y_, bottom), top);
 
     if (dragging) {
         x_ += dx;
@@ -250,7 +250,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
     } else {
         if (layout_ == layout_t::vertical &&
             writing_mode_ == writing_mode_t::vertical_rl) {
-            // Right side of the window needs to align with the cursor as
+            // Right side of the window needs to align with the caret as
             // the first candidate is on the right.
             x_ = adjusted_x - anchor_right;
             x_ = std::max<double>(x_, left - anchor_left);
@@ -263,7 +263,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
         if (anchor_bottom - anchor_top + gap >
                 adjusted_y - bottom        // No enough space underneath
             || (!hidden_ && was_above_)) { // It was above, avoid flicker
-            y_ = std::max<double>(adjusted_y + cursor_height_ + gap, bottom) -
+            y_ = std::max<double>(adjusted_y + caret_height_ + gap, bottom) -
                  (height - anchor_bottom);
             y_ = std::min<double>(y_, top - (height - anchor_top));
             was_above_ = true;

@@ -30,9 +30,9 @@
 }
 
 .fcitx-preedit, .fcitx-aux-up {
-  display: inline-flex; /* put the cursor on the same line with preedit */
+  display: inline-flex; /* put the caret on the same line with preedit */
   align-items: center;
-  line-height: 1em; /* align preedit and text cursor */
+  line-height: 1em; /* align preedit and text caret */
 
   &.fcitx-hidden {
     display: none; /* needed because the above display has higher precedence than .hidden's */

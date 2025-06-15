@@ -292,10 +292,10 @@ export function setBlur(enabled: boolean) {
   }
 }
 
-export function showCursor(show: boolean) {
-  const cursor = document.querySelector('.fcitx-cursor')
-  if (cursor) {
-    (<HTMLElement>cursor).style.opacity = show ? '1' : '0'
+function showCaret(show: boolean) {
+  const caret = document.querySelector('.fcitx-caret')
+  if (caret) {
+    (<HTMLElement>caret).style.opacity = show ? '1' : '0'
   }
 }
 
@@ -303,7 +303,7 @@ let blinkEnabled = true
 export function setBlink(enabled: boolean) {
   blinkEnabled = enabled
   if (!enabled) {
-    showCursor(true)
+    showCaret(true)
   }
 }
 
@@ -312,7 +312,7 @@ setInterval(() => {
   if (!blinkEnabled) {
     return
   }
-  showCursor(blinkSwitch)
+  showCaret(blinkSwitch)
   blinkSwitch = !blinkSwitch
 }, 500)
 
