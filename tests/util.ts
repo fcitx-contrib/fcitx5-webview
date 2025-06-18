@@ -149,6 +149,7 @@ const defaultStyle: STYLE_JSON = {
   ScrollMode: {
     Animation: 'True',
     MaxRowCount: '6',
+    MaxColumnCount: '6',
   },
   Size: {
     BorderRadius: '6',
@@ -162,6 +163,7 @@ const defaultStyle: STYLE_JSON = {
     RightPadding: '7',
     TopPadding: '3',
     VerticalMinWidth: '200',
+    ScrollCellWidth: '65',
   },
   Typography: {
     PagingButtonsStyle: 'Arrow',

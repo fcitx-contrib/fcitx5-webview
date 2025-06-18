@@ -40,6 +40,7 @@ declare global {
     }
     ScrollMode: {
       MaxRowCount: string
+      MaxColumnCount: string
       Animation: CONFIG_BOOL
     }
     Background: {
@@ -76,6 +77,7 @@ declare global {
       LeftPadding: string
       LabelTextGap: string
       VerticalMinWidth: string
+      ScrollCellWidth: string
       HorizontalDividerWidth: string
     }
     Advanced: {
@@ -99,7 +101,7 @@ declare global {
   type WRITING_MODE = typeof HORIZONTAL_TB | typeof VERTICAL_RL | typeof VERTICAL_LR
 
   type SCROLL_STATE = typeof SCROLL_NONE | typeof SCROLL_READY | typeof SCROLLING
-  type SCROLL_SELECT = 1 | 2 | 3 | 4 | 5 | 6
+  type SCROLL_SELECT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
   type SCROLL_MOVE_HIGHLIGHT = typeof UP | typeof DOWN | typeof LEFT | typeof RIGHT | typeof HOME | typeof END | typeof PAGE_UP | typeof PAGE_DOWN
   type SCROLL_KEY_ACTION = SCROLL_SELECT | SCROLL_MOVE_HIGHLIGHT | typeof COLLAPSE | typeof COMMIT
 

@@ -37,12 +37,16 @@ enum writing_mode_t { horizontal_tb = 0, vertical_rl = 1, vertical_lr = 2 };
 enum scroll_state_t { none = 0, ready = 1, scrolling = 2 };
 
 enum scroll_key_action_t {
+    zero = 0,
     one = 1,
     two = 2,
     three = 3,
     four = 4,
     five = 5,
     six = 6,
+    seven = 7,
+    eight = 8,
+    nine = 9,
     up = 10,
     down = 11,
     left = 12,

@@ -8,11 +8,13 @@ import {
 } from './ux'
 
 let MAX_ROW = 6
-const MAX_COLUMN = 6
-const UNIT_WIDTH = 65 // Math.floor((400 - 8)/MAX_COLUMN)
+let MAX_COLUMN = 6
+let UNIT_WIDTH = 65 // Math.floor((400 - 8)/MAX_COLUMN)
 
-export function setMaxRow(n: number) {
-  MAX_ROW = n
+export function setScrollParams(row: number, column: number, width: number) {
+  MAX_ROW = row
+  MAX_COLUMN = column
+  UNIT_WIDTH = width
 }
 
 let animation = true
@@ -125,7 +127,7 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
     const candidate = candidates[i]
     candidate.classList.add('fcitx-highlighted-row')
-    candidate.querySelector('.fcitx-label')!.innerHTML = `${i - skipped + 1}`
+    candidate.querySelector('.fcitx-label')!.innerHTML = `${(i - skipped + 1) % 10}`
   }
   candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
@@ -221,13 +223,14 @@ function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): 
 
 export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
   hideContextmenu()
-  if (action >= 1 && action <= 6) {
+  if (action >= 0 && action <= 9) {
+    const offset = (action + 9) % 10
     const highlightedRow = getHighlightedRow()
     const n = rowItemCount[highlightedRow]
-    if (action > n) {
+    if (offset >= n) {
       return
     }
-    return window.fcitx._select(itemCountInFirstNRows(highlightedRow) + action - 1)
+    return window.fcitx._select(itemCountInFirstNRows(highlightedRow) + offset)
   }
   switch (action) {
     case UP:
