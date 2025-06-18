@@ -1,4 +1,4 @@
-import { setAnimation, setMaxRow } from './scroll'
+import { setAnimation, setScrollParams } from './scroll'
 import { hoverables } from './selector'
 import {
   setBlink,
@@ -33,6 +33,7 @@ const PAGING_INNER = `${PANEL} .fcitx-paging-inner`
 const HIGHLIGHT_MARK = `${PANEL} .fcitx-highlighted .fcitx-mark`
 const HIGHLIGHT_ORIGINAL_MARK = `${PANEL} .fcitx-highlighted-original .fcitx-mark`
 const HORIZONTAL_SCROLL = `${PANEL} .fcitx-hoverables.fcitx-horizontal-scroll`
+const HORIZONTAL_SCROLL_CANDIDATE = `${HORIZONTAL_SCROLL} .fcitx-candidate`
 const HORIZONTAL_CORNER = `${PANEL}:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll))`
 
 const PANEL_LIGHT = `.fcitx-light${PANEL}`
@@ -356,13 +357,19 @@ export function setStyle(style: string) {
   setMargin(j.Size.Margin !== '0')
 
   const maxRow = Number(j.ScrollMode.MaxRowCount)
-  setMaxRow(maxRow)
+  const maxColumn = Number(j.ScrollMode.MaxColumnCount)
+  const cellWidth = Number(j.Size.ScrollCellWidth)
+  setScrollParams(maxRow, maxColumn, cellWidth)
   const animation = j.ScrollMode.Animation === 'True'
   setAnimation(animation)
   const candidateHeight = Math.max(24 /* min-block-size of .fcitx-candidate-inner */, Number(j.Font.TextFontSize)) + Number(j.Size.TopPadding) + Number(j.Size.BottomPadding) + 2 * Number(j.Size.Margin)
   rules[HORIZONTAL_SCROLL] = {
     'max-block-size': px(maxRow * candidateHeight),
+    'inline-size': px(cellWidth * maxColumn + 10 /* 2px redundance + 8px scrollbar making default 400px */),
     'transition': animation ? 'max-block-size 300ms' : 'none',
+  }
+  rules[HORIZONTAL_SCROLL_CANDIDATE] = {
+    'min-inline-size': px(cellWidth),
   }
   rules[HORIZONTAL_CORNER] = {
     'border-start-end-radius': px(candidateHeight / 2),

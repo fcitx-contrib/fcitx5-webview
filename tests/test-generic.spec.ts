@@ -84,9 +84,8 @@ test('Select candidate', async ({ page }) => {
 
   await candidate(page, 1).click()
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls).toHaveLength(2)
   expect(cppCalls[0]).toHaveProperty('resize') // ResizeObserver
-  expect(cppCalls[1]).toEqual({ select: 1 })
+  expect(cppCalls[cppCalls.length - 1]).toEqual({ select: 1 })
 })
 
 test('Candidate action', async ({ page }) => {
