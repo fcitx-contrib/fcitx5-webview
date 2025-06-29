@@ -5,9 +5,7 @@
 #include <gtk/gtk.h>
 #endif
 
-#include <chrono>
 #include <iostream>
-#include <thread>
 
 std::unique_ptr<candidate_window::WebviewCandidateWindow> candidateWindow;
 

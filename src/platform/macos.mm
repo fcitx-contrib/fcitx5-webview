@@ -218,6 +218,10 @@ void WebviewCandidateWindow::hide() {
     [window setIsVisible:NO];
     hidden_ = true;
     epoch += 1;
+    candidates_.clear();
+    invoke_js("updateInputPanel", "", "", "");
+    invoke_js("setCandidates", candidates_, -1, "", false, false, false,
+              scroll_state_t::none, false, false);
 }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {
@@ -307,30 +311,26 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
 
 void WebviewCandidateWindow::set_native_blur(bool enabled) {
     HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
-    dispatch_async(dispatch_get_main_queue(), ^{
-      if (enabled) {
-          WKWebView *webView = static_cast<WKWebView *>(w_->widget());
-          NSView *contentView = window.contentView;
-          [contentView addSubview:window.blurView
-                       positioned:NSWindowBelow
-                       relativeTo:webView];
-          [window.blurView setFrame:window.blurViewRect];
-          window.blurView.hidden = NO;
-      } else {
-          window.blurView.hidden = YES;
-          [window.blurView removeFromSuperview];
-      }
-    });
+    if (enabled) {
+        WKWebView *webView = static_cast<WKWebView *>(w_->widget());
+        NSView *contentView = window.contentView;
+        [contentView addSubview:window.blurView
+                     positioned:NSWindowBelow
+                     relativeTo:webView];
+        [window.blurView setFrame:window.blurViewRect];
+        window.blurView.hidden = NO;
+    } else {
+        window.blurView.hidden = YES;
+        [window.blurView removeFromSuperview];
+    }
 }
 
 void WebviewCandidateWindow::set_native_shadow(bool enabled) {
     HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
-    dispatch_async(dispatch_get_main_queue(), ^{
-      if (enabled) {
-          [window setHasShadow:YES];
-      } else {
-          [window setHasShadow:NO];
-      }
-    });
+    if (enabled) {
+        [window setHasShadow:YES];
+    } else {
+        [window setHasShadow:NO];
+    }
 }
 } // namespace candidate_window

@@ -5,7 +5,9 @@
 #include <emscripten.h>
 #else
 #include "webview.h"
+#include <thread>
 #endif
+#include <cassert>
 #include <cstdint>
 #include <functional>
 #include <iostream>
@@ -72,6 +74,9 @@ struct Candidate {
     std::vector<CandidateAction> actions;
 };
 
+void to_json(nlohmann::json &j, const CandidateAction &a);
+void to_json(nlohmann::json &j, const Candidate &c);
+
 enum CustomAPI : uint64_t { kCurl = 1 };
 
 #ifdef __EMSCRIPTEN__
@@ -79,29 +84,21 @@ extern std::unordered_map<std::string, std::function<std::string(std::string)>>
     handlers;
 #endif
 
+// User of this class should ensure no concurrent calls from different threads.
 class WebviewCandidateWindow {
   public:
+    // Below are required to be called from main thread.
     WebviewCandidateWindow();
     ~WebviewCandidateWindow();
-    void set_layout(layout_t layout);
-    void update_input_panel(const formatted<std::string> &preedit, int caret,
-                            const formatted<std::string> &auxUp,
-                            const formatted<std::string> &auxDown);
-    void set_candidates(const std::vector<Candidate> &candidates,
-                        int highlighted, scroll_state_t scroll_state,
-                        bool scroll_start, bool scroll_end);
     void scroll_key_action(scroll_key_action_t action);
     void answer_actions(const std::vector<CandidateAction> &actions);
     void set_theme(theme_t theme);
-    void set_writing_mode(writing_mode_t mode);
     void set_style(const void *style);
     void set_native_blur(bool enabled);
     void set_native_shadow(bool enabled);
     void show(double x, double y, double height);
     void hide();
 
-    // Fetch system accent color.
-    void update_accent_color();
     // color is either #RRGGBBAA or "" meaning app has no accent color.
     void apply_app_accent_color(const std::string &color);
     void set_accent_color();
@@ -112,6 +109,16 @@ class WebviewCandidateWindow {
     void load_plugins(const std::vector<std::string> &names);
     void unload_plugins();
 #endif
+
+    // Below are allowed to be called from any thread.
+    void update_input_panel(const formatted<std::string> &preedit, int caret,
+                            const formatted<std::string> &auxUp,
+                            const formatted<std::string> &auxDown);
+    void set_candidates(const std::vector<Candidate> &candidates,
+                        int highlighted, scroll_state_t scroll_state,
+                        bool scroll_start, bool scroll_end);
+    void set_layout(layout_t layout) { layout_ = layout; }
+    void set_writing_mode(writing_mode_t mode) { writing_mode_ = mode; }
 
     void set_init_callback(std::function<void()> callback) {
         init_callback = callback;
@@ -152,8 +159,12 @@ class WebviewCandidateWindow {
         action_callback = callback;
     }
 
+    // Fetch system accent color.
+    void update_accent_color();
+
   private:
 #ifndef __EMSCRIPTEN__
+    std::thread::id main_thread_id_;
     std::shared_ptr<webview::webview> w_;
 #endif
     double caret_x_ = 0;
@@ -169,6 +180,14 @@ class WebviewCandidateWindow {
     std::string app_accent_color_ = "";
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
+    std::string preedit_;
+    std::string auxUp_;
+    std::string auxDown_;
+    std::vector<Candidate> candidates_;
+    int highlighted_ = -1;
+    scroll_state_t scroll_state_;
+    bool scroll_start_;
+    bool scroll_end_;
     uint32_t epoch = 0; // A timestamp for async results from
                         // webview
 
@@ -218,12 +237,9 @@ class WebviewCandidateWindow {
 #ifdef __EMSCRIPTEN__
         emscripten_run_script(s.c_str());
 #else
-        std::weak_ptr<webview::webview> weak_w = w_;
-        async_on_main([=] {
-            if (auto w = weak_w.lock()) {
-                w->eval(s);
-            }
-        });
+        assert(std::this_thread::get_id() == main_thread_id_ &&
+               "invoke_js must be called from main thread");
+        w_->eval(s);
 #endif
     }
 
@@ -285,31 +301,5 @@ class WebviewCandidateWindow {
         return {j[Is].get<typename std::tuple_element<Is, Tuple>::type>()...};
     }
 };
-
-#if defined(__APPLE__)
-
-inline __attribute__((always_inline)) void
-async_on_main(std::function<void()> functor) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      functor();
-    });
-}
-
-#elif defined(__linux__)
-
-inline int async_on_main_trampoline(void *data) {
-    auto ptr = static_cast<std::function<void()> *>(data);
-    (*ptr)();
-    delete ptr;
-    return 0;
-}
-
-inline __attribute__((always_inline)) void
-async_on_main(std::function<void()> functor) {
-    auto ptr = new std::function<void()>(functor);
-    g_idle_add(async_on_main_trampoline, ptr);
-}
-
-#endif
 
 } // namespace candidate_window
