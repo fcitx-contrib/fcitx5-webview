@@ -2,7 +2,7 @@
 
 const distribution = <string>process.env.FCITX_DISTRIBUTION ?? '' // eslint-disable-line node/prefer-global/process
 
-let fcitx: FCITX
+let fcitx: FCITX // eslint-disable-line import/no-mutable-exports
 
 if (distribution === 'fcitx5-js') {
   fcitx = window.fcitx

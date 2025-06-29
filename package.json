@@ -18,15 +18,15 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@antfu/eslint-config": "^4.14.1",
-    "@parcel/transformer-sass": "^2.15.2",
-    "@playwright/test": "^1.53.0",
-    "@types/node": "^24.0.1",
+    "@antfu/eslint-config": "^4.16.1",
+    "@parcel/transformer-sass": "^2.15.4",
+    "@playwright/test": "^1.53.1",
+    "@types/node": "^24.0.7",
     "emoji-regex": "^10.4.0",
-    "eslint": "^9.29.0",
+    "eslint": "^9.30.0",
     "eslint-plugin-format": "^1.0.1",
-    "parcel": "^2.15.2",
-    "stylelint": "^16.20.0",
+    "parcel": "^2.15.4",
+    "stylelint": "^16.21.0",
     "stylelint-config-standard-scss": "^15.0.1",
     "typescript": "^5.8.3"
   }
