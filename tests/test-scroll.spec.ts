@@ -1,5 +1,5 @@
 import test, { expect } from '@playwright/test'
-import { candidate, getBox, getCppCalls, init, panel, scrollExpand, setStyle } from './util'
+import { candidate, getBox, getCppCalls, init, panel, scroll, scrollExpand, setStyle } from './util'
 
 test('Actively expand', async ({ page }) => {
   await init(page)
@@ -93,9 +93,6 @@ test('Grid alignment', async ({ page }) => {
   expect(boxes[1].x + boxes[1].width).toEqual(boxes[2].x)
   expect(boxes[3].x).toEqual(boxes[0].x)
   expect(boxes[4].x).toEqual(boxes[1].x)
-
-  const lastDividerBox = await getBox(page.locator('.fcitx-divider:last-child'))
-  expect(lastDividerBox.width, 'No gap in the end').toBeGreaterThanOrEqual(260)
 })
 
 test('Long candidate', async ({ page }) => {
@@ -137,4 +134,26 @@ test('No enough space in current row', async ({ page }) => {
 
   const lastDividerBoxInFirstRow = await getBox(page.locator('.fcitx-divider:nth-child(4)'))
   expect(lastDividerBoxInFirstRow.width, 'No gap in the first row').toBeGreaterThan(65)
+})
+
+test('Fill rest space temporarily and shrink when more candidates come', async ({ page }) => {
+  await init(page)
+  await page.evaluate(() => {
+    const style = document.createElement('style')
+    style.innerHTML = `
+      .fcitx-candidate:nth-child(1) {
+        width: 300px;
+      }
+    `
+    document.head.append(style)
+  })
+
+  await scrollExpand(page, ['1', '2', '3'])
+  const thirdDivider = page.locator('.fcitx-divider:nth-child(6)')
+  expect((await getBox(thirdDivider)).width).toEqual(335)
+
+  await scroll(page, ['4'], true)
+  const forthDivider = page.locator('.fcitx-divider:nth-child(8)')
+  expect((await getBox(forthDivider)).width).toEqual(270)
+  expect((await getBox(thirdDivider)).width).toEqual(0)
 })

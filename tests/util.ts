@@ -57,6 +57,12 @@ export async function scrollExpand(page: Page, texts: string[]) {
     window.fcitx.setCandidates(cands, -1, '', false, false, false, 2, true, false), { cands })
 }
 
+export function scroll(page: Page, texts: string[], scrollEnd: boolean) {
+  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [] }))
+  return page.evaluate(({ cands, scrollEnd }) =>
+    window.fcitx.setCandidates(cands, -1, '', false, false, false, 2, false, scrollEnd), { cands, scrollEnd })
+}
+
 export function setLayout(page: Page, layout: LAYOUT) {
   return page.evaluate(({ layout }) =>
     window.fcitx.setLayout(layout), { layout })

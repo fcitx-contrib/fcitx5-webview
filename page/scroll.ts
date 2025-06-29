@@ -132,10 +132,6 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
 
-function enlargeDivider(divider: Element) {
-  divider.setAttribute('style', 'flex-grow: 1')
-}
-
 export function recalculateScroll(scrollStart: boolean) {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   rowItemCount = []
@@ -152,13 +148,12 @@ export function recalculateScroll(scrollStart: boolean) {
     }
     else {
       rowItemCount.push(itemCount)
-      enlargeDivider(candidate.previousElementSibling!)
+      candidate.previousElementSibling?.setAttribute('style', 'flex-grow: 1')
       itemCount = 1
       unitCount = nUnits
     }
   }
   rowItemCount.push(itemCount)
-  enlargeDivider(candidates[candidates.length - 1].nextElementSibling!)
   renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
 }
 

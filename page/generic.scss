@@ -100,6 +100,12 @@
 
     .fcitx-divider {
       flex-direction: column;
+
+      /* If the last row (either temporary with more candidates to come, or final when scroll ends)
+      is not full, it takes care of the last gap. JS is responsible for full rows. */
+      &:last-child {
+        flex-grow: 1;
+      }
     }
   }
 
