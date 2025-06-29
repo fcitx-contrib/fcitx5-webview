@@ -36,7 +36,8 @@ Candidate escape_candidate(const Candidate &c) {
 
 WebviewCandidateWindow::WebviewCandidateWindow()
 #ifndef __EMSCRIPTEN__
-    : w_(std::make_shared<webview::webview>(1, create_window()))
+    : main_thread_id_(std::this_thread::get_id()),
+      w_(std::make_shared<webview::webview>(1, create_window()))
 #endif
 {
     platform_init();
@@ -108,21 +109,18 @@ void WebviewCandidateWindow::set_accent_color() {
     }
 }
 
-void WebviewCandidateWindow::set_layout(layout_t layout) {
-    layout_ = layout;
-    invoke_js("setLayout", layout);
-}
-
 void WebviewCandidateWindow::set_candidates(
     const std::vector<Candidate> &candidates, int highlighted,
     scroll_state_t scroll_state, bool scroll_start, bool scroll_end) {
-    std::vector<Candidate> escaped_candidates;
-    escaped_candidates.reserve(candidates.size());
+    candidates_.clear();
+    candidates_.reserve(candidates.size());
     std::transform(candidates.begin(), candidates.end(),
-                   std::back_inserter(escaped_candidates), escape_candidate);
-    invoke_js("setCandidates", escaped_candidates, highlighted,
-              escape_html(highlight_mark_text_), pageable_, has_prev_,
-              has_next_, scroll_state, scroll_start, scroll_end);
+                   std::back_inserter(candidates_), escape_candidate);
+    candidates_.shrink_to_fit();
+    highlighted_ = highlighted;
+    scroll_state_ = scroll_state;
+    scroll_start_ = scroll_start;
+    scroll_end_ = scroll_end;
 }
 
 void WebviewCandidateWindow::scroll_key_action(scroll_key_action_t action) {
@@ -142,11 +140,6 @@ void WebviewCandidateWindow::set_theme(theme_t theme) {
     invoke_js("setTheme", theme);
 }
 
-void WebviewCandidateWindow::set_writing_mode(writing_mode_t mode) {
-    writing_mode_ = mode;
-    invoke_js("setWritingMode", mode);
-}
-
 void WebviewCandidateWindow::set_style(const void *style) {
     invoke_js("setStyle", static_cast<const char *>(style));
 }
@@ -163,6 +156,12 @@ void WebviewCandidateWindow::show(double x, double y, double height) {
         set_accent_color();
     }
     epoch += 1;
+    invoke_js("setLayout", layout_);
+    invoke_js("setWritingMode", writing_mode_);
+    invoke_js("updateInputPanel", preedit_, auxUp_, auxDown_);
+    invoke_js("setCandidates", candidates_, highlighted_,
+              escape_html(highlight_mark_text_), pageable_, has_prev_,
+              has_next_, scroll_state_, scroll_start_, scroll_end_);
     invoke_js("resize", epoch, 0., 0., false);
 }
 
@@ -233,9 +232,9 @@ void WebviewCandidateWindow::update_input_panel(
     const formatted<std::string> &preedit, int caret,
     const formatted<std::string> &auxUp,
     const formatted<std::string> &auxDown) {
-    invoke_js("updateInputPanel",
-              formatted_to_html(preedit, caret_text_, caret),
-              formatted_to_html(auxUp), formatted_to_html(auxDown));
+    preedit_ = formatted_to_html(preedit, caret_text_, caret);
+    auxUp_ = formatted_to_html(auxUp);
+    auxDown_ = formatted_to_html(auxDown);
 }
 
 void WebviewCandidateWindow::copy_html() { invoke_js("copyHTML"); }
