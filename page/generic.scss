@@ -23,6 +23,13 @@
     writing-mode: vertical-lr;
   }
 
+  &:is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-text {
+    /* It seems WebKit doesn't do a great job predicting inline-size of text,
+    so it may wrap text based on underestimated height, but next frame it's
+    corrected, with significant layout shift. Reproducible with Rime F4. */
+    white-space: nowrap;
+  }
+
   &:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
     border-start-end-radius: 15px;
     border-end-end-radius: 15px;
