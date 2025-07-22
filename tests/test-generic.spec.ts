@@ -26,7 +26,7 @@ test('HTML structure', async ({ page }) => {
 
   const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><').replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
-<div id="fcitx-theme" class="fcitx-basic fcitx-blue fcitx-dark">
+<div id="fcitx-theme" class="fcitx-basic fcitx-blue fcitx-dark" style="-webkit-user-select:none">
   <div class="fcitx-decoration">
     <div class="fcitx-panel-topleft"></div>
     <div class="fcitx-panel-top"></div>
