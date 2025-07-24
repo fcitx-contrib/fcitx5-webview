@@ -37,7 +37,7 @@ void WebviewCandidateWindow::set_transparent_background() {
 
 void WebviewCandidateWindow::update_accent_color() {}
 
-void WebviewCandidateWindow::hide() { epoch += 1; }
+void WebviewCandidateWindow::hide() const { epoch += 1; }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 
@@ -51,7 +51,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
     gtk_widget_show_all(static_cast<GtkWidget *>(w_->window()));
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) {}
+void WebviewCandidateWindow::set_native_blur(bool enabled) const {}
 
-void WebviewCandidateWindow::set_native_shadow(bool enabled) {}
+void WebviewCandidateWindow::set_native_shadow(bool enabled) const {}
 } // namespace candidate_window

@@ -97,7 +97,7 @@ void WebviewCandidateWindow::apply_app_accent_color(
     set_accent_color();
 }
 
-void WebviewCandidateWindow::set_accent_color() {
+void WebviewCandidateWindow::set_accent_color() const {
     if (accent_color_nil_) { // multi-color
         if (app_accent_color_.empty()) {
             invoke_js("setAccentColor", nullptr);
@@ -123,12 +123,13 @@ void WebviewCandidateWindow::set_candidates(
     scroll_end_ = scroll_end;
 }
 
-void WebviewCandidateWindow::scroll_key_action(scroll_key_action_t action) {
+void WebviewCandidateWindow::scroll_key_action(
+    scroll_key_action_t action) const {
     invoke_js("scrollKeyAction", action);
 }
 
 void WebviewCandidateWindow::answer_actions(
-    const std::vector<CandidateAction> &actions) {
+    const std::vector<CandidateAction> &actions) const {
     std::vector<CandidateAction> escaped_actions;
     escaped_actions.reserve(actions.size());
     std::transform(actions.begin(), actions.end(),
@@ -136,15 +137,15 @@ void WebviewCandidateWindow::answer_actions(
     invoke_js("answerActions", escaped_actions);
 }
 
-void WebviewCandidateWindow::set_theme(theme_t theme) {
+void WebviewCandidateWindow::set_theme(theme_t theme) const {
     invoke_js("setTheme", theme);
 }
 
-void WebviewCandidateWindow::set_style(const void *style) {
+void WebviewCandidateWindow::set_style(const void *style) const {
     invoke_js("setStyle", static_cast<const char *>(style));
 }
 
-void WebviewCandidateWindow::show(double x, double y, double height) {
+void WebviewCandidateWindow::show(double x, double y, double height) const {
     caret_x_ = x;
     caret_y_ = y;
     caret_height_ = height;
@@ -237,7 +238,7 @@ void WebviewCandidateWindow::update_input_panel(
     auxDown_ = formatted_to_html(auxDown);
 }
 
-void WebviewCandidateWindow::copy_html() { invoke_js("copyHTML"); }
+void WebviewCandidateWindow::copy_html() const { invoke_js("copyHTML"); }
 
 #ifndef __EMSCRIPTEN__
 void WebviewCandidateWindow::set_api(uint64_t apis) {

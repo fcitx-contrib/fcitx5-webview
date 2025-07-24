@@ -212,16 +212,15 @@ void WebviewCandidateWindow::update_accent_color() {
     }
 }
 
-void WebviewCandidateWindow::hide() {
+void WebviewCandidateWindow::hide() const {
     auto window = static_cast<NSWindow *>(w_->window());
     [window orderBack:nil];
     [window setIsVisible:NO];
     hidden_ = true;
     epoch += 1;
-    candidates_.clear();
     invoke_js("updateInputPanel", "", "", "");
-    invoke_js("setCandidates", candidates_, -1, "", false, false, false,
-              scroll_state_t::none, false, false);
+    invoke_js("setCandidates", std::vector<Candidate>(), -1, "", false, false,
+              false, scroll_state_t::none, false, false);
 }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {
@@ -309,7 +308,7 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
     [window setIsVisible:YES];
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) {
+void WebviewCandidateWindow::set_native_blur(bool enabled) const {
     HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
     if (enabled) {
         WKWebView *webView = static_cast<WKWebView *>(w_->widget());
@@ -325,7 +324,7 @@ void WebviewCandidateWindow::set_native_blur(bool enabled) {
     }
 }
 
-void WebviewCandidateWindow::set_native_shadow(bool enabled) {
+void WebviewCandidateWindow::set_native_shadow(bool enabled) const {
     HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
     if (enabled) {
         [window setHasShadow:YES];

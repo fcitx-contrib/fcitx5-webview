@@ -18,7 +18,7 @@ void WebviewCandidateWindow::set_transparent_background() {}
 
 void WebviewCandidateWindow::update_accent_color() {}
 
-void WebviewCandidateWindow::hide() {
+void WebviewCandidateWindow::hide() const {
     EM_ASM(fcitx.hidePanel());
     epoch += 1;
 }
@@ -36,11 +36,11 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
            anchor_left, dragging);
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) {
+void WebviewCandidateWindow::set_native_blur(bool enabled) const {
     // Not supported.
 }
 
-void WebviewCandidateWindow::set_native_shadow(bool enabled) {
+void WebviewCandidateWindow::set_native_shadow(bool enabled) const {
     // Not supported.
 }
 } // namespace candidate_window

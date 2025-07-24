@@ -90,19 +90,22 @@ class WebviewCandidateWindow {
     // Below are required to be called from main thread.
     WebviewCandidateWindow();
     ~WebviewCandidateWindow();
-    void scroll_key_action(scroll_key_action_t action);
-    void answer_actions(const std::vector<CandidateAction> &actions);
-    void set_theme(theme_t theme);
-    void set_style(const void *style);
-    void set_native_blur(bool enabled);
-    void set_native_shadow(bool enabled);
-    void show(double x, double y, double height);
-    void hide();
+    void scroll_key_action(scroll_key_action_t action) const;
+    void answer_actions(const std::vector<CandidateAction> &actions) const;
+    void set_theme(theme_t theme) const;
+    void set_style(const void *style) const;
+    void set_native_blur(bool enabled) const;
+    void set_native_shadow(bool enabled) const;
+    // If typing fast after Cmd+Space, the key event may be processed before an
+    // async call to hide, making it between set_candidates and show. Use const
+    // so hide doesn't modify panel state for show.
+    void show(double x, double y, double height) const;
+    void hide() const;
 
     // color is either #RRGGBBAA or "" meaning app has no accent color.
     void apply_app_accent_color(const std::string &color);
-    void set_accent_color();
-    void copy_html();
+    void set_accent_color() const;
+    void copy_html() const;
 
 #ifndef __EMSCRIPTEN__
     void set_api(uint64_t apis);
@@ -167,12 +170,12 @@ class WebviewCandidateWindow {
     std::thread::id main_thread_id_;
     std::shared_ptr<webview::webview> w_;
 #endif
-    double caret_x_ = 0;
-    double caret_y_ = 0;
-    double caret_height_ = 0;
+    mutable double caret_x_ = 0;
+    mutable double caret_y_ = 0;
+    mutable double caret_height_ = 0;
     double x_ = 0;
     double y_ = 0;
-    bool hidden_ = true;
+    mutable bool hidden_ = true;
     bool was_above_ = false;
     bool accent_color_nil_ = false;
     // Fallback to macOS default blue on platforms with no accent color support.
@@ -188,8 +191,8 @@ class WebviewCandidateWindow {
     scroll_state_t scroll_state_;
     bool scroll_start_;
     bool scroll_end_;
-    uint32_t epoch = 0; // A timestamp for async results from
-                        // webview
+    mutable uint32_t epoch = 0; // A timestamp for async results from
+                                // webview
 
   private:
     std::function<void()> init_callback = []() {};
@@ -225,7 +228,7 @@ class WebviewCandidateWindow {
   private:
     /* Invoke a JavaScript function. */
     template <typename Ret = void, bool debug = false, typename... Args>
-    inline Ret invoke_js(const char *name, Args... args) {
+    inline Ret invoke_js(const char *name, Args... args) const {
         std::stringstream ss;
         ss << "fcitx." << name << "(";
         build_js_args(ss, args...);
@@ -244,19 +247,19 @@ class WebviewCandidateWindow {
     }
 
     template <typename T>
-    inline void build_js_args(std::stringstream &ss, const T &arg) {
+    inline void build_js_args(std::stringstream &ss, const T &arg) const {
         ss << nlohmann::json(arg).dump();
     }
 
     template <typename T, typename... Rest>
     inline void build_js_args(std::stringstream &ss, const T &arg,
-                              const Rest &...rest) {
+                              const Rest &...rest) const {
         build_js_args(ss, arg);
         ss << ", ";
         build_js_args(ss, rest...);
     }
 
-    inline void build_js_args(std::stringstream &ss) {}
+    inline void build_js_args(std::stringstream &ss) const {}
 
   private:
     /* Generic bind */
