@@ -18,7 +18,7 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@antfu/eslint-config": "^4.17.0",
+    "@antfu/eslint-config": "^5.0.0",
     "@parcel/transformer-sass": "^2.15.4",
     "@playwright/test": "^1.54.1",
     "@types/node": "^24.0.15",
