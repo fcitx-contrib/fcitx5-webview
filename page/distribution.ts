@@ -21,7 +21,7 @@ else {
   */
   const style = document.createElement('style')
   style.innerHTML
-= `body {
+    = `body {
   background: rgb(0 0 0 / 0%);
   margin: 0;
   overflow: hidden;
