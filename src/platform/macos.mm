@@ -127,10 +127,10 @@ namespace candidate_window {
 void WebviewCandidateWindow::platform_init() {
     auto listener = [[NotificationListener alloc] init];
     [listener setCandidateWindow:this];
-    [[NSDistributedNotificationCenter defaultCenter]
+    [[NSNotificationCenter defaultCenter]
         addObserver:listener
            selector:@selector(accentColorChanged:)
-               name:@"AppleColorPreferencesChangedNotification"
+               name:NSSystemColorsDidChangeNotification
              object:nil];
     platform_data = listener;
 }
