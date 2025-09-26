@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-26, macos-13, ubuntu-24.04]
+        os: [macos-26, macos-15-intel, ubuntu-24.04]
 
     steps:
       - uses: actions/checkout@v5
@@ -50,13 +50,13 @@ jobs:
       - name: Install dependencies (macOS)
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install ninja nlohmann-json
+          brew install nlohmann-json
 
       - name: Install dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
-          sudo apt install -y ninja-build \
+          sudo apt install -y \
             nlohmann-json3-dev \
             libwebkit2gtk-4.1-dev \
             libcurl4-openssl-dev
