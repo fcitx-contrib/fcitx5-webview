@@ -40,7 +40,7 @@ test('HTML structure', async ({ page }) => {
             <div class="fcitx-hidden fcitx-preedit"></div>
           </div>
           <div class="fcitx-aux-down fcitx-hidden"></div>
-          <div class="fcitx-horizontal fcitx-hoverables fcitx-no-margin">
+          <div class="fcitx-horizontal fcitx-hoverables">
             <div class="fcitx-candidate fcitx-candidate-first fcitx-highlighted fcitx-highlighted-original fcitx-hoverable">
               <div class="fcitx-candidate-inner fcitx-hoverable-inner">
                 <div class="fcitx-mark fcitx-no-text"></div>

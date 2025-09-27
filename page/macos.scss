@@ -95,13 +95,7 @@ $dark-graphite: rgb(105 105 105);
     color: white;
   }
 
-  /* Assign highlight color to fcitx-hoverable-inner to support positive Margin like WeType.
-   * However, it causes ghost stripes of background color at top-left and bottom-left of a horizontal panel with 0 Margin.
-   * It happens when fcitx-hoverable's width is determined by fcitx-hoverable-inner, i.e., not by itself.
-   * So if Margin is 0, we'd just assign highlight color to fcitx-hoverable.
-   * PS: It's not even reproducible on preview app.
-   */
-  .fcitx-no-margin .fcitx-hoverable.fcitx-highlighted, .fcitx-margin .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
+  .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
     background-color: var(--accent-color);
   }
 
@@ -190,7 +184,6 @@ $dark-graphite: rgb(105 105 105);
     color: gray; // disabled
     background-color: $panel-color-light;
 
-    /* stylelint-disable-next-line no-descending-specificity */
     .fcitx-hoverable-inner {
       color: $text-color-light; // enabled
     }

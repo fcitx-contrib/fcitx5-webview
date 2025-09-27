@@ -29,7 +29,7 @@ test('Set App accent color', async ({ page }) => {
     { text: '高亮', label: '1', comment: '', actions: [] },
     { text: '普通', label: '2', comment: '', actions: [] },
   ], 0)
-  const highlightedCandidate = candidate(page, 0)
+  const highlightedCandidate = candidate(page, 0).locator('.fcitx-candidate-inner')
   await expect(highlightedCandidate).toHaveCSS('background-color', 'rgba(18, 52, 86, 0.47)')
 
   await page.evaluate(() => window.fcitx.setAccentColor(null))
