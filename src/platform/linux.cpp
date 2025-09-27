@@ -41,13 +41,13 @@ void WebviewCandidateWindow::hide() const { epoch += 1; }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {}
 
-void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
-                                    double anchor_right, double anchor_bottom,
-                                    double anchor_left, double panel_top,
-                                    double panel_right, double panel_bottom,
-                                    double panel_left, double panel_radius,
-                                    double border_width, double width,
-                                    double height, bool dragging) {
+void WebviewCandidateWindow::resize(
+    double dx, double dy, double anchor_top, double anchor_right,
+    double anchor_bottom, double anchor_left, double panel_top,
+    double panel_right, double panel_bottom, double panel_left,
+    double top_left_radius, double top_right_radius, double bottom_right_radius,
+    double bottom_left_radius, double border_width, double width, double height,
+    bool dragging) {
     gtk_widget_show_all(static_cast<GtkWidget *>(w_->window()));
 }
 

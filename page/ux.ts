@@ -37,6 +37,22 @@ interface ShadowBox {
   bottom: number
 }
 
+// Follow CSS border-radius rules to expand to 4 values.
+function expandRadiusTo4(radius: number[]): number[] {
+  switch (radius.length) {
+    case 1:
+      return [radius[0], radius[0], radius[0], radius[0]]
+    case 2:
+      return [radius[0], radius[1], radius[0], radius[1]]
+    case 3:
+      return [radius[0], radius[1], radius[2], radius[0]]
+    case 4:
+      return radius
+    default:
+      return [0, 0, 0, 0]
+  }
+}
+
 export function resize(
   new_epoch: number,
   dx: number,
@@ -87,8 +103,29 @@ export function resize(
     const pRect = panel.getBoundingClientRect()
     const { borderRadius, borderWidth } = getComputedStyle(panel)
     const bWidth = Math.max(...borderWidth.split(' ').map(Number.parseFloat))
-    const pRadius = Math.max(...borderRadius.split(' ').map(Number.parseFloat))
-    window.fcitx._resize(epoch, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, pRadius, bWidth, right, bottom, dragging)
+    const parsedRadius = borderRadius.split(' ').map(Number.parseFloat)
+    const radius4 = expandRadiusTo4(parsedRadius)
+    window.fcitx._resize(
+      epoch,
+      dx,
+      dy,
+      anchorTop,
+      anchorRight,
+      anchorBottom,
+      anchorLeft,
+      pRect.top,
+      pRect.right,
+      pRect.bottom,
+      pRect.left,
+      radius4[0],
+      radius4[1],
+      radius4[2],
+      radius4[3],
+      bWidth,
+      right,
+      bottom,
+      dragging,
+    )
   }
   adaptWindowSize(hasContextmenu)
   // With ResizeObserver, we probably don't need to call adaptWindowSize again by requestAnimationFrame.
