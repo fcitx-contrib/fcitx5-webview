@@ -1,5 +1,5 @@
 #include "webview_candidate_window.hpp"
-#include <CoreGraphics/CoreGraphics.h>
+#include <QuartzCore/QuartzCore.h>
 #include <WebKit/WKWebView.h>
 
 NSString *const F5mErrorDomain = @"F5mErrorDomain";
@@ -124,6 +124,49 @@ NSRect getNearestScreenFrame(double x, double y) {
 
 namespace candidate_window {
 
+static void setViewCornerRadius(NSView *view, CGFloat width, CGFloat height,
+                                CGFloat top_left_radius,
+                                CGFloat top_right_radius,
+                                CGFloat bottom_right_radius,
+                                CGFloat bottom_left_radius) {
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGFloat minX = 0;
+    CGFloat minY = 0;
+    CGFloat maxX = width;
+    CGFloat maxY = height;
+    // 从左下角开始，顺时针
+    CGPathMoveToPoint(path, NULL, minX + bottom_left_radius, minY);
+    CGPathAddLineToPoint(path, NULL, maxX - bottom_right_radius, minY);
+    if (bottom_right_radius > 0) {
+        CGPathAddArc(path, NULL, maxX - bottom_right_radius,
+                     minY + bottom_right_radius, bottom_right_radius,
+                     M_PI + M_PI_2, 0, false);
+    }
+    CGPathAddLineToPoint(path, NULL, maxX, maxY - top_right_radius);
+    if (top_right_radius > 0) {
+        CGPathAddArc(path, NULL, maxX - top_right_radius,
+                     maxY - top_right_radius, top_right_radius, 0, M_PI_2,
+                     false);
+    }
+    CGPathAddLineToPoint(path, NULL, minX + top_left_radius, maxY);
+    if (top_left_radius > 0) {
+        CGPathAddArc(path, NULL, minX + top_left_radius, maxY - top_left_radius,
+                     top_left_radius, M_PI_2, M_PI, false);
+    }
+    CGPathAddLineToPoint(path, NULL, minX, minY + bottom_left_radius);
+    if (bottom_left_radius > 0) {
+        CGPathAddArc(path, NULL, minX + bottom_left_radius,
+                     minY + bottom_left_radius, bottom_left_radius, M_PI,
+                     M_PI + M_PI_2, false);
+    }
+    CGPathCloseSubpath(path);
+
+    CAShapeLayer *mask = [CAShapeLayer layer];
+    mask.path = path;
+    view.layer.mask = mask;
+    CGPathRelease(path);
+}
+
 void WebviewCandidateWindow::platform_init() {
     auto listener = [[NotificationListener alloc] init];
     [listener setCandidateWindow:this];
@@ -230,13 +273,13 @@ void WebviewCandidateWindow::write_clipboard(const std::string &html) {
     [pasteboard setString:s forType:NSPasteboardTypeString];
 }
 
-void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
-                                    double anchor_right, double anchor_bottom,
-                                    double anchor_left, double panel_top,
-                                    double panel_right, double panel_bottom,
-                                    double panel_left, double panel_radius,
-                                    double border_width, double width,
-                                    double height, bool dragging) {
+void WebviewCandidateWindow::resize(
+    double dx, double dy, double anchor_top, double anchor_right,
+    double anchor_bottom, double anchor_left, double panel_top,
+    double panel_right, double panel_bottom, double panel_left,
+    double top_left_radius, double top_right_radius, double bottom_right_radius,
+    double bottom_left_radius, double border_width, double width, double height,
+    bool dragging) {
     const int gap = 4;
     NSRect frame = getNearestScreenFrame(caret_x_, caret_y_);
     double left = NSMinX(frame);
@@ -281,10 +324,13 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
     [window orderFront:nil];
 
     // Update the blur view
-    panel_right -= border_width; // Shrink the blur view a bit
-    panel_left += border_width;  // to avoid the border being too thick.
-    panel_top += border_width;
-    panel_bottom -= border_width;
+    // Shrink the blur view a bit to avoid the border being too thick.
+    // Don't shrink full border_width so that there is no ghost stripe.
+    double shrink_width = border_width / 2;
+    panel_right -= shrink_width;
+    panel_left += shrink_width;
+    panel_top += shrink_width;
+    panel_bottom -= shrink_width;
     auto blurView = window.blurView;
     NSRect blurViewRect =
         NSMakeRect(panel_left, height - panel_bottom,
@@ -294,7 +340,10 @@ void WebviewCandidateWindow::resize(double dx, double dy, double anchor_top,
         window.blurViewRect = blurViewRect;
     } else {
         [window.blurView setFrame:blurViewRect];
-        window.blurView.layer.cornerRadius = panel_radius;
+        setViewCornerRadius(blurView, blurViewRect.size.width,
+                            blurViewRect.size.height, top_left_radius,
+                            top_right_radius, bottom_right_radius,
+                            bottom_left_radius);
     }
 
     // A User reported Bob.app called out by shortcut is above candidate

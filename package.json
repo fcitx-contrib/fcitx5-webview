@@ -18,16 +18,16 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@antfu/eslint-config": "^5.0.0",
-    "@parcel/transformer-sass": "^2.15.4",
-    "@playwright/test": "^1.54.1",
-    "@types/node": "^24.0.15",
-    "emoji-regex": "^10.4.0",
-    "eslint": "^9.31.0",
-    "eslint-plugin-format": "^1.0.1",
-    "parcel": "^2.15.4",
-    "stylelint": "^16.22.0",
+    "@antfu/eslint-config": "^5.4.1",
+    "@parcel/transformer-sass": "^2.16.0",
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.5.2",
+    "emoji-regex": "^10.5.0",
+    "eslint": "^9.36.0",
+    "eslint-plugin-format": "^1.0.2",
+    "parcel": "^2.16.0",
+    "stylelint": "^16.24.0",
     "stylelint-config-standard-scss": "^16.0.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   }
 }
