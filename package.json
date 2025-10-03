@@ -3,8 +3,16 @@
   "version": "0.1.0",
   "description": "Candidate window for desktop, based on webview",
   "type": "module",
+  "targets": {
+    "universal": {
+      "source": "page/index.html",
+      "engines": {
+        "browsers": "last 2 versions, Safari 16, not dead"
+      }
+    }
+  },
   "scripts": {
-    "dev": "parcel page/index.html",
+    "dev": "parcel --target universal",
     "lint": "pnpm run eslint && pnpm run stylelint",
     "lint:fix": "pnpm run eslint:fix && pnpm run stylelint:fix",
     "eslint": "eslint page tests",
@@ -13,7 +21,7 @@
     "stylelint:fix": "stylelint --fix page/*.scss",
     "check": "tsc --noEmit",
     "clean": "rm -rf dist .parcel-cache",
-    "build": "parcel build page/index.html",
+    "build": "parcel build --target universal",
     "test": "playwright test"
   },
   "license": "GPL-3.0-or-later",
@@ -21,13 +29,13 @@
     "@antfu/eslint-config": "^5.4.1",
     "@parcel/transformer-sass": "^2.16.0",
     "@playwright/test": "^1.55.1",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.2",
     "emoji-regex": "^10.5.0",
     "eslint": "^9.36.0",
     "eslint-plugin-format": "^1.0.2",
     "parcel": "^2.16.0",
-    "stylelint": "^16.24.0",
+    "stylelint": "^16.25.0",
     "stylelint-config-standard-scss": "^16.0.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }
