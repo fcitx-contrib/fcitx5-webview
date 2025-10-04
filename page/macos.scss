@@ -71,10 +71,6 @@ $dark-graphite: rgb(105 105 105);
     align-items: center;
   }
 
-  .fcitx-contextmenu {
-    backdrop-filter: blur(16px);
-  }
-
   .fcitx-caret.fcitx-no-text {
     inline-size: 1px;
     block-size: 16px;
