@@ -1,42 +1,3 @@
-/* use Digital Color Meter with sRGB mode to get correct color */
-$panel-alpha: 0.8125;
-
-/* light */
-$panel-color-light: rgba(240, 240, 240, $panel-alpha);
-$panel-border-color-light: rgb(0 0 0 / 17.5%);
-$vertical-border-color-light: rgba(224, 224, 224, $panel-alpha);
-$text-color-light: rgb(0 0 0 / 70%);
-$label-color-light: rgb(128 128 128);
-$thumb-color-light: rgb(81 81 81 / 33.3%);
-$thumb-hover-color-light: rgb(45 45 45 / 38.9%);
-
-/* dark */
-$panel-color-dark: rgba(60, 60, 60, $panel-alpha);
-$panel-border-color-dark: rgb(0 0 0 / 47.5%);
-$vertical-border-color-dark: rgba(85, 85, 85, $panel-alpha);
-$text-color-dark: rgb(255 255 255 / 90%);
-$label-color-dark: rgb(124 124 124);
-$thumb-color-dark: rgba(153, 153, 153, $panel-alpha); /* Not perfect. It shouldn't be blended with background. Same below. */
-$thumb-hover-color-dark: rgba(214, 214, 214, $panel-alpha);
-
-/* accent color */
-$light-blue: rgb(0 90 216);
-$dark-blue: rgb(0 89 208);
-$light-purple: rgb(125 42 126);
-$dark-purple: rgb(128 52 130);
-$light-pink: rgb(217 59 134);
-$dark-pink: rgb(201 51 120);
-$light-red: rgb(196 38 43);
-$dark-red: rgb(209 53 57);
-$light-orange: rgb(217 107 10);
-$dark-orange: rgb(200 96 4);
-$light-yellow: rgb(214 164 14);
-$dark-yellow: rgb(209 158 0);
-$light-green: rgb(76 160 50);
-$dark-green: rgb(67 146 42);
-$light-graphite: rgb(128 128 128);
-$dark-graphite: rgb(105 105 105);
-
 .fcitx-macos {
   .fcitx-decoration {
     /* Leave top and left for shadow. 
@@ -47,12 +8,9 @@ $dark-graphite: rgb(105 105 105);
   }
 
   .fcitx-panel, .fcitx-contextmenu {
-    border-width: 1px;
     border-style: solid;
-    border-radius: 6px;
     background-clip: padding-box; /* make border alpha and content alpha independent */
-    box-shadow: 0 10px 20px rgb(0 0 0 / 14%),
-                0 0 25px rgb(0 0 0 / 12%);
+    box-shadow: var(--panel-shadow, 0 10px 20px rgb(0 0 0 / 14%), 0 0 25px rgb(0 0 0 / 12%));
   }
 
   .fcitx-horizontal .fcitx-paging.fcitx-arrow {
@@ -71,40 +29,23 @@ $dark-graphite: rgb(105 105 105);
     align-items: center;
   }
 
+  .fcitx-contextmenu {
+    border-radius: 6px;
+  }
+
   .fcitx-caret.fcitx-no-text {
     inline-size: 1px;
     block-size: 16px;
     margin-inline: 1px;
   }
 
-  .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down, .fcitx-menu-item {
-    min-block-size: 24px; /* compromise to 🀄's height */
-    min-inline-size: 16px;
-
-    /* combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
-    padding-block: 3px;
-    padding-inline: 7px;
-    background-clip: padding-box;
-  }
-
   .fcitx-menu-item:hover {
     color: white;
-  }
-
-  .fcitx-hoverable.fcitx-highlighted .fcitx-hoverable-inner, .fcitx-menu-item:hover {
     background-color: var(--accent-color);
   }
 
-  /* Use a dedicated div because
-   * 1. divider color is not overlaid by panel color
-   * 2. divider may not be full-length
-   */
-  .fcitx-hoverables.fcitx-vertical .fcitx-divider {
-    block-size: 1px;
-
-    .fcitx-divider-middle {
-      inline-size: 100%;
-    }
+  .fcitx-vertical .fcitx-divider-middle {
+    inline-size: 100%;
   }
 
   .fcitx-hoverables.fcitx-horizontal .fcitx-divider {
@@ -126,15 +67,6 @@ $dark-graphite: rgb(105 105 105);
   .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
     border-radius: 4px;
   }
-  
-
-  .fcitx-label, .fcitx-comment {
-    font-size: 12px;
-  }
-
-  .fcitx-horizontal-tb .fcitx-vertical .fcitx-candidate {
-    min-inline-size: 200px; /* avoid abrupt enlarging when start typing. */
-  }
 
   .fcitx-horizontal-tb .fcitx-horizontal .fcitx-paging.fcitx-arrow svg {
     transform: rotate(90deg);
@@ -149,203 +81,10 @@ $dark-graphite: rgb(105 105 105);
   }
 }
 
-.fcitx-macos.fcitx-light {
-  /* stylelint-disable-next-line no-descending-specificity */
-  .fcitx-panel, .fcitx-contextmenu {
-    border-color: $panel-border-color-light;
-  }
-
-  .fcitx-caret.fcitx-no-text {
-    background-color: $text-color-light;
-  }
-
-  /* stylelint-disable-next-line no-descending-specificity */
-  .fcitx-candidate, .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
-    background-color: $panel-color-light;
-  }
-
-  .fcitx-contextmenu {
-    color: black;
-  }
-
-  .fcitx-text, .fcitx-header, .fcitx-aux-down {
-    color: $text-color-light;
-  }
-
-  .fcitx-label, .fcitx-comment {
-    color: $label-color-light;
-  }
-
-  .fcitx-paging {
-    color: gray; // disabled
-    background-color: $panel-color-light;
-
-    .fcitx-hoverable-inner {
-      color: $text-color-light; // enabled
-    }
-  }
-
-  &.fcitx-blue {
-    --accent-color: #{$light-blue};
-  }
-
-  &.fcitx-purple {
-    --accent-color: #{$light-purple};
-  }
-
-  &.fcitx-pink {
-    --accent-color: #{$light-pink};
-  }
-
-  &.fcitx-red {
-    --accent-color: #{$light-red};
-  }
-
-  &.fcitx-orange {
-    --accent-color: #{$light-orange};
-  }
-
-  &.fcitx-yellow {
-    --accent-color: #{$light-yellow};
-  }
-
-  &.fcitx-green {
-    --accent-color: #{$light-green};
-  }
-
-  &.fcitx-graphite {
-    --accent-color: #{$light-graphite};
-  }
-
-  .fcitx-hoverables .fcitx-divider {
-    .fcitx-divider-side {
-      background-color: $panel-color-light;
-    }
-
-    .fcitx-divider-middle {
-      background-color: $vertical-border-color-light;
-    }
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider .fcitx-divider-middle {
-    background-color: $panel-color-light;
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
-    background-color: $thumb-color-light;
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
-    background-color: $panel-color-light;
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb:hover {
-    background-color: $thumb-hover-color-light;
-  }
+.fcitx-macos.fcitx-light .fcitx-contextmenu {
+  color: black;
 }
 
-.fcitx-macos.fcitx-dark {
-  /* stylelint-disable-next-line no-descending-specificity */
-  .fcitx-panel, .fcitx-contextmenu {
-    border-color: $panel-border-color-dark;
-  }
-
-  .fcitx-caret.fcitx-no-text {
-    background-color: $text-color-dark;
-  }
-
-  /* stylelint-disable-next-line no-descending-specificity */
-  .fcitx-candidate, .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
-    background-color: $panel-color-dark;
-  }
-
-  .fcitx-contextmenu {
-    color: white;
-  }
-
-  .fcitx-text, .fcitx-header, .fcitx-aux-down {
-    color: $text-color-dark;
-  }
-
-  .fcitx-label, .fcitx-comment {
-    color: $label-color-dark;
-  }
-
-  .fcitx-paging {
-    color: gray; // disabled
-    background-color: $panel-color-dark;
-
-    /* stylelint-disable-next-line no-descending-specificity */
-    .fcitx-hoverable-inner {
-      color: $text-color-dark; // enabled
-    }
-  }
-
-  &.fcitx-blue {
-    --accent-color: #{$dark-blue};
-  }
-
-  &.fcitx-purple {
-    --accent-color: #{$dark-purple};
-  }
-
-  &.fcitx-pink {
-    --accent-color: #{$dark-pink};
-  }
-
-  &.fcitx-red {
-    --accent-color: #{$dark-red};
-  }
-
-  &.fcitx-orange {
-    --accent-color: #{$dark-orange};
-  }
-
-  &.fcitx-yellow {
-    --accent-color: #{$dark-yellow};
-  }
-
-  &.fcitx-green {
-    --accent-color: #{$dark-green};
-  }
-
-  &.fcitx-graphite {
-    --accent-color: #{$dark-graphite};
-  }
-
-  .fcitx-hoverables .fcitx-divider {
-    .fcitx-divider-side {
-      background-color: $panel-color-dark;
-    }
-
-    /* stylelint-disable-next-line no-descending-specificity */
-    .fcitx-divider-middle {
-      background-color: $vertical-border-color-dark;
-    }
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider .fcitx-divider-middle {
-    background-color: $panel-color-dark;
-  }
-
-  /* stylelint-disable-next-line no-descending-specificity */
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
-    background-color: $thumb-color-dark;
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
-    background-color: $panel-color-dark;
-  }
-
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb:hover {
-    background-color: $thumb-hover-color-dark;
-  }
-}
-
-.fcitx-macos.fcitx-light, .fcitx-macos.fcitx-dark {
-  .fcitx-highlighted {
-    .fcitx-text, .fcitx-label, .fcitx-comment {
-      color: white;
-    }
-  }
+.fcitx-macos.fcitx-dark .fcitx-contextmenu {
+  color: white;
 }

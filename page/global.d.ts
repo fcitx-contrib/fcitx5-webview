@@ -67,6 +67,7 @@ declare global {
       HoverBehavior: HOVER_BEHAVIOR
     }
     Size: {
+      OverrideDefault: CONFIG_BOOL
       BorderWidth: string
       BorderRadius: string
       Margin: string

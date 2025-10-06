@@ -1,0 +1,481 @@
+$text-content-size: 24px; /* compromise to 🀄's height */
+
+@mixin fcitx-macos-theme-variant($selector,
+  $panel-border-color,
+  $highlight-color,
+  $highlight-hover-color,
+  $hover-color,
+  $press-color,
+  $highlight-text-color,
+  $highlight-text-press-color,
+  $highlight-label-color,
+  $highlight-comment-color,
+  $highlight-mark-color,
+  $highlight-mark-text-color,
+  $panel-color-no-image,
+  $panel-color,
+  $thumb-color,
+  $thumb-hover-color,
+  $divider-color,
+  $text-color,
+  $text-hover-color,
+  $text-press-color,
+  $label-color,
+  $label-hover-color,
+  $comment-color,
+  $comment-hover-color,
+  $paging-button-color,
+  $disabled-paging-button-color,
+  $aux-color,
+  $preedit-color-pre-caret,
+  $preedit-color-caret,
+  $preedit-color-post-caret,
+  $colors,
+) {
+  .#{$selector} {
+    .fcitx-panel, .fcitx-contextmenu {
+      border-color: $panel-border-color;
+    }
+
+    .fcitx-candidate {
+      // With background image, discard panel color for unselected candidates.
+      background-color: $panel-color-no-image;
+    }
+
+    .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
+      background-color: $panel-color;
+    }
+
+    .fcitx-paging {
+      color: $disabled-paging-button-color; // disabled
+      background-color: $panel-color-no-image;
+
+      .fcitx-hoverable-inner {
+        color: $paging-button-color; // enabled
+      }
+    }
+
+    .fcitx-divider-side {
+      background-color: $panel-color-no-image;
+    }
+
+    .fcitx-divider-middle {
+      background-color: $divider-color;
+    }
+
+    .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider-middle {
+      background-color: $panel-color-no-image;
+    }
+
+    .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
+      background-color: $panel-color-no-image;
+    }
+
+    .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
+      background-color: $thumb-color;
+    }
+
+    .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb:hover {
+      background-color: $thumb-hover-color;
+    }
+
+    .fcitx-aux-up, .fcitx-aux-down {
+      color: $aux-color;
+    }
+
+    .fcitx-pre-caret {
+      color: $preedit-color-pre-caret;
+    }
+
+    .fcitx-caret {
+      color: $preedit-color-caret;
+
+      &.fcitx-no-text {
+        background-color: $preedit-color-caret;
+      }
+    }
+
+    .fcitx-post-caret {
+      color: $preedit-color-post-caret;
+    }
+
+    .fcitx-text, .fcitx-header {
+      color: $text-color;
+    }
+
+    .fcitx-candidate:not(.fcitx-highlighted):hover:not(:active) .fcitx-text {
+      color: $text-hover-color;
+    }
+
+    .fcitx-candidate:not(.fcitx-highlighted):active .fcitx-text {
+      color: $text-press-color;
+    }
+
+    .fcitx-label {
+      color: $label-color;
+    }
+
+    .fcitx-candidate:not(.fcitx-highlighted):hover { // Same for hover and press.
+      .fcitx-label {
+        color: $label-hover-color;
+      }
+
+      .fcitx-comment {
+        color: $comment-hover-color;
+      }
+    }
+
+    .fcitx-mousemoved {
+      .fcitx-highlighted:hover:not(:active) .fcitx-hoverable-inner {
+        background-color: $highlight-hover-color;
+      }
+
+      .fcitx-hoverable:not(.fcitx-highlighted):hover:not(:active) .fcitx-hoverable-inner {
+        background-color: $hover-color;
+      }
+    }
+
+    .fcitx-highlighted:active .fcitx-hoverable-inner {
+      background-color: $highlight-color;
+    }
+
+    .fcitx-hoverable:not(.fcitx-highlighted):active .fcitx-hoverable-inner {
+      background-color: $press-color;
+    }
+
+    .fcitx-highlighted {
+      .fcitx-hoverable-inner {
+        background-color: $highlight-color;
+      }
+
+      .fcitx-mark {
+        color: $highlight-mark-text-color;
+        background-color: $highlight-mark-color;
+      }
+
+      .fcitx-text {
+        color: $highlight-text-color;
+      }
+
+      &.fcitx-candidate:active .fcitx-text {
+        color: $highlight-text-press-color;
+      }
+
+      .fcitx-label {
+        color: $highlight-label-color;
+      }
+
+      .fcitx-comment {
+        color: $highlight-comment-color;
+      }
+    }
+
+    .fcitx-comment {
+      color: $comment-color;
+    }
+
+    @each $name, $color in $colors {
+      &.fcitx-#{$name} {
+        --accent-color: #{$color};
+      }
+    }
+  }
+}
+
+@mixin fcitx-macos-theme($class,
+  $light-panel-border-color, $dark-panel-border-color,
+  $light-panel-color, $dark-panel-color,
+  $light-thumb-color, $dark-thumb-color,
+  $light-thumb-hover-color, $dark-thumb-hover-color,
+  $light-divider-color, $dark-divider-color,
+  $light-text-color, $dark-text-color,
+  $light-label-color, $dark-label-color,
+  $light-colors, $dark-colors,
+  $border-width,
+  $border-radius,
+  $margin,
+  $highlight-radius,
+  $top-padding,
+  $right-padding,
+  $bottom-padding,
+  $left-padding,
+  $label-text-gap,
+  $vertical-min-width,
+  $horizontal-divider-width,
+) {
+  // Color
+  $light-highlight-color: var(--light-highlight-color, var(--accent-color));
+  $dark-highlight-color: var(--dark-highlight-color, var(--accent-color));
+  $light-highlight-hover-color: var(--light-highlight-hover-color, var(--accent-color));
+  $dark-highlight-hover-color: var(--dark-highlight-hover-color, var(--accent-color));
+  $light-hover-color: var(--light-hover-color);
+  $dark-hover-color: var(--dark-hover-color);
+  $light-press-color: var(--light-press-color);
+  $dark-press-color: var(--dark-press-color);
+  $light-highlight-text-color: var(--light-highlight-text-color, white);
+  $dark-highlight-text-color: var(--dark-highlight-text-color, white);
+  $light-highlight-text-press-color: var(--light-highlight-text-press-color, $light-highlight-text-color);
+  $dark-highlight-text-press-color: var(--dark-highlight-text-press-color, $dark-highlight-text-color);
+  $light-highlight-label-color: var(--light-highlight-label-color, white);
+  $dark-highlight-label-color: var(--dark-highlight-label-color, white);
+  $light-highlight-comment-color: var(--light-highlight-comment-color, white);
+  $dark-highlight-comment-color: var(--dark-highlight-comment-color, white);
+  $light-highlight-mark-color: var(--light-highlight-mark-color);
+  $dark-highlight-mark-color: var(--dark-highlight-mark-color);
+  $light-highlight-mark-text-color: var(--light-highlight-mark-text-color);
+  $dark-highlight-mark-text-color: var(--dark-highlight-mark-text-color);
+  $light-panel-color-no-image: var(--light-panel-color-no-image, $light-panel-color);
+  $dark-panel-color-no-image: var(--dark-panel-color-no-image, $dark-panel-color);
+  $light-panel-color: var(--light-panel-color, $light-panel-color);
+  $dark-panel-color: var(--dark-panel-color, $dark-panel-color);
+  $light-text-color: var(--light-text-color, $light-text-color);
+  $dark-text-color: var(--dark-text-color, $dark-text-color);
+  $light-text-hover-color: var(--light-text-hover-color, $light-text-color); // Enough to mock Windows 11 MSPY so no config for it.
+  $dark-text-hover-color: var(--dark-text-hover-color, $dark-text-color);
+  $light-text-press-color: var(--light-text-press-color, $light-text-color);
+  $dark-text-press-color: var(--dark-text-press-color, $dark-text-color); 
+  $light-label-color: var(--light-label-color, $light-label-color);
+  $dark-label-color: var(--dark-label-color, $dark-label-color);
+  $light-label-hover-color: var(--light-label-hover-color, $light-label-color);
+  $dark-label-hover-color: var(--dark-label-hover-color, $dark-label-color);
+  $light-comment-color: var(--light-comment-color, $light-label-color);
+  $dark-comment-color: var(--dark-comment-color, $dark-label-color);
+  $light-comment-hover-color: var(--light-comment-hover-color, $light-comment-color);
+  $dark-comment-hover-color: var(--dark-comment-hover-color, $dark-comment-color);
+  $light-paging-button-color: var(--light-paging-button-color, $light-text-color);
+  $dark-paging-button-color: var(--dark-paging-button-color, $dark-text-color);
+  $light-disabled-paging-button-color: var(--light-disabled-paging-button-color, gray);
+  $dark-disabled-paging-button-color: var(--dark-disabled-paging-button-color, gray);
+  $light-aux-color: var(--light-aux-color, $light-text-color);
+  $dark-aux-color: var(--dark-aux-color, $dark-text-color);
+  $light-preedit-color-pre-caret: var(--light-preedit-color-pre-caret, $light-text-color);
+  $dark-preedit-color-pre-caret: var(--dark-preedit-color-pre-caret, $dark-text-color);
+  $light-preedit-color-caret: var(--light-preedit-color-caret, $light-text-color);
+  $dark-preedit-color-caret: var(--dark-preedit-color-caret, $dark-text-color);
+  $light-preedit-color-post-caret: var(--light-preedit-color-post-caret, $light-text-color);
+  $dark-preedit-color-post-caret: var(--dark-preedit-color-post-caret, $dark-text-color);
+  $light-panel-border-color: var(--light-panel-border-color, $light-panel-border-color);
+  $dark-panel-border-color: var(--dark-panel-border-color, $dark-panel-border-color);
+  $light-divider-color: var(--light-divider-color, $light-divider-color);
+  $dark-divider-color: var(--dark-divider-color, $dark-divider-color);
+
+  // Font
+  $text-font-size: var(--text-font-size, 16px);
+  $label-font-size: var(--label-font-size, 12px);
+  $comment-font-size: var(--comment-font-size, 12px);
+  $preedit-font-size: var(--preedit-font-size, 16px);
+
+  // Size
+  $border-width: var(--border-width, $border-width);
+  $border-radius: var(--border-radius, $border-radius);
+  $margin: var(--margin, $margin);
+  $highlight-radius: var(--highlight-radius, $highlight-radius);
+  $top-padding: var(--top-padding, $top-padding);
+  $right-padding: var(--right-padding, $right-padding);
+  $bottom-padding: var(--bottom-padding, $bottom-padding);
+  $left-padding: var(--left-padding, $left-padding);
+  $label-text-gap: var(--label-text-gap, $label-text-gap);
+  $vertical-min-width: var(--vertical-min-width, $vertical-min-width);
+  $cell-width: var(--cell-width, 65px);
+  $middle-margin: var(--middle-margin, if($horizontal-divider-width == 0px, calc($margin / 2), $margin)); // Must be before $horizontal-divider-width redefinition.
+  $horizontal-divider-width: var(--horizontal-divider-width, $horizontal-divider-width);
+
+  @include fcitx-macos-theme-variant("#{$class}.fcitx-light",
+    $light-panel-border-color,
+    $light-highlight-color,
+    $light-highlight-hover-color,
+    $light-hover-color,
+    $light-press-color,
+    $light-highlight-text-color,
+    $light-highlight-text-press-color,
+    $light-highlight-label-color,
+    $light-highlight-comment-color,
+    $light-highlight-mark-color,
+    $light-highlight-mark-text-color,
+    $light-panel-color-no-image,
+    $light-panel-color,
+    $light-thumb-color,
+    $light-thumb-hover-color,
+    $light-divider-color,
+    $light-text-color,
+    $light-text-hover-color,
+    $light-text-press-color,
+    $light-label-color,
+    $light-label-hover-color,
+    $light-comment-color,
+    $light-comment-hover-color,
+    $light-paging-button-color,
+    $light-disabled-paging-button-color,
+    $light-aux-color,
+    $light-preedit-color-pre-caret,
+    $light-preedit-color-caret,
+    $light-preedit-color-post-caret,
+    $light-colors
+  );
+  @include fcitx-macos-theme-variant("#{$class}.fcitx-dark",
+    $dark-panel-border-color,
+    $dark-highlight-color,
+    $dark-highlight-hover-color,
+    $dark-hover-color,
+    $dark-press-color,
+    $dark-highlight-text-color,
+    $dark-highlight-text-press-color,
+    $dark-highlight-label-color,
+    $dark-highlight-comment-color,
+    $dark-highlight-mark-color,
+    $dark-highlight-mark-text-color,
+    $dark-panel-color-no-image,
+    $dark-panel-color,
+    $dark-thumb-color,
+    $dark-thumb-hover-color,
+    $dark-divider-color,
+    $dark-text-color,
+    $dark-text-hover-color,
+    $dark-text-press-color,
+    $dark-label-color,
+    $dark-label-hover-color,
+    $dark-comment-color,
+    $dark-comment-hover-color,
+    $dark-paging-button-color,
+    $dark-disabled-paging-button-color,
+    $dark-aux-color,
+    $dark-preedit-color-pre-caret,
+    $dark-preedit-color-caret,
+    $dark-preedit-color-post-caret,
+    $dark-colors
+  );
+
+  $half-margin: calc($margin / 2);
+  $candidate-height: calc(max($text-content-size, $text-font-size) + $top-padding + $bottom-padding + 2 * $margin);
+
+  .#{$class} {
+    .fcitx-panel, .fcitx-contextmenu {
+      border-width: $border-width;
+      border-radius: $border-radius;
+    }
+
+    .fcitx-panel:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
+      border-start-end-radius: calc($candidate-height / 2);
+      border-end-end-radius: calc($candidate-height / 2);
+    }
+
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-down, .fcitx-menu-item {
+      /* Make sure 🦦 takes equal width when vertical+vertical-rl. */
+      min-block-size: $text-content-size;
+      background-clip: padding-box;
+    }
+
+    .fcitx-aux-up {
+      /* Combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
+      min-block-size: $text-content-size;
+      min-inline-size: calc($text-content-size + $top-padding + $bottom-padding - $left-padding - $right-padding);
+    }
+
+    .fcitx-candidate-inner {
+      gap: $label-text-gap;
+      line-height: $text-font-size;
+    }
+
+    .fcitx-horizontal-tb .fcitx-vertical .fcitx-candidate {
+      min-inline-size: $vertical-min-width; /* avoid abrupt enlarging when start typing. */
+    }
+
+    .fcitx-candidate-inner, .fcitx-paging-inner, .fcitx-menu-item {
+      border-radius: $highlight-radius;
+    }
+
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down, .fcitx-menu-item, .fcitx-prev, .fcitx-next {
+      margin: $margin;
+    }
+
+    .fcitx-text {
+      font-family: var(--text-font-family);
+      font-size: $text-font-size;
+    }
+
+    .fcitx-label {
+      font-family: var(--label-font-family);
+      font-size: $label-font-size;
+    }
+
+    .fcitx-comment {
+      font-family: var(--comment-font-family);
+      font-size: $comment-font-size;
+    }
+
+    .fcitx-preedit {
+      font-family: var(--preedit-font-family);
+      font-size: $preedit-font-size;
+      line-height: $preedit-font-size;
+    }
+
+    .fcitx-caret.fcitx-no-text {
+      // Caret height should be the same with preedit
+      block-size: $preedit-font-size;
+    }
+
+    .fcitx-prev {
+      margin-inline-end: $half-margin;
+    }
+
+    .fcitx-next {
+      margin-inline-start: $half-margin;
+    }
+
+    .fcitx-horizontal:not(.fcitx-horizontal-scroll) .fcitx-candidate-inner {
+      margin-inline: $half-margin;
+    }
+
+    .fcitx-horizontal {
+      .fcitx-candidate-first .fcitx-candidate-inner {
+        margin-inline-start: $margin;
+      }
+
+      .fcitx-candidate-last .fcitx-candidate-inner {
+        margin-inline-end: $margin;
+      }
+
+      .fcitx-divider-paging .fcitx-divider-side {
+        block-size: $margin;
+      }
+    }
+
+    .fcitx-vertical {
+      .fcitx-candidate:not(.fcitx-candidate-first) .fcitx-candidate-inner {
+        margin-block-start: $middle-margin;
+      }
+
+      .fcitx-candidate:not(.fcitx-candidate-last) .fcitx-candidate-inner {
+        margin-block-end: $middle-margin;
+      }
+
+      .fcitx-divider-side {
+        inline-size: $margin;
+      }
+    }
+
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down, .fcitx-menu-item {
+      /* combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
+      padding-block: $top-padding $bottom-padding;
+      padding-inline: $left-padding $right-padding;
+    }
+
+    /* Use a dedicated div because
+    * 1. divider color is not overlaid by panel color
+    * 2. divider may not be full-length
+    */
+    .fcitx-vertical .fcitx-divider {
+      block-size: $horizontal-divider-width;
+    }
+
+    .fcitx-horizontal-scroll {
+      max-block-size: calc(var(--max-row, 6) * $candidate-height); /* If block-size, 2 rows will have 90px each. */
+      inline-size: calc($cell-width * var(--max-column, 6) + 10px /* 2px redundance + 8px scrollbar making default 400px */);
+      transition: var(--scroll-animation, max-block-size 300ms);
+
+      .fcitx-candidate {
+        min-inline-size: $cell-width;
+      }
+    }
+  }
+}
