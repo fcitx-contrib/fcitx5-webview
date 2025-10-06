@@ -1,0 +1,76 @@
+@use "./common";
+
+// Light
+$light-panel-alpha: 0.8125;
+$light-panel-color: rgba(240, 240, 240, $light-panel-alpha);
+$light-panel-border-color: rgb(0 0 0 / 17.5%);
+$light-thumb-color: rgb(81 81 81 / 33.3%);
+$light-thumb-hover-color: rgb(45 45 45 / 38.9%);
+$light-divider-color: rgba(224, 224, 224, $light-panel-alpha);
+$light-text-color: rgb(0 0 0 / 70%);
+$light-label-color: rgb(128 128 128);
+$light-colors: (
+  "blue": rgb(0 90 216),
+  "purple": rgb(125 42 126),
+  "pink": rgb(217 59 134),
+  "red": rgb(196 38 43),
+  "orange": rgb(217 107 10),
+  "yellow": rgb(214 164 14),
+  "green": rgb(76 160 50),
+  "graphite": rgb(128 128 128)
+);
+
+// Dark
+$dark-panel-alpha: 0.8125;
+$dark-panel-color: rgba(60, 60, 60, $dark-panel-alpha);
+$dark-panel-border-color: rgb(0 0 0 / 47.5%);
+$dark-thumb-color: rgba(153, 153, 153, $dark-panel-alpha); /* Not perfect. It shouldn't be blended with background. Same below. */
+$dark-thumb-hover-color: rgba(214, 214, 214, $dark-panel-alpha);
+$dark-divider-color: rgba(85, 85, 85, $dark-panel-alpha);
+$dark-text-color: rgb(255 255 255 / 90%);
+$dark-label-color: rgb(124 124 124);
+$dark-colors: (
+  "blue": rgb(0 89 208),
+  "purple": rgb(128 52 130),
+  "pink": rgb(201 51 120),
+  "red": rgb(209 53 57),
+  "orange": rgb(200 96 4),
+  "yellow": rgb(209 158 0),
+  "green": rgb(67 146 42),
+  "graphite": rgb(105 105 105)
+);
+
+// Size
+$border-width: 1px;
+$border-radius: 6px;
+$margin: 0px;
+$highlight-radius: 0px;
+$top-padding: 3px;
+$right-padding: 7px;
+$bottom-padding: 3px;
+$left-padding: 7px;
+$label-text-gap: 6px;
+$vertical-min-width: 200px;
+$horizontal-divider-width: 1px;
+
+@include common.fcitx-macos-theme("fcitx-macos-15",
+  $light-panel-border-color, $dark-panel-border-color,
+  $light-panel-color, $dark-panel-color,
+  $light-thumb-color, $dark-thumb-color,
+  $light-thumb-hover-color, $dark-thumb-hover-color,
+  $light-divider-color, $dark-divider-color,
+  $light-text-color, $dark-text-color,
+  $light-label-color, $dark-label-color,
+  $light-colors, $dark-colors,
+  $border-width,
+  $border-radius,
+  $margin,
+  $highlight-radius,
+  $top-padding,
+  $right-padding,
+  $bottom-padding,
+  $left-padding,
+  $label-text-gap,
+  $vertical-min-width,
+  $horizontal-divider-width,
+);

@@ -158,6 +158,7 @@ const defaultStyle: STYLE_JSON = {
     MaxColumnCount: '6',
   },
   Size: {
+    OverrideDefault: 'True',
     BorderRadius: '6',
     BorderWidth: '1',
     BottomPadding: '3',

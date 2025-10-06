@@ -13,7 +13,6 @@
 
 .fcitx-panel {
   overflow: hidden; /* needed because of border-radius */
-  display: inline-block; /* wrap content, not fill parent */
 
   &.fcitx-vertical-rl {
     writing-mode: vertical-rl;
@@ -28,11 +27,6 @@
     so it may wrap text based on underestimated height, but next frame it's
     corrected, with significant layout shift. Reproducible with Rime F4. */
     white-space: nowrap;
-  }
-
-  &:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
-    border-start-end-radius: 15px;
-    border-end-end-radius: 15px;
   }
 }
 
@@ -61,7 +55,6 @@
 
 .fcitx-candidate-inner {
   display: flex;
-  gap: 6px;
   align-items: center; /* English words have lower height */
   line-height: 1em; /* align label and candidates */
   position: relative; /* for absolute position of mark */
@@ -75,6 +68,10 @@
 
 .fcitx-hoverables {
   display: flex;
+
+  // Background image should not affect aux
+  background-image: var(--background-image);
+  background-size: cover;
 
   .fcitx-divider {
     display: flex;
@@ -110,16 +107,9 @@
   }
 
   &.fcitx-horizontal-scroll {
-    max-block-size: 180px; /* For default 6 rows. If block-size, 2 rows will have 90px each. */
-    transition: max-block-size 300ms;
-    inline-size: 400px;
     flex-wrap: wrap;
     overflow-y: auto;
     overscroll-behavior: none;
-
-    .fcitx-candidate {
-      min-inline-size: 65px;
-    }
 
     .fcitx-candidate-inner {
       width: 100%;
@@ -178,6 +168,13 @@
   align-items: center;
 }
 
+// Stacked arrows should not have any margin.
+.fcitx-horizontal .fcitx-arrow {
+  .fcitx-prev, .fcitx-next {
+    margin: 0;
+  }
+}
+
 .fcitx-paging-inner {
   display: flex;
   align-items: center;
@@ -199,6 +196,14 @@
   }
 }
 
+.fcitx-highlighted .fcitx-mark {
+  opacity: var(--mark-opacity);
+}
+
+.fcitx-highlighted-original .fcitx-mark {
+  opacity: var(--original-mark-opacity);
+}
+
 .fcitx-highlighted :active .fcitx-mark.fcitx-no-text {
   block-size: 12px;
 }
@@ -208,7 +213,7 @@
 }
 
 .fcitx-blur {
-  backdrop-filter: blur(16px); /* blur background */
+  backdrop-filter: var(--backdrop-filter, blur(16px));
 }
 
 .fcitx-contextmenu {

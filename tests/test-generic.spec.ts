@@ -16,9 +16,6 @@ import {
 
 test('HTML structure', async ({ page }) => {
   await init(page)
-  await page.evaluate(() => {
-    document.querySelector('#fcitx-theme')?.classList.remove('fcitx-macos')
-  })
   await setCandidates(page, [
     { text: '页面结构', label: '1', comment: 'c', actions: [] },
     { text: '测试', label: '2', comment: '', actions: [] },
@@ -26,7 +23,7 @@ test('HTML structure', async ({ page }) => {
 
   const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><').replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
-<div id="fcitx-theme" class="fcitx-basic fcitx-blue fcitx-dark">
+<div id="fcitx-theme" class="fcitx-blue fcitx-dark fcitx-macos fcitx-macos-15">
   <div class="fcitx-decoration">
     <div class="fcitx-panel-topleft"></div>
     <div class="fcitx-panel-top"></div>
@@ -176,5 +173,5 @@ test('WebKit prefix', async ({ page }) => {
   // macOS 26 uses WebKit 26, which doesn't support user-select.
   expect(style.includes('-webkit-user-select:none')).toBe(true)
   // macOS 13 uses WebKit 16, which doesn't support backdrop-filter.
-  expect(style.includes('-webkit-backdrop-filter:blur(16px)')).toBe(true)
+  expect(style.includes('-webkit-backdrop-filter:var(--backdrop-filter,blur(16px))')).toBe(true)
 })
