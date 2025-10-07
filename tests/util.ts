@@ -39,6 +39,12 @@ export async function init(page: Page) {
   })
 }
 
+export async function followHostTheme(page: Page, system: string, version: number) {
+  await page.evaluate(({ system, version }) =>
+    window.fcitx.setHost(system, version), { system, version })
+  return setStyle(page, {})
+}
+
 export function updateInputPanel(page: Page, preedit: string, auxUp: string, auxDown: string) {
   return page.evaluate(({ preedit, auxUp, auxDown }) =>
     window.fcitx.updateInputPanel(preedit, auxUp, auxDown), { preedit, auxUp, auxDown })
@@ -81,6 +87,9 @@ const defaultStyle: STYLE_JSON = {
     Blur: 'True',
     ImageUrl: '',
     Shadow: 'True',
+  },
+  Basic: {
+    DefaultTheme: 'System',
   },
   Caret: {
     Style: 'Blink',

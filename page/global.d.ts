@@ -1,6 +1,7 @@
 import type { COLLAPSE, COMMIT, DOWN, END, HOME, HORIZONTAL, HORIZONTAL_TB, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, SCROLLING, UP, VERTICAL, VERTICAL_LR, VERTICAL_RL } from './constant'
 
 declare global {
+  type DEFAULT_THEME = 'macOS 26' | 'macOS 15'
   type CONFIG_BOOL = 'False' | 'True'
   type HOVER_BEHAVIOR = 'None' | 'Move' | 'Add'
   type PAGING_BUTTONS_STYLE = 'None' | 'Arrow' | 'Triangle'
@@ -31,6 +32,9 @@ declare global {
   interface FONT_FAMILY { [key: string]: string }
 
   interface STYLE_JSON {
+    Basic: {
+      DefaultTheme: 'System' | DEFAULT_THEME
+    }
     LightMode: LIGHT_MODE
     DarkMode: LIGHT_MODE & {
       SameWithLightMode: CONFIG_BOOL
@@ -112,6 +116,7 @@ declare global {
   }
 
   interface FCITX {
+    host: { system: string, version: number }
     distribution: string
 
     // C++ APIs that api.ts calls
@@ -127,6 +132,7 @@ declare global {
     _resize: (epoch: number, dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, topLeftRadius: number, topRightRadius: number, bottomRightRadius: number, bottomLeftRadius: number, borderWidth: number, fullWidth: number, fullHeight: number, dragging: boolean) => void
 
     // JavaScript APIs that webview_candidate_window.mm calls
+    setHost: (system: string, version: number) => void
     setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
     setLayout: (layout: LAYOUT) => void
     updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void

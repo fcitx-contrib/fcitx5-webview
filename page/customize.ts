@@ -20,6 +20,42 @@ function noCache(url: string): string {
   return `${url}?r=${Math.random()}`
 }
 
+const allSystemClasses = ['macos']
+const allVersionClasses = ['macos-26', 'macos-15']
+
+function setDefaultTheme(defaultTheme: DEFAULT_THEME) {
+  let systemClass = ''
+  let versionClass = ''
+  switch (defaultTheme) {
+    case 'macOS 26':
+      systemClass = 'macos'
+      versionClass = 'macos-26'
+      break
+    case 'macOS 15':
+      systemClass = 'macos'
+      versionClass = 'macos-15'
+      break
+  }
+  for (const c of allSystemClasses) {
+    const klass = `fcitx-${c}`
+    if (c === systemClass) {
+      theme.classList.add(klass)
+    }
+    else {
+      theme.classList.remove(klass)
+    }
+  }
+  for (const c of allVersionClasses) {
+    const klass = `fcitx-${c}`
+    if (c === versionClass) {
+      theme.classList.add(klass)
+    }
+    else {
+      theme.classList.remove(klass)
+    }
+  }
+}
+
 const ACCENT_COLOR = 'var(--accent-color)'
 
 export function setStyle(style: string) {
@@ -41,6 +77,18 @@ export function setStyle(style: string) {
 
   function setSize(name: string, value: number | string) {
     theme.style.setProperty(`--${name}`, j.Size.OverrideDefault === 'True' ? px(value) : '')
+  }
+
+  if (j.Basic.DefaultTheme === 'System') {
+    if (window.fcitx.host.system === 'macOS' && window.fcitx.host.version <= 15) {
+      setDefaultTheme('macOS 15')
+    }
+    else {
+      setDefaultTheme('macOS 26')
+    }
+  }
+  else {
+    setDefaultTheme(j.Basic.DefaultTheme)
   }
 
   // Color

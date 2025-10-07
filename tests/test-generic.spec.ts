@@ -5,6 +5,7 @@ import {
 import { HORIZONTAL, VERTICAL } from '../page/constant'
 import {
   candidate,
+  followHostTheme,
   getBox,
   getCppCalls,
   init,
@@ -23,7 +24,7 @@ test('HTML structure', async ({ page }) => {
 
   const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><').replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
   const expected = `
-<div id="fcitx-theme" class="fcitx-blue fcitx-dark fcitx-macos fcitx-macos-15">
+<div id="fcitx-theme" class="fcitx-blue fcitx-dark fcitx-macos fcitx-macos-15 fcitx-macos-26">
   <div class="fcitx-decoration">
     <div class="fcitx-panel-topleft"></div>
     <div class="fcitx-panel-top"></div>
@@ -70,6 +71,11 @@ test('HTML structure', async ({ page }) => {
 </div>
 `.replaceAll(/\n */g, '')
   expect(actual).toEqual(expected)
+
+  await followHostTheme(page, 'macOS', 15)
+  expect((await theme(page).getAttribute('class'))!.split(' ').sort()).toEqual(['fcitx-blue', 'fcitx-dark', 'fcitx-macos', 'fcitx-macos-15'])
+  await followHostTheme(page, 'macOS', 26)
+  expect((await theme(page).getAttribute('class'))!.split(' ').sort()).toEqual(['fcitx-blue', 'fcitx-dark', 'fcitx-macos', 'fcitx-macos-26'])
 })
 
 test('Select candidate', async ({ page }) => {

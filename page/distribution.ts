@@ -32,6 +32,15 @@ else {
 }
 
 fcitx.distribution = distribution
+fcitx.host = {
+  system: 'macOS',
+  version: 26,
+}
+fcitx.setHost = (system: string, version: number) => {
+  if (system) {
+    fcitx.host = { system, version }
+  }
+}
 
 export {
   fcitx,

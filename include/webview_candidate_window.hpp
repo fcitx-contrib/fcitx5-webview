@@ -204,6 +204,8 @@ class WebviewCandidateWindow {
     std::function<void(int index, int id)> action_callback = [](int, int) {};
     std::string caret_text_ = "";
     std::string highlight_mark_text_ = "";
+    std::string system_ = "";
+    int version_ = 0;
     bool pageable_ = false;
     bool has_prev_ = false;
     bool has_next_ = false;

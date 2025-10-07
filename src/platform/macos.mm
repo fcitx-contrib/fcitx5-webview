@@ -176,6 +176,10 @@ void WebviewCandidateWindow::platform_init() {
                name:NSSystemColorsDidChangeNotification
              object:nil];
     platform_data = listener;
+    system_ = "macOS";
+    NSOperatingSystemVersion version =
+        [[NSProcessInfo processInfo] operatingSystemVersion];
+    version_ = version.majorVersion;
 }
 
 void *WebviewCandidateWindow::create_window() {
