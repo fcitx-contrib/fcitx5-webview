@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { candidate, init, setCandidates, theme } from './util'
+import { candidate, followHostTheme, init, setCandidates, theme } from './util'
 
 test('Set accent color', async ({ page }) => {
   await init(page)
@@ -33,5 +33,7 @@ test('Set App accent color', async ({ page }) => {
   await expect(highlightedCandidate).toHaveCSS('background-color', 'rgba(18, 52, 86, 0.47)')
 
   await page.evaluate(() => window.fcitx.setAccentColor(null))
+  await expect(highlightedCandidate).toHaveCSS('background-color', 'rgb(0, 122, 255)')
+  await followHostTheme(page, 'macOS', 15)
   await expect(highlightedCandidate).toHaveCSS('background-color', 'rgb(0, 89, 208)')
 })

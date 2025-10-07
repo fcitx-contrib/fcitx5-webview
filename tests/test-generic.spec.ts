@@ -140,36 +140,44 @@ test('But micro drag is tolerated', async ({ page }) => {
   expect(cppCalls[cppCalls.length - 1]).toEqual({ select: 0 })
 })
 
-test('Set layout', async ({ page }) => {
-  await init(page)
-  await setCandidates(page, [
-    { text: '横', label: '1', comment: '', actions: [] },
-    { text: '竖', label: '1', comment: '', actions: [] },
-    { text: '分', label: '1', comment: '', actions: [] },
-    { text: '明', label: '1', comment: '', actions: [] },
-  ], 0)
+test.describe('Set layout', () => {
+  const cases = [
+    { system: 'macOS', version: 26, width: 258, height: 117 },
+    { system: 'macOS', version: 15, width: 202, height: 125 },
+  ]
+  for (const { system, version, width, height } of cases) {
+    test(`${system} ${version}`, async ({ page }) => {
+      await init(page)
+      await followHostTheme(page, system, version)
 
-  await setLayout(page, VERTICAL)
-  const verticalBox = await getBox(panel(page))
-  expect(verticalBox).toMatchObject({
-    x: 25,
-    y: 39, // shadow and inline-grid
-  })
-  expect(verticalBox.width).toBeGreaterThan(197)
-  expect(verticalBox.width).toBeLessThan(207)
-  expect(verticalBox.height).toBeGreaterThan(120)
-  expect(verticalBox.height).toBeLessThan(130)
+      await setCandidates(page, [
+        { text: '横', label: '1', comment: '', actions: [] },
+        { text: '竖', label: '1', comment: '', actions: [] },
+        { text: '分', label: '1', comment: '', actions: [] },
+        { text: '明', label: '1', comment: '', actions: [] },
+      ], 0)
 
-  await setLayout(page, HORIZONTAL)
-  const horizontalBox = await getBox(panel(page))
-  expect(horizontalBox).toMatchObject({
-    x: 25,
-    y: 39,
-  })
-  expect(horizontalBox.width).toBeGreaterThan(170)
-  expect(horizontalBox.width).toBeLessThan(186)
-  expect(horizontalBox.height).toBeGreaterThan(27)
-  expect(horizontalBox.height).toBeLessThan(37)
+      await setLayout(page, VERTICAL)
+      const verticalBox = await getBox(panel(page))
+      expect(verticalBox).toMatchObject({
+        x: 25,
+        y: 39, // shadow and inline-grid
+      })
+      expect(verticalBox.width).toEqual(width)
+      expect(verticalBox.height).toEqual(height)
+
+      await setLayout(page, HORIZONTAL)
+      const horizontalBox = await getBox(panel(page))
+      expect(horizontalBox).toMatchObject({
+        x: 25,
+        y: 39,
+      })
+      expect(horizontalBox.width).toBeGreaterThan(170)
+      expect(horizontalBox.width).toBeLessThan(186)
+      expect(horizontalBox.height).toBeGreaterThan(27)
+      expect(horizontalBox.height).toBeLessThan(37)
+    })
+  }
 })
 
 test('WebKit prefix', async ({ page }) => {

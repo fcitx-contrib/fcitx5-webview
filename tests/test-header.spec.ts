@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test'
-import { getBox, getTextBox, init, panel, updateInputPanel } from './util'
+import { followHostTheme, getBox, getTextBox, init, panel, updateInputPanel } from './util'
 
-test('Square when single character auxUp', async ({ page }) => {
+test('Square when single character auxUp for macOS 15', async ({ page }) => {
   await init(page)
+  await followHostTheme(page, 'macOS', 15)
   const pane = panel(page)
   const side = 32
 

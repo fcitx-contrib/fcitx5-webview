@@ -42,7 +42,7 @@ export async function init(page: Page) {
 export async function followHostTheme(page: Page, system: string, version: number) {
   await page.evaluate(({ system, version }) =>
     window.fcitx.setHost(system, version), { system, version })
-  return setStyle(page, {})
+  return setStyle(page, { Size: { OverrideDefault: 'False' } })
 }
 
 export function updateInputPanel(page: Page, preedit: string, auxUp: string, auxDown: string) {
@@ -167,7 +167,7 @@ const defaultStyle: STYLE_JSON = {
     MaxColumnCount: '6',
   },
   Size: {
-    OverrideDefault: 'True',
+    OverrideDefault: 'False',
     BorderRadius: '6',
     BorderWidth: '1',
     BottomPadding: '3',
