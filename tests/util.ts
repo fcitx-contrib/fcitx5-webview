@@ -50,9 +50,9 @@ export function updateInputPanel(page: Page, preedit: string, auxUp: string, aux
     window.fcitx.updateInputPanel(preedit, auxUp, auxDown), { preedit, auxUp, auxDown })
 }
 
-export function setCandidates(page: Page, cands: Candidate[], highlighted: number) {
+export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number) {
   return page.evaluate(({ cands, highlighted }) =>
-    window.fcitx.setCandidates(cands, highlighted, '', false, false, false, 0, false, false), { cands, highlighted })
+    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], ...cand })), highlighted, '', false, false, false, 0, false, false), { cands, highlighted })
 }
 
 export async function scrollExpand(page: Page, texts: string[]) {
@@ -220,6 +220,10 @@ export function theme(page: Page) {
 
 export function panel(page: Page) {
   return page.locator('.fcitx-panel')
+}
+
+export function hoverables(page: Page) {
+  return page.locator('.fcitx-hoverables')
 }
 
 export function candidate(page: Page, index: number) {
