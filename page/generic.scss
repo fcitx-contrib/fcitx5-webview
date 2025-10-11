@@ -197,11 +197,7 @@
 }
 
 .fcitx-highlighted .fcitx-mark {
-  opacity: var(--mark-opacity);
-}
-
-.fcitx-highlighted-original .fcitx-mark {
-  opacity: var(--original-mark-opacity);
+  opacity: var(--mark-opacity, 0);
 }
 
 .fcitx-highlighted :active .fcitx-mark.fcitx-no-text {

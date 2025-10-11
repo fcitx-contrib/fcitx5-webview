@@ -1,10 +1,9 @@
 import { expect, test } from '@playwright/test'
-import { candidate, hoverables, init, setCandidates, setStyle } from '../util'
+import { candidate, hoverables, init, setCandidates, setStyle, transparent } from '../util'
 
 test('Internet image', async ({ page }) => {
   await init(page)
   await setCandidates(page, [{}], -1)
-  const transparent = 'rgba(0, 0, 0, 0)'
   await expect(candidate(page, 0)).not.toHaveCSS('background-color', transparent)
 
   const image = 'https://example.org/img.png'

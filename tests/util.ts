@@ -4,6 +4,9 @@ import type {
 } from '@playwright/test'
 import { dirname, join } from 'node:path'
 
+export const transparent = 'rgba(0, 0, 0, 0)'
+export const white = 'rgb(255, 255, 255)'
+
 export async function init(page: Page) {
   const url = `file://${join(dirname(import.meta.url), '..', 'dist', 'index.html').substring('file:'.length)}`
   await page.goto(url)
@@ -50,9 +53,9 @@ export function updateInputPanel(page: Page, preedit: string, auxUp: string, aux
     window.fcitx.updateInputPanel(preedit, auxUp, auxDown), { preedit, auxUp, auxDown })
 }
 
-export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number) {
-  return page.evaluate(({ cands, highlighted }) =>
-    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], ...cand })), highlighted, '', false, false, false, 0, false, false), { cands, highlighted })
+export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, markText = '') {
+  return page.evaluate(({ cands, highlighted, markText }) =>
+    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], ...cand })), highlighted, markText, false, false, false, 0, false, false), { cands, highlighted, markText })
 }
 
 export async function scrollExpand(page: Page, texts: string[]) {
@@ -230,8 +233,28 @@ export function candidate(page: Page, index: number) {
   return panel(page).locator('.fcitx-candidate').nth(index)
 }
 
+export function mark(page: Page, index: number) {
+  return candidate(page, index).locator('.fcitx-mark')
+}
+
 export async function getBox(locator: Locator) {
   return (await locator.boundingBox())!
+}
+
+export async function hover(page: Page, index: number) {
+  // I have no idea why 3 steps are needed to trigger visual hover state.
+  await page.hover(`.fcitx-candidate:nth-child(${index * 2 + 1})`)
+  const cand = candidate(page, index)
+  const box = await getBox(cand)
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  return cand.hover()
+}
+
+export async function press(page: Page, index: number) {
+  const cand = candidate(page, index)
+  const box = await getBox(cand)
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  return page.mouse.down()
 }
 
 export async function getTextBox(locator: Locator, index: number) {
