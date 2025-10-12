@@ -1,3 +1,4 @@
+import { fixGhostStripe } from './ghost-stripe'
 import { setAnimation, setScrollParams } from './scroll'
 import { theme } from './selector'
 import {
@@ -209,4 +210,6 @@ export function setStyle(style: string) {
   theme.style.setProperty('--mark-opacity', j.Highlight.MarkStyle === 'None' ? '0' : '1')
 
   document.head.querySelector('#fcitx-user')?.setAttribute('href', noCache(j.Advanced.UserCss))
+
+  fixGhostStripe(j)
 }

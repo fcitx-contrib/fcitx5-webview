@@ -289,7 +289,7 @@ hoverables.addEventListener('wheel', (e) => {
   if (getScrollState() === SCROLLING) {
     return
   }
-  fcitx._page((<WheelEvent>e).deltaY > 0)
+  fcitx._page(e.deltaY > 0)
 })
 
 // JavaScript APIs that webview_candidate_window.cpp calls
