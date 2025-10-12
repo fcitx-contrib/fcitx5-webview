@@ -1,3 +1,4 @@
+import { fixGhostStripe } from './ghost-stripe'
 import { setAnimation, setScrollParams } from './scroll'
 import { theme } from './selector'
 import {
@@ -20,6 +21,42 @@ function noCache(url: string): string {
   return `${url}?r=${Math.random()}`
 }
 
+const allSystemClasses = ['macos']
+const allVersionClasses = ['macos-26', 'macos-15']
+
+function setDefaultTheme(defaultTheme: DEFAULT_THEME) {
+  let systemClass = ''
+  let versionClass = ''
+  switch (defaultTheme) {
+    case 'macOS 26':
+      systemClass = 'macos'
+      versionClass = 'macos-26'
+      break
+    case 'macOS 15':
+      systemClass = 'macos'
+      versionClass = 'macos-15'
+      break
+  }
+  for (const c of allSystemClasses) {
+    const klass = `fcitx-${c}`
+    if (c === systemClass) {
+      theme.classList.add(klass)
+    }
+    else {
+      theme.classList.remove(klass)
+    }
+  }
+  for (const c of allVersionClasses) {
+    const klass = `fcitx-${c}`
+    if (c === versionClass) {
+      theme.classList.add(klass)
+    }
+    else {
+      theme.classList.remove(klass)
+    }
+  }
+}
+
 const ACCENT_COLOR = 'var(--accent-color)'
 
 export function setStyle(style: string) {
@@ -30,8 +67,6 @@ export function setStyle(style: string) {
     backgroundImage = noCache(backgroundImage)
   }
 
-  const markOpacity = j.Highlight.MarkStyle === 'None' ? '0' : '1'
-
   function setColor(name: string, property: keyof STYLE_JSON['LightMode'] | '', fallback = '') {
     theme.style.setProperty(`--light-${name}`, j.LightMode.OverrideDefault === 'True' && property ? j.LightMode[property] : fallback)
     theme.style.setProperty(`--dark-${name}`, j.DarkMode.OverrideDefault === 'True' && property
@@ -41,6 +76,18 @@ export function setStyle(style: string) {
 
   function setSize(name: string, value: number | string) {
     theme.style.setProperty(`--${name}`, j.Size.OverrideDefault === 'True' ? px(value) : '')
+  }
+
+  if (j.Basic.DefaultTheme === 'System') {
+    if (window.fcitx.host.system === 'macOS' && window.fcitx.host.version <= 15) {
+      setDefaultTheme('macOS 15')
+    }
+    else {
+      setDefaultTheme('macOS 26')
+    }
+  }
+  else {
+    setDefaultTheme(j.Basic.DefaultTheme)
   }
 
   // Color
@@ -54,8 +101,6 @@ export function setStyle(style: string) {
     setColor('text-press-color', '', 'var(--light-highlight-text-press-color, white)')
     setColor('label-hover-color', 'HighlightLabelColor', 'white')
     setColor('comment-hover-color', 'HighlightCommentColor', 'white')
-    theme.style.setProperty('--original-mark-opacity', markOpacity)
-    theme.style.setProperty('--mark-opacity', '')
   }
   else {
     setColor('hover-color', '')
@@ -64,8 +109,6 @@ export function setStyle(style: string) {
     setColor('text-press-color', '')
     setColor('label-hover-color', 'LabelColor')
     setColor('comment-hover-color', 'CommentColor')
-    theme.style.setProperty('--original-mark-opacity', 'var(--mark-opacity)')
-    theme.style.setProperty('--mark-opacity', markOpacity)
   }
   setColor('highlight-text-color', 'HighlightTextColor')
   setColor('highlight-text-press-color', 'HighlightTextPressColor')
@@ -98,6 +141,7 @@ export function setStyle(style: string) {
   setColor('panel-border-color', 'BorderColor')
   setColor('divider-color', 'DividerColor')
 
+  // Size
   let cellWidth = 65
   if (j.Size.OverrideDefault === 'True') {
     cellWidth = Number(j.Size.ScrollCellWidth)
@@ -116,8 +160,10 @@ export function setStyle(style: string) {
   setSize('cell-width', cellWidth)
   setSize('horizontal-divider-width', j.Size.HorizontalDividerWidth)
 
+  // Typography
   setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
 
+  // Scroll mode
   const maxRow = Number(j.ScrollMode.MaxRowCount)
   const maxColumn = Number(j.ScrollMode.MaxColumnCount)
   theme.style.setProperty('--max-row', j.ScrollMode.MaxRowCount)
@@ -127,6 +173,7 @@ export function setStyle(style: string) {
   theme.style.setProperty('--scroll-animation', animation ? '' : 'none')
   setAnimation(animation)
 
+  // Background
   theme.style.setProperty('--background-image', backgroundImage ? `url(${JSON.stringify(backgroundImage)})` : '')
 
   if (window.fcitx.distribution === 'fcitx5-js') {
@@ -142,6 +189,7 @@ export function setStyle(style: string) {
 
   theme.style.setProperty('--panel-shadow', j.Background.Shadow === 'True' ? '' : 'none')
 
+  // Font
   setFontFamily('--text-font-family', j.Font.TextFontFamily)
   theme.style.setProperty('--text-font-size', px(j.Font.TextFontSize))
 
@@ -154,9 +202,14 @@ export function setStyle(style: string) {
   setFontFamily('--preedit-font-family', j.Font.PreeditFontFamily)
   theme.style.setProperty('--preedit-font-size', px(j.Font.PreeditFontSize))
 
+  // Caret
   setBlink(j.Caret.Style === 'Blink')
 
+  // Highlight
   setHoverBehavior(j.Highlight.HoverBehavior)
+  theme.style.setProperty('--mark-opacity', j.Highlight.MarkStyle === 'None' ? '0' : '1')
 
   document.head.querySelector('#fcitx-user')?.setAttribute('href', noCache(j.Advanced.UserCss))
+
+  fixGhostStripe(j)
 }

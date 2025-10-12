@@ -5,7 +5,7 @@ test('Row, column and cell width', async ({ page }) => {
   await init(page)
   await setStyle(page, {
     ScrollMode: { MaxRowCount: '2', MaxColumnCount: '3' },
-    Size: { ScrollCellWidth: '50' },
+    Size: { OverrideDefault: 'True', ScrollCellWidth: '50' },
   })
   await scrollExpand(page, ['1', '2', '3', '4', '5', '6', '7'])
   const pane = panel(page)

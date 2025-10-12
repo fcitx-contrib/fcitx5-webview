@@ -78,7 +78,10 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_action", [this](int i, int id) { action_callback(i, id); });
 
-    bind("_onload", [this]() { init_callback(); });
+    bind("_onload", [this]() {
+        invoke_js("setHost", system_, version_);
+        init_callback();
+    });
 
     bind("_log", [](std::string s) { std::cerr << s; });
 

@@ -1,0 +1,79 @@
+@use "./common";
+
+// Light
+$light-panel-alpha: 0.708;
+$light-panel-color: rgba(247, 247, 247, $light-panel-alpha);
+$light-panel-border-color: rgb(0 0 0 / 86.3%);
+$light-thumb-color: rgb(81 81 81 / 33.3%);
+$light-thumb-hover-color: rgb(45 45 45 / 38.9%);
+$light-divider-color: rgba(224, 224, 224, $light-panel-alpha);
+$light-text-color: rgb(0 0 0 / 70%);
+$light-label-color: rgb(128 128 128);
+$light-colors: (
+  "blue": rgb(0 122 255),
+  "purple": rgb(149 61 150),
+  "pink": rgb(247 79 158),
+  "red": rgb(224 56 62),
+  "orange": rgb(246 129 27),
+  "yellow": rgb(209 163 25),
+  "green": rgb(97 184 69),
+  "graphite": rgb(152 152 152)
+);
+
+// Dark
+// Native pinyin's panel background follows not system theme but stuff below.
+// We can't follow its low alpha because we can't change background color when stuff below is bright.
+// $dark-panel-alpha: 0.460;
+$dark-panel-alpha: 0.708;
+$dark-panel-color: rgba(40, 40, 40, $dark-panel-alpha);
+$dark-panel-border-color: rgb(0 0 0 / 86.3%);
+$dark-thumb-color: rgba(153, 153, 153, $dark-panel-alpha); /* Not perfect. It shouldn't be blended with background. Same below. */
+$dark-thumb-hover-color: rgba(214, 214, 214, $dark-panel-alpha);
+$dark-divider-color: rgba(85, 85, 85, $dark-panel-alpha);
+$dark-text-color: rgb(255 255 255 / 90%);
+$dark-label-color: rgb(124 124 124);
+$dark-colors: (
+  "blue": rgb(0 122 255),
+  "purple": rgb(165 80 167),
+  "pink": rgb(247 79 158),
+  "red": rgb(255 82 87),
+  "orange": rgb(246 129 27),
+  "yellow": rgb(202 157 1),
+  "green": rgb(97 184 69),
+  "graphite": rgb(140 140 140)
+);
+
+// Size
+$border-width: 1px;
+$border-radius: 15px;
+$margin: 2px;
+$highlight-radius: 13px;
+$top-padding: 0px;
+$right-padding: 7px;
+$bottom-padding: 0px;
+$left-padding: 7px;
+$label-text-gap: 5px;
+$vertical-min-width: 256px;
+$horizontal-divider-width: 1px;
+
+@include common.fcitx-macos-theme("fcitx-macos-26",
+  $light-panel-border-color, $dark-panel-border-color,
+  $light-panel-color, $dark-panel-color,
+  $light-thumb-color, $dark-thumb-color,
+  $light-thumb-hover-color, $dark-thumb-hover-color,
+  $light-divider-color, $dark-divider-color,
+  $light-text-color, $dark-text-color,
+  $light-label-color, $dark-label-color,
+  $light-colors, $dark-colors,
+  $border-width,
+  $border-radius,
+  $margin,
+  $highlight-radius,
+  $top-padding,
+  $right-padding,
+  $bottom-padding,
+  $left-padding,
+  $label-text-gap,
+  $vertical-min-width,
+  $horizontal-divider-width,
+);
