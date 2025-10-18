@@ -122,7 +122,7 @@ export function setStyle(style: string) {
     setColor('highlight-mark-text-color', '')
     setColor('highlight-mark-color', 'HighlightMarkColor', 'white')
   }
-  if (backgroundImage) {
+  if (backgroundImage && j.Background.KeepPanelColorWhenHasImage === 'False') {
     setColor('panel-color-no-image', '', 'transparent')
   }
   else {

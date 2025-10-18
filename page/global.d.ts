@@ -49,6 +49,7 @@ declare global {
     }
     Background: {
       ImageUrl: string
+      KeepPanelColorWhenHasImage: CONFIG_BOOL
       Blur: CONFIG_BOOL
       BlurRadius?: string // Exist for JS, not for macOS.
       Shadow: CONFIG_BOOL

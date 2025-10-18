@@ -88,6 +88,7 @@ const defaultStyle: STYLE_JSON = {
   },
   Background: {
     Blur: 'True',
+    KeepPanelColorWhenHasImage: 'False',
     ImageUrl: '',
     Shadow: 'True',
   },

@@ -7,9 +7,12 @@ test('Internet image', async ({ page }) => {
   await expect(candidate(page, 0)).not.toHaveCSS('background-color', transparent)
 
   const image = 'https://example.org/img.png'
-  await setStyle(page, { DarkMode: { PanelColor: '#123456' }, Background: { ImageUrl: image } })
+  await setStyle(page, { DarkMode: { OverrideDefault: 'True', PanelColor: '#123456' }, Background: { ImageUrl: image } })
   await expect(hoverables(page)).toHaveCSS('background-image', `url("${image}")`)
   await expect(candidate(page, 0)).toHaveCSS('background-color', transparent)
+
+  await setStyle(page, { DarkMode: { OverrideDefault: 'True', PanelColor: '#123456' }, Background: { ImageUrl: image, KeepPanelColorWhenHasImage: 'True' } })
+  await expect(candidate(page, 0)).toHaveCSS('background-color', 'rgb(18, 52, 86)')
 })
 
 test('Local image', async ({ page }) => {
