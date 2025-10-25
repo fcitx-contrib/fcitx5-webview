@@ -24,6 +24,8 @@ function noCache(url: string): string {
 const allSystemClasses = ['macos']
 const allVersionClasses = ['macos-26', 'macos-15']
 
+let candidateHeight = 28
+
 function setDefaultTheme(defaultTheme: DEFAULT_THEME) {
   let systemClass = ''
   let versionClass = ''
@@ -31,10 +33,12 @@ function setDefaultTheme(defaultTheme: DEFAULT_THEME) {
     case 'macOS 26':
       systemClass = 'macos'
       versionClass = 'macos-26'
+      candidateHeight = 28
       break
     case 'macOS 15':
       systemClass = 'macos'
       versionClass = 'macos-15'
+      candidateHeight = 30
       break
   }
   for (const c of allSystemClasses) {
@@ -145,6 +149,7 @@ export function setStyle(style: string) {
   let cellWidth = 65
   if (j.Size.OverrideDefault === 'True') {
     cellWidth = Number(j.Size.ScrollCellWidth)
+    candidateHeight = Math.max(24, Number(j.Font.TextFontSize)) + Number(j.Size.TopPadding) + Number(j.Size.BottomPadding) + 2 * Number(j.Size.Margin)
   }
   setSize('border-width', j.Size.BorderWidth)
   setSize('border-radius', j.Size.BorderRadius)
@@ -168,7 +173,7 @@ export function setStyle(style: string) {
   const maxColumn = Number(j.ScrollMode.MaxColumnCount)
   theme.style.setProperty('--max-row', j.ScrollMode.MaxRowCount)
   theme.style.setProperty('--max-column', j.ScrollMode.MaxColumnCount)
-  setScrollParams(maxRow, maxColumn, cellWidth)
+  setScrollParams(maxRow, maxColumn, cellWidth, candidateHeight)
   const animation = j.ScrollMode.Animation === 'True'
   theme.style.setProperty('--scroll-animation', animation ? '' : 'none')
   setAnimation(animation)
