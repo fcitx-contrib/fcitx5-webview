@@ -10,11 +10,13 @@ import {
 let MAX_ROW = 6
 let MAX_COLUMN = 6
 let UNIT_WIDTH = 65 // Math.floor((400 - 8)/MAX_COLUMN)
+let ROW_HEIGHT = 28
 
-export function setScrollParams(row: number, column: number, width: number) {
+export function setScrollParams(row: number, column: number, width: number, height: number) {
   MAX_ROW = row
   MAX_COLUMN = column
   UNIT_WIDTH = width
+  ROW_HEIGHT = height
 }
 
 let animation = true
@@ -279,7 +281,7 @@ hoverables.addEventListener('scroll', () => {
 // Expand/collapse animation. Sync with native window for position, size and blur.
 const resizeObserver = new ResizeObserver((entries) => {
   if (scrollState === SCROLL_READY) {
-    collapseHeight = entries[0].contentRect.height
+    collapseHeight = Math.max(ROW_HEIGHT, entries[0].contentRect.height /* may be 0 so trust it only if a candidate has multiple lines */)
     // Set max-block-size as the actual value to enable expand animation.
     hoverables.style.maxBlockSize = `${collapseHeight}px`
   }
