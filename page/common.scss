@@ -355,8 +355,8 @@ $text-content-size: 24px; /* compromise to 🀄's height */
     }
 
     .fcitx-panel:has(.fcitx-horizontal .fcitx-paging:is(.fcitx-arrow, .fcitx-scroll)) {
-      border-start-end-radius: calc($candidate-height / 2);
-      border-end-end-radius: calc($candidate-height / 2);
+      border-start-end-radius: calc($candidate-height / 2 + $border-width);
+      border-end-end-radius: calc($candidate-height / 2 + $border-width);
     }
 
     .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-down, .fcitx-menu-item {
