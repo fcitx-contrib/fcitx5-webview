@@ -29,7 +29,6 @@
     "@antfu/eslint-config": "^6.0.0",
     "@parcel/transformer-sass": "^2.16.0",
     "@playwright/test": "^1.56.1",
-    "@swc/core": "1.14.0",
     "@types/node": "^24.9.1",
     "emoji-regex": "^10.6.0",
     "eslint": "^9.38.0",
