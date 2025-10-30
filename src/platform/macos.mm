@@ -419,9 +419,6 @@ void WebviewCandidateWindow::set_native_blur(bool enabled) const {
     NSView *blurView;
     if (@available(macOS 26, *)) {
         blurView = window.glassView;
-        // Sync appearance
-        [window effectiveAppearanceChanged:window.glassView.contentView
-                                               .effectiveAppearance];
     } else {
         blurView = window.blurView;
     }
@@ -433,6 +430,10 @@ void WebviewCandidateWindow::set_native_blur(bool enabled) const {
                      relativeTo:webView];
         [blurView setFrame:window.blurViewRect];
         blurView.hidden = NO;
+        if (@available(macOS 26, *)) {
+            [window effectiveAppearanceChanged:window.glassView.contentView
+                                                   .effectiveAppearance];
+        }
     } else {
         blurView.hidden = YES;
         [blurView removeFromSuperview];
