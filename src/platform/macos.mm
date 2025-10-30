@@ -261,7 +261,6 @@ void WebviewCandidateWindow::set_transparent_background() {
 
     if (@available(macOS 26, *)) {
         auto glassView = [NSGlassEffectView new];
-        glassView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         glassView.wantsLayer = YES;
         glassView.hidden = YES;
         glassView.contentView = [NSView new];
