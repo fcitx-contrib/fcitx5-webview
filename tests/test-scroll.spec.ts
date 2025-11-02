@@ -3,7 +3,7 @@ import { candidate, followHostTheme, getBox, getCppCalls, init, panel, scroll, s
 
 test.describe('Actively expand', () => {
   const cases = [
-    { system: 'macOS', version: 26, radius: '15px' },
+    { system: 'macOS', version: 26, radius: '14.5px' },
     { system: 'macOS', version: 15, radius: '16px' },
   ]
   for (const { system, version, radius } of cases) {

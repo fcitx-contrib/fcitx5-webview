@@ -3,7 +3,7 @@
 // Light
 $light-panel-alpha: 0.708;
 $light-panel-color: rgba(247, 247, 247, $light-panel-alpha);
-$light-panel-border-color: rgb(0 0 0 / 86.3%);
+$light-panel-border-color: rgb(0 0 0 / 85.5%); // 35 on white background
 $light-thumb-color: rgb(81 81 81 / 33.3%);
 $light-thumb-hover-color: rgb(45 45 45 / 38.9%);
 $light-divider-color: rgba(224, 224, 224, $light-panel-alpha);
@@ -44,7 +44,7 @@ $dark-colors: (
 );
 
 // Size
-$border-width: 1px;
+$border-width: 0.5px;
 $border-radius: 15px;
 $margin: 2px;
 $highlight-radius: 13px;
