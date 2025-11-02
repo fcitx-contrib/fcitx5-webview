@@ -412,9 +412,25 @@ void WebviewCandidateWindow::resize(
     [window setIsVisible:YES];
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) const {
+void WebviewCandidateWindow::set_native_blur(blur_t value) const {
     HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
-    if (enabled) {
+    if (window.blurView.hidden == NO) {
+        [window.blurView removeFromSuperview];
+    }
+    if (value == blur_t::none) {
+        window.blurView.hidden = YES;
+    } else {
+        if (@available(macOS 26, *)) {
+            if (value == blur_t::system || value == blur_t::liquid_glass) {
+                window.blurView = window.glassView;
+                [window effectiveAppearanceChanged:window.glassView.contentView
+                                                       .effectiveAppearance];
+            } else {
+                window.blurView = window.visualView;
+            }
+        } else {
+            window.blurView = window.visualView;
+        }
         WKWebView *webView = static_cast<WKWebView *>(w_->widget());
         NSView *contentView = window.contentView;
         [contentView addSubview:window.blurView
@@ -422,13 +438,6 @@ void WebviewCandidateWindow::set_native_blur(bool enabled) const {
                      relativeTo:webView];
         [window.blurView setFrame:window.blurViewRect];
         window.blurView.hidden = NO;
-        if (@available(macOS 26, *)) {
-            [window effectiveAppearanceChanged:window.glassView.contentView
-                                                   .effectiveAppearance];
-        }
-    } else {
-        window.blurView.hidden = YES;
-        [window.blurView removeFromSuperview];
     }
 }
 

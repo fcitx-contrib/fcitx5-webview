@@ -51,7 +51,7 @@ void WebviewCandidateWindow::resize(
     gtk_widget_show_all(static_cast<GtkWidget *>(w_->window()));
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) const {}
+void WebviewCandidateWindow::set_native_blur(blur_t value) const {}
 
 void WebviewCandidateWindow::set_native_shadow(bool enabled) const {}
 } // namespace candidate_window

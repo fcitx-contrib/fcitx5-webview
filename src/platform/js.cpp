@@ -36,7 +36,7 @@ void WebviewCandidateWindow::resize(
            anchor_left, dragging);
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) const {
+void WebviewCandidateWindow::set_native_blur(blur_t value) const {
     // Not supported.
 }
 
