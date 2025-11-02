@@ -24,7 +24,12 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 @interface HoverableWindow : NSWindow
 
 @property(nonatomic) NSRect blurViewRect;
-@property(nonatomic, strong) NSVisualEffectView *blurView;
+@property(nonatomic, strong) NSVisualEffectView *visualView;
+@property(nonatomic, strong)
+    NSGlassEffectView *glassView API_AVAILABLE(macos(26.0));
+@property(nonatomic, assign) NSView *blurView;
+@property(nonatomic, assign)
+    candidate_window::WebviewCandidateWindow *candidateWindow;
 
 @end
 
@@ -32,6 +37,40 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 
 - (BOOL)isKeyWindow {
     return YES;
+}
+
+- (void)effectiveAppearanceChanged:(NSAppearance *)appearance {
+    if ([appearance bestMatchFromAppearancesWithNames:@[
+            NSAppearanceNameDarkAqua, NSAppearanceNameAqua
+        ]] == NSAppearanceNameDarkAqua) {
+        self.candidateWindow->set_theme(candidate_window::dark);
+    } else {
+        self.candidateWindow->set_theme(candidate_window::light);
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)change
+                       context:(void *)context {
+    if ([keyPath isEqualToString:@"effectiveAppearance"]) {
+        [self effectiveAppearanceChanged:change[NSKeyValueChangeNewKey]];
+    } else {
+        [super observeValueForKeyPath:keyPath
+                             ofObject:object
+                               change:change
+                              context:context];
+    }
+}
+
+- (void)initAppearanceObserver {
+    if (@available(macOS 26.0, *)) {
+        [self.glassView.contentView addObserver:self
+                                     forKeyPath:@"effectiveAppearance"
+                                        options:NSKeyValueObservingOptionNew |
+                                                NSKeyValueObservingOptionInitial
+                                        context:NULL];
+    }
 }
 
 @end
@@ -189,6 +228,7 @@ void *WebviewCandidateWindow::create_window() {
                                              backing:NSBackingStoreBuffered
                                                defer:YES];
     [window setLevel:NSPopUpMenuWindowLevel];
+    window.candidateWindow = this;
     return window;
 }
 
@@ -199,11 +239,11 @@ WebviewCandidateWindow::~WebviewCandidateWindow() {
 }
 
 void WebviewCandidateWindow::set_transparent_background() {
-    HoverableWindow *win = static_cast<HoverableWindow *>(w_->window());
+    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
 
     // Transparent NSWindow
-    win.opaque = NO;
-    [win setBackgroundColor:[NSColor clearColor]];
+    window.opaque = NO;
+    [window setBackgroundColor:[NSColor clearColor]];
 
     // Transparent WKWebView
     WKWebView *webView = static_cast<WKWebView *>(w_->widget());
@@ -214,7 +254,7 @@ void WebviewCandidateWindow::set_transparent_background() {
     // happens to be exactly webView) with a new content view. Our view
     // hierarchy is: NSWindow
     // +--- NSView (contentView)
-    //      +--- NSVisualEffectView (blurView)
+    //      +--- NSVisualEffectView/NSGlassEffectView (blurView)
     //      +--- WKWebView (webView)
     // both blurView and webView fill the entire contentView,
     // but blurView is at the bottom.
@@ -223,18 +263,32 @@ void WebviewCandidateWindow::set_transparent_background() {
     auto contentView = [NSView new];
     contentView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-    auto blurView = [NSVisualEffectView new];
-    blurView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-    blurView.material = NSVisualEffectMaterialHUDWindow;
-    blurView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
-    blurView.state = NSVisualEffectStateActive;
-    blurView.wantsLayer = YES;
-    blurView.translatesAutoresizingMaskIntoConstraints = NO;
-    blurView.hidden = YES;
-    win.blurView = blurView;
+    auto visualView = [NSVisualEffectView new];
+    visualView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    visualView.translatesAutoresizingMaskIntoConstraints = NO;
+    visualView.material = NSVisualEffectMaterialHUDWindow;
+    visualView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+    visualView.state = NSVisualEffectStateActive;
+    visualView.wantsLayer = YES;
+    visualView.hidden = YES;
+    window.visualView = visualView;
+
+    if (@available(macOS 26, *)) {
+        auto glassView = [NSGlassEffectView new];
+        glassView.wantsLayer = YES;
+        glassView.hidden = YES;
+        glassView.contentView = [NSView new];
+        ((void (*)(id, SEL, int))objc_msgSend)(glassView,
+                                               @selector(set_variant:), 15);
+        window.glassView = glassView;
+        [window initAppearanceObserver];
+        window.blurView = glassView;
+    } else {
+        window.blurView = visualView;
+    }
 
     [contentView addSubview:webView];
-    win.contentView = contentView;
+    window.contentView = contentView;
 
     // Fix the layout for webView; make sure it fills the entire container.
     webView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -335,17 +389,14 @@ void WebviewCandidateWindow::resize(
     panel_left += shrink_width;
     panel_top += shrink_width;
     panel_bottom -= shrink_width;
-    auto blurView = window.blurView;
-    NSRect blurViewRect =
+    window.blurViewRect =
         NSMakeRect(panel_left, height - panel_bottom,
                    std::min(panel_right - panel_left, width),
                    std::min(panel_bottom - panel_top, height));
-    if (blurView.hidden) {
-        window.blurViewRect = blurViewRect;
-    } else {
-        [window.blurView setFrame:blurViewRect];
-        setViewCornerRadius(blurView, blurViewRect.size.width,
-                            blurViewRect.size.height, top_left_radius,
+    if (!window.blurView.hidden) {
+        [window.blurView setFrame:window.blurViewRect];
+        setViewCornerRadius(window.blurView, window.blurViewRect.size.width,
+                            window.blurViewRect.size.height, top_left_radius,
                             top_right_radius, bottom_right_radius,
                             bottom_left_radius);
     }
@@ -361,9 +412,25 @@ void WebviewCandidateWindow::resize(
     [window setIsVisible:YES];
 }
 
-void WebviewCandidateWindow::set_native_blur(bool enabled) const {
+void WebviewCandidateWindow::set_native_blur(blur_t value) const {
     HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
-    if (enabled) {
+    if (window.blurView.hidden == NO) {
+        [window.blurView removeFromSuperview];
+    }
+    if (value == blur_t::none) {
+        window.blurView.hidden = YES;
+    } else {
+        if (@available(macOS 26, *)) {
+            if (value == blur_t::system || value == blur_t::liquid_glass) {
+                window.blurView = window.glassView;
+                [window effectiveAppearanceChanged:window.glassView.contentView
+                                                       .effectiveAppearance];
+            } else {
+                window.blurView = window.visualView;
+            }
+        } else {
+            window.blurView = window.visualView;
+        }
         WKWebView *webView = static_cast<WKWebView *>(w_->widget());
         NSView *contentView = window.contentView;
         [contentView addSubview:window.blurView
@@ -371,9 +438,6 @@ void WebviewCandidateWindow::set_native_blur(bool enabled) const {
                      relativeTo:webView];
         [window.blurView setFrame:window.blurViewRect];
         window.blurView.hidden = NO;
-    } else {
-        window.blurView.hidden = YES;
-        [window.blurView removeFromSuperview];
     }
 }
 

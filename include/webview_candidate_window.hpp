@@ -32,6 +32,8 @@ enum format_t {
 
 template <typename T> using formatted = std::vector<std::pair<T, int>>;
 
+enum class blur_t { none = 0, system = 1, blur = 2, liquid_glass = 3 };
+
 enum theme_t { system = 0, light = 1, dark = 2 };
 
 enum writing_mode_t { horizontal_tb = 0, vertical_rl = 1, vertical_lr = 2 };
@@ -94,7 +96,7 @@ class WebviewCandidateWindow {
     void answer_actions(const std::vector<CandidateAction> &actions) const;
     void set_theme(theme_t theme) const;
     void set_style(const void *style) const;
-    void set_native_blur(bool enabled) const;
+    void set_native_blur(blur_t value) const;
     void set_native_shadow(bool enabled) const;
     // If typing fast after Cmd+Space, the key event may be processed before an
     // async call to hide, making it between set_candidates and show. Use const

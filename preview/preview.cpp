@@ -22,7 +22,7 @@ void doPreview() {
     });
     candidateWindow->set_init_callback([=]() {
         std::cout << "Window loaded" << std::endl;
-        candidateWindow->set_layout(candidate_window::layout_t::vertical);
+        candidateWindow->set_layout(candidate_window::layout_t::horizontal);
         candidateWindow->set_paging_buttons(true, false, true);
         candidateWindow->set_candidates(
             {{"<h1>防注入</h1>", "1", "注释", {{0, "<h1>防注入</h1>"}}},
@@ -30,6 +30,7 @@ void doPreview() {
              {"制\t表\t符\n多 空  格", "2", ""}},
             0, candidate_window::scroll_state_t::none, false, false);
         candidateWindow->set_theme(candidate_window::theme_t::light);
+        candidateWindow->set_native_blur(candidate_window::blur_t::system);
         candidateWindow->show(100, 200, 18);
     });
 }

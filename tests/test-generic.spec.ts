@@ -142,7 +142,7 @@ test('But micro drag is tolerated', async ({ page }) => {
 
 test.describe('Set layout', () => {
   const cases = [
-    { system: 'macOS', version: 26, width: 258, height: 117 },
+    { system: 'macOS', version: 26, width: 257, height: 116 },
     { system: 'macOS', version: 15, width: 202, height: 125 },
   ]
   for (const { system, version, width, height } of cases) {
