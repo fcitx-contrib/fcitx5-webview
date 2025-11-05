@@ -1,4 +1,5 @@
 $text-content-size: 24px; /* compromise to 🀄's height */
+$color-transition: background-color 500ms ease, color 500ms ease;
 
 @mixin fcitx-macos-theme-variant($selector,
   $panel-border-color,
@@ -40,31 +41,38 @@ $text-content-size: 24px; /* compromise to 🀄's height */
     .fcitx-candidate {
       // With background image, discard panel color for unselected candidates.
       background-color: $panel-color-no-image;
+      transition: $color-transition;
     }
 
     .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
       background-color: $panel-color;
+      transition: $color-transition;
     }
 
     .fcitx-paging {
       color: $disabled-paging-button-color; // disabled
       background-color: $panel-color-no-image;
+      transition: $color-transition;
 
       .fcitx-hoverable-inner {
         color: $paging-button-color; // enabled
+        transition: $color-transition;
       }
     }
 
     .fcitx-divider-side {
       background-color: $panel-color-no-image;
+      transition: $color-transition;
     }
 
     .fcitx-divider-middle {
       background-color: $divider-color;
+      transition: $color-transition;
     }
 
     .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider-middle {
       background-color: $panel-color-no-image;
+      transition: $color-transition;
     }
 
     .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
@@ -81,14 +89,17 @@ $text-content-size: 24px; /* compromise to 🀄's height */
 
     .fcitx-aux-up, .fcitx-aux-down {
       color: $aux-color;
+      transition: $color-transition;
     }
 
     .fcitx-pre-caret {
       color: $preedit-color-pre-caret;
+      transition: $color-transition;
     }
 
     .fcitx-caret {
       color: $preedit-color-caret;
+      transition: $color-transition;
 
       &.fcitx-no-text {
         background-color: $preedit-color-caret;
@@ -97,10 +108,12 @@ $text-content-size: 24px; /* compromise to 🀄's height */
 
     .fcitx-post-caret {
       color: $preedit-color-post-caret;
+      transition: $color-transition;
     }
 
     .fcitx-text, .fcitx-header {
       color: $text-color;
+      transition: $color-transition;
     }
 
     .fcitx-candidate:not(.fcitx-highlighted):hover:not(:active) .fcitx-text {
@@ -113,6 +126,7 @@ $text-content-size: 24px; /* compromise to 🀄's height */
 
     .fcitx-label {
       color: $label-color;
+      transition: $color-transition;
     }
 
     .fcitx-candidate:not(.fcitx-highlighted):hover { // Same for hover and press.
@@ -122,6 +136,7 @@ $text-content-size: 24px; /* compromise to 🀄's height */
 
       .fcitx-comment {
         color: $comment-hover-color;
+        transition: $color-transition;
       }
     }
 
