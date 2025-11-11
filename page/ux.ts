@@ -368,3 +368,7 @@ export function setPagingButtonsStyle(style: PAGING_BUTTONS_STYLE) {
 export function getPagingButtonsStyle() {
   return pagingButtonsStyle
 }
+
+export function setColorTransition(enabled: boolean) {
+  theme.style.setProperty('--color-transition', enabled ? '' : 'none')
+}

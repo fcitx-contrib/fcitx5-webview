@@ -37,6 +37,7 @@ import {
   resetMouseMoveState,
   resize,
   setActions,
+  setColorTransition,
 } from './ux'
 
 const regex = emojiRegex()
@@ -131,6 +132,8 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     hoverables.classList.add('fcitx-horizontal-scroll')
     hoverables.style.maxBlockSize = '' // Fallback to non-inline larger max-block-size.
     setScrollEnd(scrollEnd)
+    // Disable transition to avoid flash on scroll expand and highlight move under light theme.
+    setColorTransition(false)
   }
   else {
     hoverables.classList.remove('fcitx-horizontal-scroll')
@@ -138,6 +141,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
       // Cleanup all leftovers.
       hoverables.style.maxBlockSize = ''
     }
+    setColorTransition(true)
   }
   for (let i = 0; i < cands.length; ++i) {
     const candidate = div('fcitx-candidate', 'fcitx-hoverable')

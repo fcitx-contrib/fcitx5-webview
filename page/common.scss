@@ -1,5 +1,5 @@
 $text-content-size: 24px; /* compromise to 🀄's height */
-$color-transition: background-color 500ms ease, color 500ms ease;
+$color-transition: var(--color-transition, background-color 500ms ease, color 500ms ease);
 
 @mixin fcitx-macos-theme-variant($selector,
   $panel-border-color,
