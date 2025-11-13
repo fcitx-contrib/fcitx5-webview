@@ -117,6 +117,7 @@ const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1
 const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
 function setCandidates(cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
+  const isVertical = hoverables.classList.contains('fcitx-vertical')
   resetMouseMoveState()
   hideContextmenu()
   setScrollState(scrollState)
@@ -158,7 +159,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     const candidateInner = div('fcitx-candidate-inner', 'fcitx-hoverable-inner')
 
     // Render placeholder for vertical/scroll non-highlighted candidates
-    if (hoverables.classList.contains('fcitx-vertical') || hoverables.classList.contains('fcitx-horizontal-scroll') || i === highlighted) {
+    if (isVertical || hoverables.classList.contains('fcitx-horizontal-scroll') || i === highlighted) {
       const mark = div('fcitx-mark')
       if (markText === '') {
         mark.classList.add('fcitx-no-text')
@@ -194,12 +195,9 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
     candidate.append(candidateInner)
     hoverables.append(candidate)
 
-    // No divider after last element in non-scroll mode,
-    // but for scroll mode it needs to fill the row when
-    // candidates are not enough.
-    if (scrollState === SCROLLING || i !== cands.length - 1) {
-      hoverables.append(divider())
-    }
+    // For horizontal/scroll mode it needs to fill the row when candidates are not enough.
+    // For vertical mode, this last divider is hidden.
+    hoverables.append(divider())
   }
 
   setActions(cands.map(c => c.actions))

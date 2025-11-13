@@ -48,15 +48,19 @@
     inline-size: 100%;
   }
 
+  .fcitx-hoverables.fcitx-horizontal-scroll .fcitx-divider-middle {
+    block-size: 100%;
+  }
+
   .fcitx-hoverables.fcitx-horizontal .fcitx-divider {
     inline-size: 0;
 
     &.fcitx-divider-paging {
       inline-size: 1px;
-    }
 
-    .fcitx-divider-middle {
-      block-size: 100%;
+      .fcitx-divider-middle {
+        block-size: 100%;
+      }
     }
   }
 

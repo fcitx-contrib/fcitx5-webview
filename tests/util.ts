@@ -48,14 +48,14 @@ export async function followHostTheme(page: Page, system: string, version: numbe
   return setStyle(page, { Size: { OverrideDefault: 'False' } })
 }
 
-export function updateInputPanel(page: Page, preedit: string, auxUp: string, auxDown: string) {
+export function updateInputPanel(page: Page, preedit: string, auxUp: string = '', auxDown: string = '') {
   return page.evaluate(({ preedit, auxUp, auxDown }) =>
     window.fcitx.updateInputPanel(preedit, auxUp, auxDown), { preedit, auxUp, auxDown })
 }
 
-export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, markText = '') {
-  return page.evaluate(({ cands, highlighted, markText }) =>
-    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], ...cand })), highlighted, markText, false, false, false, 0, false, false), { cands, highlighted, markText })
+export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, markText = '', pageable = false) {
+  return page.evaluate(({ cands, highlighted, markText, pageable }) =>
+    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], ...cand })), highlighted, markText, pageable, false, false, 0, false, false), { cands, highlighted, markText, pageable })
 }
 
 export async function scrollExpand(page: Page, texts: string[]) {

@@ -58,6 +58,11 @@ test('HTML structure', async ({ page }) => {
                 <div class="fcitx-text">测试</div>
               </div>
             </div>
+            <div class="fcitx-divider">
+              <div class="fcitx-divider-side"></div>
+              <div class="fcitx-divider-middle"></div>
+              <div class="fcitx-divider-side"></div>
+            </div>
           </div>
         </div>
       </div>
