@@ -48,6 +48,7 @@
 }
 
 .fcitx-panel {
+  width: fit-content; /* For irregular-shaped window, if top/center/bottom image has a min-width, don't let panel expand to that. */
   overflow: hidden; /* needed because of border-radius */
 
   &.fcitx-vertical-rl {
