@@ -3,12 +3,48 @@
   font-family: sans-serif;
 }
 
+.fcitx-panel-topleft {
+  grid-area: topleft;
+}
+
+.fcitx-panel-top {
+  grid-area: top;
+}
+
+.fcitx-panel-topright {
+  grid-area: topright;
+}
+
+.fcitx-panel-left {
+  grid-area: left;
+}
+
+.fcitx-panel-center {
+  grid-area: center;
+}
+
+.fcitx-panel-right {
+  grid-area: right;
+}
+
+.fcitx-panel-bottomleft {
+  grid-area: bottomleft;
+}
+
+.fcitx-panel-bottom {
+  grid-area: bottom;
+}
+
+.fcitx-panel-bottomright {
+  grid-area: bottomright;
+}
+
 .fcitx-decoration {
   display: inline-grid;
-  padding: 0;
-  gap: 0;
-  grid-template-columns: min-content 1fr min-content;
-  grid-template-rows: auto;
+  grid-template-areas:
+    'topleft top topright'
+    'left center right'
+    'bottomleft bottom bottomright'
 }
 
 .fcitx-panel {

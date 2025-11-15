@@ -30,6 +30,10 @@ test('HTML structure', async ({ page }) => {
     <div class="fcitx-panel-top"></div>
     <div class="fcitx-panel-topright"></div>
     <div class="fcitx-panel-left"></div>
+    <div class="fcitx-panel-right"></div>
+    <div class="fcitx-panel-bottomleft"></div>
+    <div class="fcitx-panel-bottom"></div>
+    <div class="fcitx-panel-bottomright"></div>
     <div class="fcitx-panel-center">
       <div class="fcitx-horizontal-tb fcitx-panel">
         <div class="fcitx-panel-blur">
@@ -67,10 +71,6 @@ test('HTML structure', async ({ page }) => {
         </div>
       </div>
     </div>
-    <div class="fcitx-panel-right"></div>
-    <div class="fcitx-panel-bottomleft"></div>
-    <div class="fcitx-panel-bottom"></div>
-    <div class="fcitx-panel-bottomright"></div>
   </div>
   <div class="fcitx-blur fcitx-contextmenu" style="display: none;"></div>
 </div>
