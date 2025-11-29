@@ -197,15 +197,19 @@ export function setStyle(style: string) {
   // Font
   setFontFamily('--text-font-family', j.Font.TextFontFamily)
   theme.style.setProperty('--text-font-size', px(j.Font.TextFontSize))
+  theme.style.setProperty('--text-font-weight', j.Font.TextFontWeight)
 
   setFontFamily('--label-font-family', j.Font.LabelFontFamily)
   theme.style.setProperty('--label-font-size', px(j.Font.LabelFontSize))
+  theme.style.setProperty('--label-font-weight', j.Font.LabelFontWeight)
 
   setFontFamily('--comment-font-family', j.Font.CommentFontFamily)
   theme.style.setProperty('--comment-font-size', px(j.Font.CommentFontSize))
+  theme.style.setProperty('--comment-font-weight', j.Font.CommentFontWeight)
 
   setFontFamily('--preedit-font-family', j.Font.PreeditFontFamily)
   theme.style.setProperty('--preedit-font-size', px(j.Font.PreeditFontSize))
+  theme.style.setProperty('--preedit-font-weight', j.Font.PreeditFontWeight)
 
   // Caret
   setBlink(j.Caret.Style === 'Blink')

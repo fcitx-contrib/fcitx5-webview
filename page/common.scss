@@ -411,21 +411,25 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
     .fcitx-text {
       font-family: var(--text-font-family);
       font-size: $text-font-size;
+      font-weight: var(--text-font-weight);
     }
 
     .fcitx-label {
       font-family: var(--label-font-family);
       font-size: $label-font-size;
+      font-weight: var(--label-font-weight);
     }
 
     .fcitx-comment {
       font-family: var(--comment-font-family);
       font-size: $comment-font-size;
+      font-weight: var(--comment-font-weight);
     }
 
     .fcitx-preedit {
       font-family: var(--preedit-font-family);
       font-size: $preedit-font-size;
+      font-weight: var(--preedit-font-weight);
       line-height: $preedit-font-size;
     }
 

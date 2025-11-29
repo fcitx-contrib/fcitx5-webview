@@ -57,12 +57,16 @@ declare global {
     Font: {
       TextFontFamily: FONT_FAMILY
       TextFontSize: string
+      TextFontWeight: string
       LabelFontFamily: FONT_FAMILY
       LabelFontSize: string
+      LabelFontWeight: string
       CommentFontFamily: FONT_FAMILY
       CommentFontSize: string
+      CommentFontWeight: string
       PreeditFontFamily: FONT_FAMILY
       PreeditFontSize: string
+      PreeditFontWeight: string
     }
     Caret: {
       Style: 'Blink' | 'Static' | 'Text'

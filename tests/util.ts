@@ -126,18 +126,22 @@ const defaultStyle: STYLE_JSON = {
       0: '',
     },
     CommentFontSize: '12',
+    CommentFontWeight: '400',
     LabelFontFamily: {
       0: '',
     },
     LabelFontSize: '12',
+    LabelFontWeight: '400',
     PreeditFontFamily: {
       0: '',
     },
     PreeditFontSize: '16',
+    PreeditFontWeight: '400',
     TextFontFamily: {
       0: '',
     },
     TextFontSize: '16',
+    TextFontWeight: '400',
   },
   Highlight: {
     HoverBehavior: 'None',
