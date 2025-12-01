@@ -404,7 +404,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       border-radius: $highlight-radius;
     }
 
-    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down, .fcitx-menu-item, .fcitx-prev, .fcitx-next {
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-prev, .fcitx-next {
       margin: $margin;
     }
 
@@ -478,10 +478,16 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       }
     }
 
-    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-aux-down, .fcitx-menu-item {
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item {
       /* combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
       padding-block: $top-padding $bottom-padding;
       padding-inline: $left-padding $right-padding;
+    }
+
+    .fcitx-aux-down {
+      /* No highlight for aux-down so combine padding and margin. */
+      padding-block: calc($top-padding + $margin) calc($bottom-padding + $margin);
+      padding-inline: calc($left-padding + $margin) calc($right-padding + $margin);
     }
 
     /* Use a dedicated div because

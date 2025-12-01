@@ -30,3 +30,12 @@ test('No text shift when preedit grows', async ({ page }) => {
   const ceBox = await getTextBox(preedit, 0)
   expect(ceBox).toEqual(cBox)
 })
+
+test('Aux down', async ({ page }) => {
+  await init(page)
+  await updateInputPanel(page, '', 'Clipboard', 'No entries.')
+  const auxDown = panel(page).locator('.fcitx-aux-down')
+  await expect(auxDown).toHaveCSS('padding', '2px 9px')
+  await expect(auxDown).toHaveCSS('margin', '0px')
+  expect((await getBox(auxDown)).height).toEqual(28)
+})
