@@ -40,6 +40,7 @@ declare global {
       SameWithLightMode: CONFIG_BOOL
     }
     Typography: {
+      VerticalCommentsAlignRight: CONFIG_BOOL
       PagingButtonsStyle: PAGING_BUTTONS_STYLE
     }
     ScrollMode: {

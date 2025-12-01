@@ -190,6 +190,7 @@ const defaultStyle: STYLE_JSON = {
     ScrollCellWidth: '65',
   },
   Typography: {
+    VerticalCommentsAlignRight: 'False',
     PagingButtonsStyle: 'Arrow',
   },
 }

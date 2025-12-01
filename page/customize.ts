@@ -166,6 +166,7 @@ export function setStyle(style: string) {
   setSize('horizontal-divider-width', j.Size.HorizontalDividerWidth)
 
   // Typography
+  theme.style.setProperty('--vertical-comment-flex', j.Typography.VerticalCommentsAlignRight === 'True' ? '1' : '')
   setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
 
   // Scroll mode

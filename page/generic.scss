@@ -117,6 +117,11 @@
   &.fcitx-vertical {
     flex-direction: column;
 
+    .fcitx-comment {
+      flex: var(--vertical-comment-flex);
+      text-align: end;
+    }
+
     .fcitx-divider {
       flex-direction: row;
 
@@ -136,8 +141,8 @@
       display: flex;
     }
 
-  /* stylelint-disable-next-line no-descending-specificity */
-  .fcitx-divider {
+    /* stylelint-disable-next-line no-descending-specificity */
+    .fcitx-divider {
       flex-direction: column;
 
       /* If the last row (either temporary with more candidates to come, or final when scroll ends)
