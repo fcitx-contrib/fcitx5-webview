@@ -12,8 +12,35 @@ function px(n: string | number) {
   return `${n}px`
 }
 
+const genericFontFamilies = [
+  'cursive',
+  'fangsong',
+  'fantasy',
+  'kai',
+  'khmer-mul',
+  'math',
+  'monospace',
+  'nastaliq',
+  'sans-serif',
+  'serif',
+  'system-ui',
+  'ui-monospace',
+  'ui-rounded',
+  'ui-sans-serif',
+  'ui-serif',
+]
+
 function setFontFamily(name: string, f: FONT_FAMILY) {
-  const fontFamily = Object.values(f).filter(s => s.trim().length > 0).map(s => JSON.stringify(s.trim()))
+  const fontFamily = Object.values(f).flatMap((s) => {
+    s = s.trim()
+    if (!s) {
+      return []
+    }
+    if (genericFontFamilies.includes(s)) {
+      return s
+    }
+    return JSON.stringify(s)
+  })
   theme.style.setProperty(name, fontFamily.join(', '))
 }
 
