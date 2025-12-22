@@ -376,7 +376,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
 
     .fcitx-panel:has(.fcitx-horizontal-scroll) {
       /* Apply to panel to restrict both candidates and preedit width. */
-      inline-size: calc($cell-width * var(--max-column, 6) + 10px /* 2px redundance + 8px scrollbar making default 400px */);
+      inline-size: calc($cell-width * var(--max-column, 6) + var(--scrollbar-redundancy-width, 2px) + var(--scrollbar-width, 8px) /* 2px redundance + 8px scrollbar making default 400px */);
     }
 
     .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-down, .fcitx-menu-item {

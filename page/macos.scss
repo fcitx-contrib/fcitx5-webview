@@ -65,7 +65,7 @@
   }
 
   .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar {
-    width: 8px;
+    width: var(--scrollbar-width, 8px);
   }
 
   .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {

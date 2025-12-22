@@ -202,6 +202,8 @@ export function setStyle(style: string) {
   theme.style.setProperty('--max-row', j.ScrollMode.MaxRowCount)
   theme.style.setProperty('--max-column', j.ScrollMode.MaxColumnCount)
   setScrollParams(maxRow, maxColumn, cellWidth, candidateHeight)
+  theme.style.setProperty('--scrollbar-redundancy-width', j.ScrollMode.ShowScrollBar === 'False' ? '0px' : '2px')
+  theme.style.setProperty('--scrollbar-width', j.ScrollMode.ShowScrollBar === 'False' ? '0px' : '8px')
   const animation = j.ScrollMode.Animation === 'True'
   theme.style.setProperty('--scroll-animation', animation ? '' : 'none')
   setAnimation(animation)

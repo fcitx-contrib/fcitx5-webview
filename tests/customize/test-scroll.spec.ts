@@ -28,3 +28,13 @@ test('Select candidate', async ({ page }) => {
   const cppCalls = await getCppCalls(page)
   expect(cppCalls.filter(call => 'select' in call)).toEqual([{ select: 9 }, { select: 0 }])
 })
+
+test('Hide scrollbar', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { ShowScrollBar: 'False' },
+  })
+  await scrollExpand(page, Array.from({ length: 42 }).map((_, i) => (i + 1).toString()))
+  const pane = panel(page)
+  await expect(pane).toHaveCSS('width', '390px')
+})

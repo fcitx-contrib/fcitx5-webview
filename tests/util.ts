@@ -173,6 +173,7 @@ const defaultStyle: STYLE_JSON = {
     Animation: 'True',
     MaxRowCount: '6',
     MaxColumnCount: '6',
+    ShowScrollBar: 'True',
   },
   Size: {
     OverrideDefault: 'False',

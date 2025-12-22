@@ -46,6 +46,7 @@ declare global {
     ScrollMode: {
       MaxRowCount: string
       MaxColumnCount: string
+      ShowScrollBar: CONFIG_BOOL
       Animation: CONFIG_BOOL
     }
     Background: {
