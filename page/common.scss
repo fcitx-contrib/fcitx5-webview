@@ -292,7 +292,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
   $label-text-gap: var(--label-text-gap, $label-text-gap);
   $vertical-min-width: var(--vertical-min-width, $vertical-min-width);
   $cell-width: var(--cell-width, 65px);
-  $middle-margin: var(--middle-margin, if($horizontal-divider-width == 0px, calc($margin / 2), $margin)); // Must be before $horizontal-divider-width redefinition.
+  $middle-margin: var(--middle-margin, if(sass($horizontal-divider-width == 0px): calc($margin / 2); else: $margin)); // Must be before $horizontal-divider-width redefinition.
   $horizontal-divider-width: var(--horizontal-divider-width, $horizontal-divider-width);
 
   @include fcitx-macos-theme-variant("#{$class}.fcitx-light",
