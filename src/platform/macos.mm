@@ -1,5 +1,6 @@
 #include "webview_candidate_window.hpp"
 #include <QuartzCore/QuartzCore.h>
+#include <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #include <WebKit/WKWebView.h>
 
 NSString *const F5mErrorDomain = @"F5mErrorDomain";
@@ -125,18 +126,11 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 
 - (NSString *)mimeTypeForPath:(NSString *)path {
     NSString *pathExtension = [path pathExtension];
-    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(
-        kUTTagClassFilenameExtension, (__bridge CFStringRef)pathExtension,
-        NULL);
+    UTType *type = [UTType typeWithFilenameExtension:pathExtension];
     NSString *mimeType = @"application/octet-stream";
-    if (!type)
-        return mimeType;
-    CFStringRef mimeTypeRef =
-        UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
-    if (mimeTypeRef) {
-        mimeType = (NSString *)mimeTypeRef;
+    if (type && type.preferredMIMEType) {
+        mimeType = type.preferredMIMEType;
     }
-    CFRelease(type);
     return mimeType;
 }
 
