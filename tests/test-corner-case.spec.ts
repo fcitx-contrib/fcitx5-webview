@@ -113,27 +113,36 @@ test.describe('Ghost stripe override zero margin', () => {
 const shortPreedit = '短'
 const longPreedit = '长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长'
 
-test('Extremely long preedit horizontal', async ({ page }) => {
-  await init(page)
+test.describe('Extremely long preedit horizontal', () => {
+  const cases = [{ name: 'With paging buttons', pageable: true }, { name: 'Without paging buttons', pageable: false }]
+  for (const { name, pageable } of cases) {
+    test(name, async ({ page }) => {
+      await init(page)
 
-  const lastDivider = page.locator('.fcitx-divider').nth(-2)
-  const pagingDivider = page.locator('.fcitx-divider').nth(-1)
-  await updateInputPanel(page, shortPreedit)
-  await setCandidates(page, [{ text: '1' }], 0, '', true)
-  await expect(pagingDivider).toHaveCSS('width', '1px')
-  await expect(lastDivider, 'Last divider is hidden by default').toHaveCSS('width', '0px')
+      const lastDivider = page.locator('.fcitx-divider').nth(pageable ? -2 : -1)
+      const pagingDivider = pageable ? page.locator('.fcitx-divider').nth(-1) : page.locator('div' /* dummy */)
+      await updateInputPanel(page, shortPreedit)
+      await setCandidates(page, [{ text: '1' }], 0, '', pageable)
+      if (pageable) {
+        await expect(pagingDivider).toHaveCSS('width', '1px')
+      }
+      await expect(lastDivider, 'Last divider is hidden by default').toHaveCSS('width', '0px')
 
-  await updateInputPanel(page, longPreedit)
-  await expect(pagingDivider).toHaveCSS('width', '1px')
-  const box = await getBox(lastDivider)
-  expect(box.width, 'Last divider has width if preedit is too long').toBeGreaterThan(400)
-  await expect(lastDivider.locator('.fcitx-divider-middle'), 'Middle part that has divider color is hidden').toHaveCSS('height', '0px')
-  const upperSide = lastDivider.locator('.fcitx-divider-side').first()
-  const lowerSide = lastDivider.locator('.fcitx-divider-side').last()
-  await expect(upperSide, 'Side parts split divider evenly').toHaveCSS('height', '14px')
-  await expect(lowerSide).toHaveCSS('height', '14px')
-  await expect(upperSide, 'Divider has panel color').toHaveCSS('background-color', 'rgba(40, 40, 40, 0.71)')
-  await expect(lowerSide).toHaveCSS('background-color', 'rgba(40, 40, 40, 0.71)')
+      await updateInputPanel(page, longPreedit)
+      if (pageable) {
+        await expect(pagingDivider).toHaveCSS('width', '1px')
+      }
+      const box = await getBox(lastDivider)
+      expect(box.width, 'Last divider has width if preedit is too long').toBeGreaterThan(400)
+      await expect(lastDivider.locator('.fcitx-divider-middle'), 'Middle part that has divider color is hidden').toHaveCSS('height', '0px')
+      const upperSide = lastDivider.locator('.fcitx-divider-side').first()
+      const lowerSide = lastDivider.locator('.fcitx-divider-side').last()
+      await expect(upperSide, 'Side parts split divider evenly').toHaveCSS('height', '14px')
+      await expect(lowerSide).toHaveCSS('height', '14px')
+      await expect(upperSide, 'Divider has panel color').toHaveCSS('background-color', 'rgba(40, 40, 40, 0.71)')
+      await expect(lowerSide).toHaveCSS('background-color', 'rgba(40, 40, 40, 0.71)')
+    })
+  }
 })
 
 test('Extremely long preedit scroll', async ({ page }) => {
