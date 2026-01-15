@@ -3,6 +3,10 @@
   font-family: sans-serif;
 }
 
+.fcitx-hidden {
+  display: none;
+}
+
 .fcitx-panel-topleft {
   grid-area: topleft;
 }
@@ -257,10 +261,6 @@
 
 .fcitx-highlighted :active .fcitx-mark.fcitx-no-text {
   block-size: 12px;
-}
-
-.fcitx-hidden {
-  display: none;
 }
 
 .fcitx-blur {
