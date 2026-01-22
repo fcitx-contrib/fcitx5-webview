@@ -48,7 +48,8 @@
   grid-template-areas:
     'topleft top topright'
     'left center right'
-    'bottomleft bottom bottomright'
+    'bottomleft bottom bottomright';
+  min-width: max-content; /* On f5j keep width when dragging across screen's right boundary. */
 }
 
 .fcitx-panel {

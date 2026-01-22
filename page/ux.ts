@@ -221,7 +221,8 @@ receiver.addEventListener('mousedown', (e) => {
   dragOffset = 0
 })
 
-receiver.addEventListener('mousemove', (e) => {
+// Use document even on f5j to avoid missing mousemove when an abrupt drag moves cursor out of decoration.
+document.addEventListener('mousemove', (e) => {
   if (++mouseMoveState >= 2) {
     hoverables.classList.add('fcitx-mousemoved')
   }
@@ -244,7 +245,7 @@ receiver.addEventListener('mousemove', (e) => {
   resize(epoch, dx, dy, true, false)
 })
 
-receiver.addEventListener('mouseup', (e) => {
+document.addEventListener('mouseup', (e) => {
   if (e.button !== 0) {
     return
   }
