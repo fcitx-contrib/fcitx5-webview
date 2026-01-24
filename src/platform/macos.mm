@@ -313,9 +313,7 @@ void WebviewCandidateWindow::hide() const {
     [window setIsVisible:NO];
     hidden_ = true;
     epoch += 1;
-    invoke_js("updateInputPanel", "", "", "");
-    invoke_js("setCandidates", std::vector<Candidate>(), -1, "", false, false,
-              false, scroll_state_t::none, false, false);
+    invoke_js("hidePanel");
 }
 
 void WebviewCandidateWindow::write_clipboard(const std::string &html) {

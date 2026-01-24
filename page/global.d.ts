@@ -143,6 +143,7 @@ declare global {
     setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
     setLayout: (layout: LAYOUT) => void
     updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void
+    hidePanel: () => void
     resize: (new_epoch: number, dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null | string) => void
