@@ -1,4 +1,5 @@
 import { COLLAPSE, COMMIT, DOWN, END, HOME, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, UP } from './constant'
+import { getLabelFormatter } from './format-label'
 import {
   hoverables,
 } from './selector'
@@ -108,6 +109,12 @@ function scrollForHighlight() {
   }
 }
 
+function renderLabel(candidate: Element, i: number) {
+  const formatter = getLabelFormatter()
+  const label = candidate.querySelector('.fcitx-label')!
+  label.textContent = formatter(i)
+}
+
 function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   window.fcitx._highlight(newHighlighted) // Call it on both expand and highlight move.
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
@@ -117,7 +124,7 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
     for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
       const candidate = candidates[i]
       candidate.classList.remove('fcitx-highlighted-row')
-      candidate.querySelector('.fcitx-label')!.innerHTML = '0'
+      renderLabel(candidate, 0)
     }
     candidates[highlighted].classList.remove('fcitx-highlighted', 'fcitx-highlighted-original')
   }
@@ -129,7 +136,7 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
     const candidate = candidates[i]
     candidate.classList.add('fcitx-highlighted-row')
-    candidate.querySelector('.fcitx-label')!.innerHTML = `${(i - skipped + 1) % 10}`
+    renderLabel(candidate, (i - skipped + 1) % 10)
   }
   candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }

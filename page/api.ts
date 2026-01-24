@@ -3,6 +3,7 @@ import { HORIZONTAL, SCROLL_NONE, SCROLL_READY, SCROLLING, VERTICAL } from './co
 import { fcitx } from './distribution'
 // Must be put after fcitx import.
 import { setStyle } from './customize' // eslint-disable-line perfectionist/sort-imports
+import { getLabelFormatter, setLastLabels } from './format-label'
 import { fcitxLog } from './log'
 import {
   loadPlugins,
@@ -143,12 +144,16 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
   }
   else {
     hoverables.classList.remove('fcitx-horizontal-scroll')
-    if (scrollState !== SCROLL_READY) {
+    if (scrollState === SCROLL_READY) {
+      setLastLabels(cands.map(c => c.label))
+    }
+    else {
       // Cleanup all leftovers.
       hoverables.style.maxBlockSize = ''
     }
     setColorTransition(true)
   }
+  const label0 = getLabelFormatter()(0)
   for (let i = 0; i < cands.length; ++i) {
     const candidate = div('fcitx-candidate', 'fcitx-hoverable')
     if (i === 0 && scrollState !== SCROLLING) {
@@ -177,7 +182,7 @@ function setCandidates(cands: Candidate[], highlighted: number, markText: string
 
     if (cands[i].label || scrollState === SCROLLING) {
       const label = div('fcitx-label')
-      label.innerHTML = escapeWS(cands[i].label || '0')
+      label.innerHTML = escapeWS(cands[i].label || label0)
       candidateInner.append(label)
     }
 

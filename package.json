@@ -22,7 +22,9 @@
     "check": "tsc --noEmit",
     "clean": "rm -rf dist .parcel-cache",
     "build": "parcel build --target universal",
-    "test": "playwright test"
+    "test": "pnpm run test:unit && pnpm run test:e2e",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test"
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
@@ -36,6 +38,7 @@
     "parcel": "^2.16.3",
     "stylelint": "^17.0.0",
     "stylelint-config-standard-scss": "^17.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
