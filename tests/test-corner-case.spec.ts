@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test'
 import test, { expect } from '@playwright/test'
-import { candidate, followHostTheme, getBox, hover, init, panel, scrollExpand, setCandidates, setStyle, transparent, updateInputPanel } from './util'
+import { candidate, followHostTheme, getBox, getTextBox, hover, init, panel, scrollExpand, setCandidates, setStyle, transparent, updateInputPanel } from './util'
 
 test('Horizontal multi-line candidate', async ({ page }) => {
   await init(page)
@@ -23,6 +23,26 @@ test('Horizontal multi-line candidate', async ({ page }) => {
   expect((labelBox.y + labelBox.height / 2), 'Label is centralized vertically').toEqual(middleY)
   expect((textBox.y + textBox.height / 2), 'Text is centralized vertically').toEqual(middleY)
   expect((commentBox.y + commentBox.height / 2), 'Comment is centralized vertically').toEqual(middleY)
+})
+
+test('Multi-space and tab', async ({ page }) => {
+  await init(page)
+
+  await setCandidates(page, [{ text: '基准 单空格  双空格\t制表符' }], 0)
+  const text = panel(page).locator('.fcitx-text')
+  const rects: Record<number, DOMRect> = {}
+  for (const i of [0, 1, 3, 5, 8, 11]) {
+    rects[i] = await getTextBox(text, i)
+  }
+  const base = rects[1].left - rects[0].right
+  const single = rects[3].left - rects[1].right
+  const double = rects[8].left - rects[5].right
+  const tab = rects[11].width
+
+  expect(base).toBe(0)
+  expect(single).toBe(4)
+  expect(double).toBe(8)
+  expect(tab).toBeGreaterThan(double)
 })
 
 test.describe('Ghost stripe default positive margin', () => {

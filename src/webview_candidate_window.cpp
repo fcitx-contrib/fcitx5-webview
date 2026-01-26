@@ -21,19 +21,6 @@ void to_json(nlohmann::json &j, const Candidate &c) {
                        {"actions", c.actions}};
 }
 
-CandidateAction escape_action(const CandidateAction &a) {
-    return CandidateAction{a.id, escape_html(a.text)};
-}
-
-Candidate escape_candidate(const Candidate &c) {
-    std::vector<CandidateAction> escaped_actions;
-    escaped_actions.reserve(c.actions.size());
-    std::transform(c.actions.begin(), c.actions.end(),
-                   std::back_inserter(escaped_actions), escape_action);
-    return Candidate{escape_html(c.text), escape_html(c.label),
-                     escape_html(c.comment), std::move(escaped_actions)};
-}
-
 WebviewCandidateWindow::WebviewCandidateWindow()
 #ifndef __EMSCRIPTEN__
     : main_thread_id_(std::this_thread::get_id()),
@@ -115,14 +102,12 @@ void WebviewCandidateWindow::set_accent_color() const {
     }
 }
 
-void WebviewCandidateWindow::set_candidates(
-    const std::vector<Candidate> &candidates, int highlighted,
-    scroll_state_t scroll_state, bool scroll_start, bool scroll_end) {
-    candidates_.clear();
-    candidates_.reserve(candidates.size());
-    std::transform(candidates.begin(), candidates.end(),
-                   std::back_inserter(candidates_), escape_candidate);
-    candidates_.shrink_to_fit();
+void WebviewCandidateWindow::set_candidates(std::vector<Candidate> candidates,
+                                            int highlighted,
+                                            scroll_state_t scroll_state,
+                                            bool scroll_start,
+                                            bool scroll_end) {
+    candidates_ = std::move(candidates);
     highlighted_ = highlighted;
     scroll_state_ = scroll_state;
     scroll_start_ = scroll_start;
@@ -136,11 +121,7 @@ void WebviewCandidateWindow::scroll_key_action(
 
 void WebviewCandidateWindow::answer_actions(
     const std::vector<CandidateAction> &actions) const {
-    std::vector<CandidateAction> escaped_actions;
-    escaped_actions.reserve(actions.size());
-    std::transform(actions.begin(), actions.end(),
-                   std::back_inserter(escaped_actions), escape_action);
-    invoke_js("answerActions", escaped_actions);
+    invoke_js("answerActions", actions);
 }
 
 void WebviewCandidateWindow::set_theme(theme_t theme) const {
@@ -166,9 +147,9 @@ void WebviewCandidateWindow::show(double x, double y, double height) const {
     invoke_js("setLayout", layout_);
     invoke_js("setWritingMode", writing_mode_);
     invoke_js("updateInputPanel", preedit_, auxUp_, auxDown_);
-    invoke_js("setCandidates", candidates_, highlighted_,
-              escape_html(highlight_mark_text_), pageable_, has_prev_,
-              has_next_, scroll_state_, scroll_start_, scroll_end_);
+    invoke_js("setCandidates", candidates_, highlighted_, highlight_mark_text_,
+              pageable_, has_prev_, has_next_, scroll_state_, scroll_start_,
+              scroll_end_);
     invoke_js("resize", epoch, 0., 0., false);
 }
 

@@ -13,11 +13,6 @@ function isSingleEmoji(text: string) {
   return Array.from(segmenter.segment(text)).length === 1 && regex.test(text)
 }
 
-function escapeWS(s: string) {
-  // XXX: &emsp; is broken in Safari
-  return s.replaceAll(' ', '&nbsp;').replaceAll('\n', '<br>').replaceAll('\t', '&emsp;')
-}
-
 function divider(paging: boolean = false) {
   const e = div('fcitx-divider')
   // Is this divider between candidates and paging buttons?
@@ -113,19 +108,19 @@ export function setCandidates(cands: Candidate[], highlighted: number, markText:
         mark.classList.add('fcitx-no-text')
       }
       else {
-        mark.innerHTML = markText
+        mark.textContent = markText
       }
       candidateInner.append(mark)
     }
 
     if (cands[i].label || scrollState === SCROLLING) {
       const label = div('fcitx-label')
-      label.innerHTML = escapeWS(cands[i].label || label0)
+      label.textContent = cands[i].label || label0
       candidateInner.append(label)
     }
 
     const text = div('fcitx-text')
-    text.innerHTML = escapeWS(cands[i].text)
+    text.textContent = cands[i].text
     if (isSingleEmoji(cands[i].text)) {
       // Hack: for vertical-lr writing mode, 🙅‍♂️ is rotated on Safari and split to 🙅 and ♂ on Chrome.
       // Can't find a way that works for text that contains not only emoji (e.g. for preedit) but
@@ -136,7 +131,7 @@ export function setCandidates(cands: Candidate[], highlighted: number, markText:
 
     if (cands[i].comment) {
       const comment = div('fcitx-comment')
-      comment.innerHTML = escapeWS(cands[i].comment)
+      comment.textContent = cands[i].comment
       candidateInner.append(comment)
     }
 

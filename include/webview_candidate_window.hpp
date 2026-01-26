@@ -119,9 +119,9 @@ class WebviewCandidateWindow {
     void update_input_panel(const formatted<std::string> &preedit, int caret,
                             const formatted<std::string> &auxUp,
                             const formatted<std::string> &auxDown);
-    void set_candidates(const std::vector<Candidate> &candidates,
-                        int highlighted, scroll_state_t scroll_state,
-                        bool scroll_start, bool scroll_end);
+    void set_candidates(std::vector<Candidate> candidates, int highlighted,
+                        scroll_state_t scroll_state, bool scroll_start,
+                        bool scroll_end);
     void set_layout(layout_t layout) { layout_ = layout; }
     void set_writing_mode(writing_mode_t mode) { writing_mode_ = mode; }
 

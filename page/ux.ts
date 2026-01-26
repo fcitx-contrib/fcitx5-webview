@@ -189,7 +189,7 @@ export function showContextmenu(x: number, y: number, index: number, actions: Ca
   contextmenu.innerHTML = ''
   for (const action of actions) {
     const item = div('fcitx-menu-item')
-    item.innerHTML = action.text
+    item.textContent = action.text
     item.addEventListener('click', () => {
       window.fcitx._action(index, action.id)
       hideContextmenu()
