@@ -90,7 +90,7 @@ extern std::unordered_map<std::string, std::function<std::string(std::string)>>
 class WebviewCandidateWindow {
   public:
     // Below are required to be called from main thread.
-    WebviewCandidateWindow();
+    WebviewCandidateWindow(std::function<void()> init_callback);
     ~WebviewCandidateWindow();
     void scroll_key_action(scroll_key_action_t action) const;
     void answer_actions(const std::vector<CandidateAction> &actions) const;
@@ -124,10 +124,6 @@ class WebviewCandidateWindow {
                         bool scroll_end);
     void set_layout(layout_t layout) { layout_ = layout; }
     void set_writing_mode(writing_mode_t mode) { writing_mode_ = mode; }
-
-    void set_init_callback(std::function<void()> callback) {
-        init_callback = callback;
-    }
 
     void set_select_callback(std::function<void(int index)> callback) {
         select_callback = callback;
@@ -170,7 +166,7 @@ class WebviewCandidateWindow {
   private:
 #ifndef __EMSCRIPTEN__
     std::thread::id main_thread_id_;
-    std::shared_ptr<webview::webview> w_;
+    std::unique_ptr<webview::webview> w_;
 #endif
     mutable double caret_x_ = 0;
     mutable double caret_y_ = 0;
@@ -197,7 +193,6 @@ class WebviewCandidateWindow {
                                 // webview
 
   private:
-    std::function<void()> init_callback = []() {};
     std::function<void(int index)> select_callback = [](int) {};
     std::function<void(int index)> highlight_callback = [](int) {};
     std::function<void(bool next)> page_callback = [](bool) {};

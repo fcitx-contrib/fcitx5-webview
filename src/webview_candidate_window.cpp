@@ -21,10 +21,11 @@ void to_json(nlohmann::json &j, const Candidate &c) {
                        {"actions", c.actions}};
 }
 
-WebviewCandidateWindow::WebviewCandidateWindow()
+WebviewCandidateWindow::WebviewCandidateWindow(
+    std::function<void()> init_callback)
 #ifndef __EMSCRIPTEN__
     : main_thread_id_(std::this_thread::get_id()),
-      w_(std::make_shared<webview::webview>(1, create_window()))
+      w_(std::make_unique<webview::webview>(1, create_window()))
 #endif
 {
     platform_init();
@@ -65,7 +66,7 @@ WebviewCandidateWindow::WebviewCandidateWindow()
 
     bind("_action", [this](int i, int id) { action_callback(i, id); });
 
-    bind("_onload", [this]() {
+    bind("_onload", [this, init_callback = std::move(init_callback)]() {
         invoke_js("setHost", system_, version_);
         init_callback();
     });
