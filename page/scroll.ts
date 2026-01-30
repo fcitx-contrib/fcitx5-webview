@@ -51,18 +51,18 @@ export function fetchComplete() {
 }
 
 export function expand() {
-  window.fcitx._scroll(0, (MAX_ROW + 1) * MAX_COLUMN) // visible rows plus 1 hidden row
+  window.fcitx('scroll', 0, (MAX_ROW + 1) * MAX_COLUMN) // visible rows plus 1 hidden row
 }
 
 function collapse() {
   if (animation) {
     hoverables.style.maxBlockSize = `${collapseHeight}px`
     setTimeout(() => {
-      window.fcitx._scroll(-1, 0)
+      window.fcitx('scroll', -1, 0)
     }, 290) // Less than 300ms to give engine some time to generate candidates.
   }
   else {
-    window.fcitx._scroll(-1, 0)
+    window.fcitx('scroll', -1, 0)
   }
 }
 
@@ -116,7 +116,7 @@ function renderLabel(candidate: Element, i: number) {
 }
 
 function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
-  window.fcitx._highlight(newHighlighted) // Call it on both expand and highlight move.
+  window.fcitx('highlight', newHighlighted) // Call it on both expand and highlight move.
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
   if (clearOld) {
     const highlightedRow = getHighlightedRow()
@@ -234,7 +234,7 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
     if (offset >= n) {
       return
     }
-    return window.fcitx._select(itemCountInFirstNRows(highlightedRow) + offset)
+    return window.fcitx('select', itemCountInFirstNRows(highlightedRow) + offset)
   }
   switch (action) {
     case UP:
@@ -253,7 +253,7 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
           const newHighlightedRow = getHighlightedRow()
           if (rowItemCount.length - newHighlightedRow <= MAX_ROW) {
             fetching = true
-            window.fcitx._scroll(itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
+            window.fcitx('scroll', itemCountInFirstNRows(rowItemCount.length), MAX_ROW * MAX_COLUMN)
           }
         }
       }
@@ -266,7 +266,7 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
       collapse()
       break
     case COMMIT:
-      window.fcitx._select(highlighted)
+      window.fcitx('select', highlighted)
       break
   }
 }
@@ -281,7 +281,7 @@ hoverables.addEventListener('scroll', () => {
   const bottomRight = candidates[bottomRightIndex]
   if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
     fetching = true
-    window.fcitx._scroll(candidates.length, MAX_ROW * MAX_COLUMN)
+    window.fcitx('scroll', candidates.length, MAX_ROW * MAX_COLUMN)
   }
 })
 

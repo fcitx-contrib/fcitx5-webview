@@ -11,34 +11,11 @@ export async function init(page: Page) {
   const url = `file://${join(dirname(import.meta.url), '..', 'dist', 'index.html').substring('file:'.length)}`
   await page.goto(url)
   await page.evaluate(() => {
-    window.fcitx.setTheme(2)
     window.cppCalls = []
-    window.fcitx._resize = (epoch: number, dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, topLeftRadius: number, topRightRadius: number, bottomRightRadius: number, bottomLeftRadius: number, borderWidth: number, fullWidth: number, fullHeight: number, dragging: boolean) => {
-      window.cppCalls.push({
-        resize: [epoch, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, panelTop, panelRight, panelBottom, panelLeft, topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius, borderWidth, fullWidth, fullHeight, dragging],
-      })
-    }
-    window.fcitx._select = (index: number) => {
-      window.cppCalls.push({
-        select: index,
-      })
-    }
-    window.fcitx._action = (index: number, id: number) => {
-      window.cppCalls.push({
-        action: [index, id],
-      })
-    }
-    window.fcitx._highlight = (index: number) => {
-      window.cppCalls.push({
-        highlight: index,
-      })
-    }
-    window.fcitx._scroll = (start: number, length: number) => {
-      window.cppCalls.push({
-        scroll: [start, length],
-      })
-    }
-    window.fcitx._log = () => {}
+    window.fcitx = Object.assign((...args: [string, ...any[]]) => {
+      window.cppCalls.push({ [args[0]]: args.slice(1) })
+    }, window.fcitx)
+    window.fcitx.setTheme(2)
   })
 }
 

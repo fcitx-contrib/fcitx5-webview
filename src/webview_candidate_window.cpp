@@ -9,6 +9,25 @@
 #include <sstream>
 
 namespace candidate_window {
+std::unordered_map<std::string,
+                   std::function<std::string(const nlohmann::json &)>>
+    handlers;
+
+std::string call_handler(std::string s) {
+    auto args = nlohmann::json::parse(s);
+    if (!args.is_array() || args.empty()) {
+        std::cerr << "[JS] Invalid call to fcitx: " << s << "\n";
+        return "";
+    }
+    std::string name = args[0].get<std::string>();
+    auto iter = handlers.find(name);
+    if (iter == handlers.end()) {
+        std::cerr << "[JS] Unknown handler name '" << name << "'\n";
+        return "";
+    }
+    args.erase(args.begin());
+    return iter->second(args);
+}
 
 void to_json(nlohmann::json &j, const CandidateAction &a) {
     j = nlohmann::json{{"id", a.id}, {"text", a.text}};
@@ -32,7 +51,7 @@ WebviewCandidateWindow::WebviewCandidateWindow(
     set_transparent_background();
     update_accent_color();
 
-    bind("_resize",
+    bind("resize",
          [this](uint32_t result_epoch, double dx, double dy, double anchor_top,
                 double anchor_right, double anchor_bottom, double anchor_left,
                 double panel_top, double panel_right, double panel_bottom,
@@ -53,33 +72,34 @@ WebviewCandidateWindow::WebviewCandidateWindow(
                     width, height, dragging);
          });
 
-    bind("_select", [this](int i) { select_callback(i); });
+    bind("select", [this](int i) { select_callback(i); });
 
-    bind("_highlight", [this](int i) { highlight_callback(i); });
+    bind("highlight", [this](int i) { highlight_callback(i); });
 
-    bind("_page", [this](bool next) { page_callback(next); });
+    bind("page", [this](bool next) { page_callback(next); });
 
-    bind("_scroll",
+    bind("scroll",
          [this](int start, int length) { scroll_callback(start, length); });
 
-    bind("_askActions", [this](int i) { ask_actions_callback(i); });
+    bind("askActions", [this](int i) { ask_actions_callback(i); });
 
-    bind("_action", [this](int i, int id) { action_callback(i, id); });
+    bind("action", [this](int i, int id) { action_callback(i, id); });
 
-    bind("_onload", [this, init_callback = std::move(init_callback)]() {
+    bind("onload", [this, init_callback = std::move(init_callback)]() {
         invoke_js("setHost", system_, version_);
         init_callback();
     });
 
-    bind("_log", [](std::string s) { std::cerr << s; });
+    bind("log", [](std::string s) { std::cerr << s; });
 
-    bind("_copyHTML", [this](std::string html) { write_clipboard(html); });
+    bind("copyHTML", [this](std::string html) { write_clipboard(html); });
 
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
 #ifdef __EMSCRIPTEN__
     EM_ASM(fcitx.createPanel(UTF8ToString($0)), html_template.c_str());
 #else
+    w_->bind("fcitx", call_handler);
     w_->set_html(html_template.c_str());
 #endif
 }

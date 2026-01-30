@@ -1,3 +1,4 @@
+import { distribution } from './distribution'
 import {
   expand,
   getScrollState,
@@ -105,27 +106,7 @@ export function resize(
     const bWidth = Math.max(...borderWidth.split(' ').map(Number.parseFloat))
     const parsedRadius = borderRadius.split(' ').map(Number.parseFloat)
     const radius4 = expandRadiusTo4(parsedRadius)
-    window.fcitx._resize(
-      epoch,
-      dx,
-      dy,
-      anchorTop,
-      anchorRight,
-      anchorBottom,
-      anchorLeft,
-      pRect.top,
-      pRect.right,
-      pRect.bottom,
-      pRect.left,
-      radius4[0],
-      radius4[1],
-      radius4[2],
-      radius4[3],
-      bWidth,
-      right,
-      bottom,
-      dragging,
-    )
+    window.fcitx('resize', epoch, dx, dy, anchorTop, anchorRight, anchorBottom, anchorLeft, pRect.top, pRect.right, pRect.bottom, pRect.left, radius4[0], radius4[1], radius4[2], radius4[3], bWidth, right, bottom, dragging)
   }
   adaptWindowSize(hasContextmenu)
   // With ResizeObserver, we probably don't need to call adaptWindowSize again by requestAnimationFrame.
@@ -191,7 +172,7 @@ export function showContextmenu(x: number, y: number, index: number, actions: Ca
     const item = div('fcitx-menu-item')
     item.textContent = action.text
     item.addEventListener('click', () => {
-      window.fcitx._action(index, action.id)
+      window.fcitx('action', index, action.id)
       hideContextmenu()
     })
     contextmenu.appendChild(item)
@@ -207,7 +188,7 @@ export function hideContextmenu() {
   contextmenu.style.display = 'none'
 }
 
-const receiver = (window.fcitx.distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
+const receiver = (distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
 
 receiver.addEventListener('mousedown', (e) => {
   if (e.button !== 0) {
@@ -233,7 +214,7 @@ document.addEventListener('mousemove', (e) => {
   dragging = true
   const dx = e.clientX - startX
   const dy = e.clientY - startY
-  if (window.fcitx.distribution === 'fcitx5-js') {
+  if (distribution === 'fcitx5-js') {
     // On desktop mouse is always at where drag starts in the html,
     // but on f5j mouse can be anywhere during drag.
     startX = e.clientX
@@ -262,10 +243,10 @@ document.addEventListener('mouseup', (e) => {
   }
   while (target.parentElement !== hoverables) {
     if (target.classList.contains('fcitx-prev')) {
-      return window.fcitx._page(false)
+      return window.fcitx('page', false)
     }
     else if (target.classList.contains('fcitx-next')) {
-      return window.fcitx._page(true)
+      return window.fcitx('page', true)
     }
     else if (target.classList.contains('fcitx-expand')) {
       return expand()
@@ -274,7 +255,7 @@ document.addEventListener('mouseup', (e) => {
   }
   const i = getCandidateIndex(target)
   if (i >= 0) {
-    return window.fcitx._select(i)
+    return window.fcitx('select', i)
   }
 })
 
@@ -298,8 +279,8 @@ receiver.addEventListener('contextmenu', (e) => {
     return
   }
 
-  const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
-  const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
+  const x = e.clientX - (distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
+  const y = e.clientY - (distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
 
   while (target.parentElement !== hoverables) {
     target = target.parentElement!
@@ -309,7 +290,7 @@ receiver.addEventListener('contextmenu', (e) => {
     actionX = x
     actionY = y
     actionIndex = i
-    return window.fcitx._askActions(i)
+    return window.fcitx('askActions', i)
   }
   if (i >= 0 && actions[i].length > 0) {
     showContextmenu(x, y, i, actions[i])

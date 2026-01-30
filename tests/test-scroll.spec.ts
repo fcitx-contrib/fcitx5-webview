@@ -41,7 +41,7 @@ test.describe('Passively expand', () => {
       await expect(candidate(page, 0)).toContainClass('fcitx-highlighted')
       const cppCalls = await getCppCalls(page)
       // Order of highlight and resize event is random.
-      expect(cppCalls.filter(call => JSON.stringify(call) === '{"highlight":0}').length, 'Highlight is set on expand').toEqual(1)
+      expect(cppCalls.filter(call => JSON.stringify(call) === '{"highlight":[0]}').length, 'Highlight is set on expand').toEqual(1)
     })
   }
 })

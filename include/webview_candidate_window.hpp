@@ -81,10 +81,10 @@ void to_json(nlohmann::json &j, const Candidate &c);
 
 enum CustomAPI : uint64_t { kCurl = 1 };
 
-#ifdef __EMSCRIPTEN__
-extern std::unordered_map<std::string, std::function<std::string(std::string)>>
+extern std::unordered_map<std::string,
+                          std::function<std::string(const nlohmann::json &)>>
     handlers;
-#endif
+std::string call_handler(std::string s);
 
 // User of this class should ensure no concurrent calls from different threads.
 class WebviewCandidateWindow {
@@ -267,8 +267,7 @@ class WebviewCandidateWindow {
     template <typename F> inline void bind(const std::string &name, F f) {
         using Ret = typename function_traits<F>::return_type;
         using ArgsTp = typename function_traits<F>::args_tuple;
-        auto handler = [=, this](std::string args_json) -> std::string {
-            auto j = nlohmann::json::parse(args_json);
+        auto handler = [=, this](const nlohmann::json &j) -> std::string {
             ArgsTp args;
             if (std::tuple_size<ArgsTp>() > j.size()) {
                 std::cerr << "[JS] Insufficient number of arguments of '"
@@ -293,11 +292,7 @@ class WebviewCandidateWindow {
                 return nlohmann::json(ret).dump();
             }
         };
-#ifdef __EMSCRIPTEN__
         handlers[name] = handler;
-#else
-        w_->bind(name, handler);
-#endif
     }
 
     template <typename Tuple, size_t... Is>

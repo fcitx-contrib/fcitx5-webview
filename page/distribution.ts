@@ -1,17 +1,6 @@
-// Must be imported first
+export const distribution = <string>process.env.FCITX_DISTRIBUTION ?? '' // eslint-disable-line node/prefer-global/process
 
-const distribution = <string>process.env.FCITX_DISTRIBUTION ?? '' // eslint-disable-line node/prefer-global/process
-
-let fcitx: FCITX // eslint-disable-line import/no-mutable-exports
-
-if (distribution === 'fcitx5-js') {
-  fcitx = window.fcitx
-}
-else {
-  // @ts-expect-error f5m binds C++ function to JS global function, but we want to call fcitx._select for both f5m and f5j.
-  fcitx = window
-  window.fcitx = fcitx
-
+if (distribution !== 'fcitx5-js') {
   /*
     Don't pollute page's style for f5j
     background: transparent, draw panel as you wish
@@ -29,19 +18,21 @@ else {
   height: 1080px;
 }`
   document.head.append(style)
-}
 
-fcitx.distribution = distribution
-fcitx.host = {
-  system: 'macOS',
-  version: 26,
-}
-fcitx.setHost = (system: string, version: number) => {
-  if (system) {
-    fcitx.host = { system, version }
+  if (window.fcitx === undefined) {
+    // @ts-expect-error: for testing purpose
+    window.fcitx = (...args: any[]) => console.log(...args) // eslint-disable-line no-console
   }
 }
 
-export {
-  fcitx,
+// window.fcitx is a function with properties, created by webview or f5j.
+window.fcitx.distribution = distribution
+window.fcitx.host = {
+  system: 'macOS',
+  version: 26,
+}
+window.fcitx.setHost = (system: string, version: number) => {
+  if (system) {
+    window.fcitx.host = { system, version }
+  }
 }

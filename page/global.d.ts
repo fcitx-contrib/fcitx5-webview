@@ -127,16 +127,16 @@ declare global {
     distribution: string
 
     // C++ APIs that api.ts calls
-    _onload?: () => void
-    _log: (s: string) => void
-    _copyHTML: (html: string) => void
-    _select: (index: number) => void
-    _highlight: (index: number) => void
-    _page: (next: boolean) => void
-    _scroll: (start: number, length: number) => void
-    _askActions: (index: number) => void
-    _action: (index: number, id: number) => void
-    _resize: (epoch: number, dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, topLeftRadius: number, topRightRadius: number, bottomRightRadius: number, bottomLeftRadius: number, borderWidth: number, fullWidth: number, fullHeight: number, dragging: boolean) => void
+    (name: 'onload'): void
+    (name: 'log', s: string): void
+    (name: 'copyHTML', html: string): void
+    (name: 'select', index: number): void
+    (name: 'highlight', index: number): void
+    (name: 'page', next: boolean): void
+    (name: 'scroll', start: number, length: number): void
+    (name: 'askActions', index: number): void
+    (name: 'action', index: number, id: number): void
+    (name: 'resize', epoch: number, dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, topLeftRadius: number, topRightRadius: number, bottomRightRadius: number, bottomLeftRadius: number, borderWidth: number, fullWidth: number, fullHeight: number, dragging: boolean): void
 
     // JavaScript APIs that webview_candidate_window.mm calls
     setHost: (system: string, version: number) => void
@@ -154,7 +154,7 @@ declare global {
     answerActions: (actions: CandidateAction[]) => void
 
     // Utility functions globally available
-    fcitxLog: (...args: unknown[]) => void
+    log: (...args: unknown[]) => void
 
     // Plugin manager
     pluginManager: {

@@ -1,3 +1,4 @@
+import { distribution } from './distribution'
 import { fixGhostStripe } from './ghost-stripe'
 import { setAnimation, setScrollParams } from './scroll'
 import { theme } from './selector'
@@ -211,7 +212,7 @@ export function setStyle(style: string) {
   // Background
   theme.style.setProperty('--background-image', backgroundImage ? `url(${JSON.stringify(backgroundImage)})` : '')
 
-  if (window.fcitx.distribution === 'fcitx5-js') {
+  if (distribution === 'fcitx5-js') {
     if (j.Background.Blur === 'True') {
       setBlur(true)
     }

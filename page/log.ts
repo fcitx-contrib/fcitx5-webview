@@ -1,7 +1,7 @@
-export function fcitxLog(...args: unknown[]) {
+export function log(...args: unknown[]) {
   for (let i = 0; i < args.length; ++i) {
     if (i > 0) {
-      window.fcitx._log(' ')
+      window.fcitx('log', ' ')
     }
     const arg = args[i]
     let serialized = ''
@@ -11,7 +11,7 @@ export function fcitxLog(...args: unknown[]) {
       }
       catch {}
     }
-    window.fcitx._log(serialized || String(arg))
+    window.fcitx('log', serialized || String(arg))
   }
-  window.fcitx._log('\n')
+  window.fcitx('log', '\n')
 }

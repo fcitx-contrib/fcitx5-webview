@@ -1,14 +1,13 @@
 import { HORIZONTAL, SCROLLING, VERTICAL } from './constant'
-import { fcitx } from './distribution'
-// Must be put after fcitx import.
-import { setStyle } from './customize' // eslint-disable-line perfectionist/sort-imports
-import { fcitxLog } from './log'
+import { setStyle } from './customize'
+import { log } from './log'
 import { hidePanel, moveHighlight, setCandidates, updateInputPanel } from './panel'
 import { loadPlugins, pluginManager, unloadPlugins } from './plugin'
 import { getScrollState, scrollKeyAction } from './scroll'
 import { hoverables, panel } from './selector'
 import { setAccentColor, setTheme } from './theme'
 import { answerActions, getHoverBehavior, resize } from './ux'
+import './distribution'
 
 function setLayout(layout: LAYOUT) {
   switch (layout) {
@@ -37,7 +36,7 @@ function setWritingMode(mode: WRITING_MODE) {
 
 function copyHTML() {
   const html = document.documentElement.outerHTML
-  fcitx._copyHTML(html)
+  window.fcitx('copyHTML', html)
 }
 
 hoverables.addEventListener('mouseleave', () => {
@@ -53,36 +52,35 @@ hoverables.addEventListener('wheel', (e) => {
   if (getScrollState() === SCROLLING) {
     return
   }
-  fcitx._page(e.deltaY > 0)
+  window.fcitx('page', e.deltaY > 0)
 })
 
 // JavaScript APIs that webview_candidate_window.cpp calls
-fcitx.setCandidates = setCandidates
-fcitx.setLayout = setLayout
-fcitx.updateInputPanel = updateInputPanel
-fcitx.hidePanel = hidePanel
-fcitx.resize = resize
-fcitx.setTheme = setTheme
-fcitx.setAccentColor = setAccentColor
-fcitx.setStyle = setStyle
-fcitx.setWritingMode = setWritingMode
-fcitx.copyHTML = copyHTML
-fcitx.scrollKeyAction = scrollKeyAction
-fcitx.answerActions = answerActions
+window.fcitx.setCandidates = setCandidates
+window.fcitx.setLayout = setLayout
+window.fcitx.updateInputPanel = updateInputPanel
+window.fcitx.hidePanel = hidePanel
+window.fcitx.resize = resize
+window.fcitx.setTheme = setTheme
+window.fcitx.setAccentColor = setAccentColor
+window.fcitx.setStyle = setStyle
+window.fcitx.setWritingMode = setWritingMode
+window.fcitx.copyHTML = copyHTML
+window.fcitx.scrollKeyAction = scrollKeyAction
+window.fcitx.answerActions = answerActions
 
-Object.defineProperty(fcitx, 'pluginManager', {
+Object.defineProperty(window.fcitx, 'pluginManager', {
   value: pluginManager,
 })
 
-Object.defineProperty(fcitx, 'loadPlugins', {
+Object.defineProperty(window.fcitx, 'loadPlugins', {
   value: loadPlugins,
 })
 
-Object.defineProperty(fcitx, 'unloadPlugins', {
+Object.defineProperty(window.fcitx, 'unloadPlugins', {
   value: unloadPlugins,
 })
 
-fcitx.fcitxLog = fcitxLog
-// needed when JS execution is async with C++ (macOS)
-fcitx._onload && fcitx._onload()
+window.fcitx.log = log
 setTheme(0)
+window.fcitx('onload')

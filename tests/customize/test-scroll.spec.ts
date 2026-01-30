@@ -26,7 +26,7 @@ test('Select candidate', async ({ page }) => {
     window.fcitx.scrollKeyAction(1)
   })
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls.filter(call => 'select' in call)).toEqual([{ select: 9 }, { select: 0 }])
+  expect(cppCalls.filter(call => 'select' in call)).toEqual([{ select: [9] }, { select: [0] }])
 })
 
 test('Hide scrollbar', async ({ page }) => {

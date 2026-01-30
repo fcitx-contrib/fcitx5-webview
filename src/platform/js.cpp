@@ -1,12 +1,11 @@
 #include "webview_candidate_window.hpp"
 
 namespace candidate_window {
-std::unordered_map<std::string, std::function<std::string(std::string)>>
-    handlers;
-
 extern "C" {
-EMSCRIPTEN_KEEPALIVE void web_action(const char *action, const char *args) {
-    handlers[action](args);
+EMSCRIPTEN_KEEPALIVE const char *web_action(const char *s) {
+    static std::string ret;
+    ret = call_handler(s);
+    return ret.c_str();
 }
 }
 
