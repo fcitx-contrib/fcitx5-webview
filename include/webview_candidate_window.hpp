@@ -134,9 +134,6 @@ class WebviewCandidateWindow {
     }
 
     void set_caret_text(const std::string &text) { caret_text_ = text; }
-    void set_highlight_mark_text(const std::string &text) {
-        highlight_mark_text_ = text;
-    }
 
     void set_page_callback(std::function<void(bool)> callback) {
         page_callback = callback;
@@ -200,7 +197,6 @@ class WebviewCandidateWindow {
     std::function<void(int index)> ask_actions_callback = [](int) {};
     std::function<void(int index, int id)> action_callback = [](int, int) {};
     std::string caret_text_ = "";
-    std::string highlight_mark_text_ = "";
     std::string system_ = "";
     int version_ = 0;
     bool pageable_ = false;

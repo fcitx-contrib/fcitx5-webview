@@ -12,7 +12,7 @@ test.describe('Actively expand', () => {
       await followHostTheme(page, system, version)
 
       await page.evaluate(() =>
-        window.fcitx.setCandidates([{ text: '1', label: '1', comment: '', actions: [] }], 0, '', true, false, true, 1, false, false))
+        window.fcitx.setCandidates([{ text: '1', label: '1', comment: '', actions: [] }], 0, true, false, true, 1, false, false))
       const pane = panel(page)
       await expect(pane).toHaveCSS('border-start-end-radius', radius)
       await expect(pane).toHaveCSS('border-end-end-radius', radius)

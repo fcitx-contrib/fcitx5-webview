@@ -168,9 +168,8 @@ void WebviewCandidateWindow::show(double x, double y, double height) const {
     invoke_js("setLayout", layout_);
     invoke_js("setWritingMode", writing_mode_);
     invoke_js("updateInputPanel", preedit_, auxUp_, auxDown_);
-    invoke_js("setCandidates", candidates_, highlighted_, highlight_mark_text_,
-              pageable_, has_prev_, has_next_, scroll_state_, scroll_start_,
-              scroll_end_);
+    invoke_js("setCandidates", candidates_, highlighted_, pageable_, has_prev_,
+              has_next_, scroll_state_, scroll_start_, scroll_end_);
     invoke_js("resize", epoch, 0., 0., false);
 }
 

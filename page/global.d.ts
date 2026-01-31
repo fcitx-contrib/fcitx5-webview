@@ -75,6 +75,7 @@ declare global {
     }
     Highlight: {
       MarkStyle: 'None' | 'Bar' | 'Text'
+      MarkText: string
       HoverBehavior: HOVER_BEHAVIOR
     }
     Size: {
@@ -140,7 +141,7 @@ declare global {
 
     // JavaScript APIs that webview_candidate_window.mm calls
     setHost: (system: string, version: number) => void
-    setCandidates: (cands: Candidate[], highlighted: number, markText: string, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
+    setCandidates: (cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
     setLayout: (layout: LAYOUT) => void
     updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void
     hidePanel: () => void

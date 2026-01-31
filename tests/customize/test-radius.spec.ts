@@ -6,7 +6,7 @@ test('Round corner of expand button', async ({ page }) => {
   await setStyle(page, { Size: { OverrideDefault: 'True', Margin: '4', TopPadding: '1', BottomPadding: '1', BorderWidth: '2' } })
 
   await page.evaluate(() =>
-    window.fcitx.setCandidates([{ text: '1', label: '1', comment: '', actions: [] }], 0, '', true, false, true, 1, false, false))
+    window.fcitx.setCandidates([{ text: '1', label: '1', comment: '', actions: [] }], 0, true, false, true, 1, false, false))
   const pane = panel(page)
   await expect(pane).toHaveCSS('border-start-end-radius', '19px')
   await expect(pane).toHaveCSS('border-end-end-radius', '19px')

@@ -142,7 +142,7 @@ test.describe('Extremely long preedit horizontal', () => {
       const lastDivider = page.locator('.fcitx-divider').nth(pageable ? -2 : -1)
       const pagingDivider = pageable ? page.locator('.fcitx-divider').nth(-1) : page.locator('div' /* dummy */)
       await updateInputPanel(page, shortPreedit)
-      await setCandidates(page, [{ text: '1' }], 0, '', pageable)
+      await setCandidates(page, [{ text: '1' }], 0, pageable)
       if (pageable) {
         await expect(pagingDivider).toHaveCSS('width', '1px')
       }

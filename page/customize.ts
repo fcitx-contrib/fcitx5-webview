@@ -1,5 +1,6 @@
 import { distribution } from './distribution'
 import { fixGhostStripe } from './ghost-stripe'
+import { setHighlightMarkText } from './panel'
 import { setAnimation, setScrollParams } from './scroll'
 import { theme } from './selector'
 import {
@@ -149,10 +150,12 @@ export function setStyle(style: string) {
   if (j.Highlight.MarkStyle === 'Text') {
     setColor('highlight-mark-text-color', 'HighlightMarkColor', 'white')
     setColor('highlight-mark-color', '', 'transparent')
+    setHighlightMarkText(j.Highlight.MarkText)
   }
   else {
     setColor('highlight-mark-text-color', '')
     setColor('highlight-mark-color', 'HighlightMarkColor', 'white')
+    setHighlightMarkText('')
   }
   if (backgroundImage && j.Background.KeepPanelColorWhenHasImage === 'False') {
     setColor('panel-color-no-image', '', 'transparent')
