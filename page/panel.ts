@@ -216,7 +216,7 @@ function updateElement(element: Element, formatted: [string, number][]) {
   }
   else {
     for (const [text, _] of formatted) { // Ignore format for now.
-      const child = div()
+      const child = document.createElement('span') // So that element doesn't need display: flex.
       child.textContent = text
       element.appendChild(child)
     }
