@@ -39,7 +39,11 @@ test('HTML structure', async ({ page }) => {
         <div class="fcitx-panel-blur">
           <div class="fcitx-header">
             <div class="fcitx-aux-up fcitx-hidden"></div>
-            <div class="fcitx-hidden fcitx-preedit"></div>
+            <div class="fcitx-hidden fcitx-preedit">
+              <div class="fcitx-pre-caret"></div>
+              <div class="fcitx-caret"></div>
+              <div class="fcitx-post-caret"></div>
+            </div>
           </div>
           <div class="fcitx-aux-down fcitx-hidden"></div>
           <div class="fcitx-horizontal fcitx-hoverables">

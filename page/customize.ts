@@ -1,6 +1,6 @@
 import { distribution } from './distribution'
 import { fixGhostStripe } from './ghost-stripe'
-import { setHighlightMarkText } from './panel'
+import { setCaretText, setHighlightMarkText } from './panel'
 import { setAnimation, setScrollParams } from './scroll'
 import { theme } from './selector'
 import {
@@ -247,6 +247,7 @@ export function setStyle(style: string) {
 
   // Caret
   setBlink(j.Caret.Style === 'Blink')
+  setCaretText(j.Caret.Style === 'Text' ? j.Caret.Text : '')
 
   // Highlight
   setHoverBehavior(j.Highlight.HoverBehavior)

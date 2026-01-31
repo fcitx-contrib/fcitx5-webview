@@ -167,82 +167,41 @@ void WebviewCandidateWindow::show(double x, double y, double height) const {
     epoch += 1;
     invoke_js("setLayout", layout_);
     invoke_js("setWritingMode", writing_mode_);
-    invoke_js("updateInputPanel", preedit_, auxUp_, auxDown_);
+    invoke_js("updateInputPanel", preeditPreCaret_, hasCaret_,
+              preeditPostCaret_, auxUp_, auxDown_);
     invoke_js("setCandidates", candidates_, highlighted_, pageable_, has_prev_,
               has_next_, scroll_state_, scroll_start_, scroll_end_);
     invoke_js("resize", epoch, 0., 0., false);
 }
 
-static void build_html_open_tags(std::stringstream &ss, int flags) {
-    if (flags & Underline)
-        ss << "<u>";
-    if (flags & Highlight)
-        ss << "<mark>";
-    if (flags & Bold)
-        ss << "<b>";
-    if (flags & Strike)
-        ss << "<s>";
-    if (flags & Italic)
-        ss << "<i>";
-}
-
-static void build_html_close_tags(std::stringstream &ss, int flags) {
-    if (flags & Underline)
-        ss << "</u>";
-    if (flags & Highlight)
-        ss << "</mark>";
-    if (flags & Bold)
-        ss << "</b>";
-    if (flags & Strike)
-        ss << "</s>";
-    if (flags & Italic)
-        ss << "</i>";
-}
-
-static std::string formatted_to_html(const formatted<std::string> &f,
-                                     const std::string &caret_text = "",
-                                     int caret = -1) {
-    std::stringstream ss;
-    int caret_pos = 0;
-    if (caret >= 0) {
-        ss << "<div class=\"fcitx-pre-caret\">";
-    }
-    for (const auto &slice : f) {
-        build_html_open_tags(ss, slice.second);
+void WebviewCandidateWindow::update_input_panel(formatted preedit, int caret,
+                                                formatted auxUp,
+                                                formatted auxDown) {
+    preeditPreCaret_.clear();
+    preeditPostCaret_.clear();
+    int index = 0;
+    for (auto &slice : preedit) {
         auto size =
             (int)slice.first
                 .size(); // ensure signed comparison since caret may be -1
-        if (caret_pos <= caret && caret <= caret_pos + size) {
-            ss << escape_html(slice.first.substr(0, caret - caret_pos));
-            if (caret_text.empty()) {
-                ss << "</div><div class=\"fcitx-caret fcitx-no-text\">";
-            } else {
-                ss << "</div><div class=\"fcitx-caret\">";
-                ss << escape_html(caret_text);
-            }
-            ss << "</div><div class=\"fcitx-post-caret\">";
-            ss << escape_html(slice.first.substr(caret - caret_pos));
-            // Do not draw caret again when it's at the end of current slice
-            caret = -1;
+        if (caret <= index) {
+            preeditPostCaret_.emplace_back(std::move(slice));
+        } else if (caret < index + size) {
+            preeditPreCaret_.emplace_back(slice.first.substr(0, caret - index),
+                                          slice.second);
+            preeditPostCaret_.emplace_back(slice.first.substr(caret - index),
+                                           slice.second);
         } else {
-            ss << escape_html(slice.first);
-            caret_pos += size;
+            preeditPreCaret_.emplace_back(std::move(slice));
         }
-        if (caret >= 0) {
-            ss << "</div>";
-        }
-        build_html_close_tags(ss, slice.second);
+        index += size;
     }
-    return ss.str();
-}
+    preeditPreCaret_.shrink_to_fit();
+    preeditPostCaret_.shrink_to_fit();
+    hasCaret_ = caret >= 0;
 
-void WebviewCandidateWindow::update_input_panel(
-    const formatted<std::string> &preedit, int caret,
-    const formatted<std::string> &auxUp,
-    const formatted<std::string> &auxDown) {
-    preedit_ = formatted_to_html(preedit, caret_text_, caret);
-    auxUp_ = formatted_to_html(auxUp);
-    auxDown_ = formatted_to_html(auxDown);
+    auxUp_ = std::move(auxUp);
+    auxDown_ = std::move(auxDown);
 }
 
 void WebviewCandidateWindow::copy_html() const { invoke_js("copyHTML"); }

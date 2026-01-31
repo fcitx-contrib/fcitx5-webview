@@ -27,7 +27,7 @@ export async function followHostTheme(page: Page, system: string, version: numbe
 
 export function updateInputPanel(page: Page, preedit: string, auxUp: string = '', auxDown: string = '') {
   return page.evaluate(({ preedit, auxUp, auxDown }) =>
-    window.fcitx.updateInputPanel(preedit, auxUp, auxDown), { preedit, auxUp, auxDown })
+    window.fcitx.updateInputPanel([], true, preedit ? [[preedit, 0]] : [], auxUp ? [[auxUp, 0]] : [], auxDown ? [[auxDown, 0]] : []), { preedit, auxUp, auxDown })
 }
 
 export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, pageable = false) {
@@ -74,6 +74,7 @@ const defaultStyle: STYLE_JSON = {
   },
   Caret: {
     Style: 'Blink',
+    Text: '‸',
   },
   DarkMode: {
     BorderColor: '#ffffff',

@@ -31,6 +31,11 @@ export function setHighlightMarkText(text: string) {
   markText = text
 }
 
+let caretText = ''
+export function setCaretText(text: string) {
+  caretText = text
+}
+
 export function moveHighlight(from: Element | null, to: Element | null) {
   from?.classList.remove('fcitx-highlighted')
   to?.classList.add('fcitx-highlighted')
@@ -204,28 +209,55 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   }
 }
 
-function updateElement(element: Element, innerHTML: string) {
-  if (innerHTML === '') {
+function updateElement(element: Element, formatted: [string, number][]) {
+  element.innerHTML = ''
+  if (formatted.length === 0) {
     element.classList.add('fcitx-hidden')
   }
   else {
-    element.innerHTML = innerHTML
+    for (const [text, _] of formatted) { // Ignore format for now.
+      const child = div()
+      child.textContent = text
+      element.appendChild(child)
+    }
     element.classList.remove('fcitx-hidden')
   }
 }
 
-export function updateInputPanel(preeditHTML: string, auxUpHTML: string, auxDownHTML: string) {
-  if (preeditHTML || auxUpHTML || auxDownHTML) {
+export function updateInputPanel(formattedPreCaret: [string, number][], hasCaret: boolean, formattedPostCaret: [string, number][], formattedAuxUp: [string, number][], formattedAuxDown: [string, number][]) {
+  const hasPreedit = formattedPreCaret.length || formattedPostCaret.length
+  if (hasPreedit || formattedAuxUp.length || formattedAuxDown.length) {
     theme.classList.remove('fcitx-hidden')
   }
   hideContextmenu()
-  updateElement(preedit, preeditHTML)
-  updateElement(auxUp, auxUpHTML)
-  updateElement(auxDown, auxDownHTML)
+
+  const preCaret = preedit.querySelector('.fcitx-pre-caret') as HTMLElement
+  const caret = preedit.querySelector('.fcitx-caret') as HTMLElement
+  const postCaret = preedit.querySelector('.fcitx-post-caret') as HTMLElement
+
+  updateElement(preCaret, formattedPreCaret)
+  if (hasCaret) {
+    caret.textContent = caretText
+    if (caretText) {
+      caret.classList.remove('fcitx-no-text')
+    }
+    else {
+      caret.classList.add('fcitx-no-text')
+    }
+  }
+  updateElement(postCaret, formattedPostCaret)
+  if (hasPreedit) {
+    preedit.classList.remove('fcitx-hidden')
+  }
+  else {
+    preedit.classList.add('fcitx-hidden')
+  }
+  updateElement(auxUp, formattedAuxUp)
+  updateElement(auxDown, formattedAuxDown)
 }
 
 export function hidePanel() {
-  updateInputPanel('', '', '')
+  updateInputPanel([], false, [], [], [])
   setCandidates([], -1, false, false, false, SCROLL_NONE, false, false)
   theme.classList.add('fcitx-hidden')
 }

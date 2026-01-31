@@ -49,5 +49,4 @@ template <typename T> function_traits<T> make_function_traits(const T &) {
     return function_traits<T>();
 }
 
-std::string escape_html(const std::string &content);
 std::string base64(const std::string &s);

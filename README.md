@@ -32,7 +32,7 @@ Execute the following JavaScript code to show candidates and more:
 fcitx.setCandidates([
   { text: "虚假的", label: "1", comment: "comment", actions: [{ "id": 1, "text": "删词" }] },
   { text: "🀄", label: "2", comment: "", actions: [] },
-  { text: "candidates", label: "3", comment: "", actions: [] }], 0, "",
+  { text: "candidates", label: "3", comment: "", actions: [] }], 0,
   true, false, true, 0, false, false)
 
 // Set writing mode. 0=horizontal-tb, 1=vertical-rl, 2=vertical-lr.
@@ -43,7 +43,7 @@ fcitx.setLayout(1)
 
 // Show aux-up.
 fcitx.setCandidates([], -1)
-fcitx.updateInputPanel("", "A", "")
+fcitx.updateInputPanel([], false, [], [["A", 0]], [])
 
 // Set theme to 0=system (default), 1=light or 2=dark.
 fcitx.setTheme(1)

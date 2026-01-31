@@ -1,6 +1,5 @@
 set(WCW_SRC
     utility.cpp
-    "${PROJECT_SOURCE_DIR}/pugixml/src/pugixml.cpp"
     webview_candidate_window.cpp
     platform.cpp
 )

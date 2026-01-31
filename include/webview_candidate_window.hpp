@@ -30,7 +30,7 @@ enum format_t {
     Italic = (1 << 8),
 };
 
-template <typename T> using formatted = std::vector<std::pair<T, int>>;
+using formatted = std::vector<std::pair<std::string, int>>;
 
 enum class blur_t { none = 0, system = 1, blur = 2, liquid_glass = 3 };
 
@@ -116,9 +116,8 @@ class WebviewCandidateWindow {
 #endif
 
     // Below are allowed to be called from any thread.
-    void update_input_panel(const formatted<std::string> &preedit, int caret,
-                            const formatted<std::string> &auxUp,
-                            const formatted<std::string> &auxDown);
+    void update_input_panel(formatted preedit, int caret, formatted auxUp,
+                            formatted auxDown);
     void set_candidates(std::vector<Candidate> candidates, int highlighted,
                         scroll_state_t scroll_state, bool scroll_start,
                         bool scroll_end);
@@ -132,8 +131,6 @@ class WebviewCandidateWindow {
     void set_highlight_callback(std::function<void(int index)> callback) {
         highlight_callback = callback;
     }
-
-    void set_caret_text(const std::string &text) { caret_text_ = text; }
 
     void set_page_callback(std::function<void(bool)> callback) {
         page_callback = callback;
@@ -178,9 +175,11 @@ class WebviewCandidateWindow {
     std::string app_accent_color_ = "";
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
-    std::string preedit_;
-    std::string auxUp_;
-    std::string auxDown_;
+    formatted preeditPreCaret_;
+    bool hasCaret_ = false;
+    formatted preeditPostCaret_;
+    formatted auxUp_;
+    formatted auxDown_;
     std::vector<Candidate> candidates_;
     int highlighted_ = -1;
     scroll_state_t scroll_state_;
@@ -196,7 +195,6 @@ class WebviewCandidateWindow {
     std::function<void(int, int)> scroll_callback = [](int, int) {};
     std::function<void(int index)> ask_actions_callback = [](int) {};
     std::function<void(int index, int id)> action_callback = [](int, int) {};
-    std::string caret_text_ = "";
     std::string system_ = "";
     int version_ = 0;
     bool pageable_ = false;

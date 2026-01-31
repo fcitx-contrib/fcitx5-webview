@@ -72,6 +72,7 @@ declare global {
     }
     Caret: {
       Style: 'Blink' | 'Static' | 'Text'
+      Text: string
     }
     Highlight: {
       MarkStyle: 'None' | 'Bar' | 'Text'
@@ -143,7 +144,7 @@ declare global {
     setHost: (system: string, version: number) => void
     setCandidates: (cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
     setLayout: (layout: LAYOUT) => void
-    updateInputPanel: (preeditHTML: string, auxUpHTML: string, auxDownHTML: string) => void
+    updateInputPanel: (preCaret: [string, number][], hasCaret: boolean, postCaret: [string, number][], auxUp: [string, number][], auxDown: [string, number][]) => void
     hidePanel: () => void
     resize: (new_epoch: number, dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void
     setTheme: (theme: 0 | 1 | 2) => void

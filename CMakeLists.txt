@@ -33,8 +33,6 @@ elseif(EMSCRIPTEN)
     set(LIBS nlohmann_json::nlohmann_json)
 endif()
 
-include_directories(pugixml/src)
-
 if(NOT "${WKWEBVIEW_PROTOCOL}" STREQUAL "")
     add_definitions(-DWKWEBVIEW_PROTOCOL="${WKWEBVIEW_PROTOCOL}")
     add_definitions(-DWEBVIEW_WWW_PATH="${WEBVIEW_WWW_PATH}")
