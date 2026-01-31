@@ -222,19 +222,21 @@ class WebviewCandidateWindow {
 
   private:
     /* Invoke a JavaScript function. */
-    template <typename Ret = void, bool debug = false, typename... Args>
+    template <typename Ret = void, typename... Args>
     inline Ret invoke_js(const char *name, Args... args) const {
         std::stringstream ss;
+#ifdef __EMSCRIPTEN__
+        ss << "[";
+        build_js_args(ss, args...);
+        ss << "]";
+        auto s = ss.str();
+        EM_ASM(fcitx.invoke(UTF8ToString($0), UTF8ToString($1)), name,
+               s.c_str());
+#else
         ss << "fcitx." << name << "(";
         build_js_args(ss, args...);
         ss << ");";
-        if constexpr (debug) {
-            std::cerr << ss.str() << "\n";
-        }
         auto s = ss.str();
-#ifdef __EMSCRIPTEN__
-        emscripten_run_script(s.c_str());
-#else
         assert(std::this_thread::get_id() == main_thread_id_ &&
                "invoke_js must be called from main thread");
         w_->eval(s);
