@@ -1,6 +1,7 @@
 import emojiRegex from 'emoji-regex'
 import { SCROLL_NONE, SCROLL_READY, SCROLLING } from './constant'
 import { getLabelFormatter, setLastLabels } from './format-label'
+import { fixGhostStripe } from './ghost-stripe'
 import { fetchComplete, recalculateScroll, setScrollEnd, setScrollState } from './scroll'
 import { auxDown, auxUp, hoverables, preedit, theme } from './selector'
 import { div, getHoverBehavior, getPagingButtonsStyle, hideContextmenu, resetMouseMoveState, setActions, setColorTransition } from './ux'
@@ -145,12 +146,14 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
       candidateInner.append(comment)
     }
 
+    candidate.append(div('fcitx-candidate-background')) // The only purpose is to fix ghost stripe.
     candidate.append(candidateInner)
     hoverables.append(candidate)
 
     // For horizontal/scroll mode it needs to fill the row when candidates are not enough.
     // For vertical mode, this last divider is hidden.
     hoverables.append(divider())
+    fixGhostStripe()
   }
 
   setActions(cands.map(c => c.actions))

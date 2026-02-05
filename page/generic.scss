@@ -95,6 +95,16 @@
   }
 }
 
+.fcitx-candidate {
+  position: relative;
+}
+
+.fcitx-candidate-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 .fcitx-candidate-inner {
   display: flex;
   align-items: center; /* English words have lower height */
