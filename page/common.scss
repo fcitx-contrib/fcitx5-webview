@@ -38,7 +38,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       border-color: $panel-border-color;
     }
 
-    .fcitx-candidate {
+    .fcitx-candidate-background {
       // With background image, discard panel color for unselected candidates.
       background-color: $panel-color-no-image;
       transition: $color-transition;

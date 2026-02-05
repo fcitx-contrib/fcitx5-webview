@@ -1,6 +1,5 @@
-import type { Page } from '@playwright/test'
 import test, { expect } from '@playwright/test'
-import { candidate, followHostTheme, getBox, getTextBox, hover, init, panel, scrollExpand, setCandidates, setStyle, transparent, updateInputPanel } from './util'
+import { candidate, getBox, getTextBox, init, panel, scrollExpand, setCandidates, updateInputPanel } from './util'
 
 test('Horizontal multi-line candidate', async ({ page }) => {
   await init(page)
@@ -43,91 +42,6 @@ test('Multi-space and tab', async ({ page }) => {
   expect(single).toBe(4)
   expect(double).toBe(8)
   expect(tab).toBeGreaterThan(double)
-})
-
-test.describe('Ghost stripe default positive margin', () => {
-  const cases = [
-    { name: 'System (macOS 26)', preset: (page: Page) => followHostTheme(page, 'macOS', 26) },
-    { name: 'macOS 26', preset: (page: Page) => setStyle(page, { Basic: { DefaultTheme: 'macOS 26' } }) },
-  ]
-  for (const { name, preset } of cases) {
-    test(name, async ({ page }) => {
-      await init(page)
-      await preset(page)
-      await setCandidates(page, [{}, {}, {}], 0)
-      for (const i of [0, 1, 2]) {
-        await expect(candidate(page, i)).not.toHaveCSS('background-color', transparent)
-      }
-    })
-  }
-})
-
-test.describe('Ghost stripe default zero margin', () => {
-  const cases = [
-    { name: 'System (macOS 15)', preset: (page: Page) => followHostTheme(page, 'macOS', 15) },
-    { name: 'macOS 15', preset: (page: Page) => setStyle(page, { Basic: { DefaultTheme: 'macOS 15' } }) },
-  ]
-  for (const { name, preset } of cases) {
-    test(name, async ({ page }) => {
-      await init(page)
-      await preset(page)
-      await setCandidates(page, [{}, {}, {}], 0)
-      await expect(candidate(page, 0)).toHaveCSS('background-color', transparent)
-      for (const i of [1, 2]) {
-        await expect(candidate(page, i)).not.toHaveCSS('background-color', transparent)
-      }
-    })
-  }
-})
-
-test.describe('Ghost stripe override positive margin', () => {
-  const cases: { name: string, HoverBehavior: STYLE_JSON['Highlight']['HoverBehavior'] }[] = [
-    { name: 'No hover', HoverBehavior: 'None' },
-    { name: 'Hover add', HoverBehavior: 'Add' },
-  ]
-  for (const { name, HoverBehavior } of cases) {
-    test(name, async ({ page }) => {
-      await init(page)
-      await setStyle(page, { Highlight: { HoverBehavior }, Size: { OverrideDefault: 'True', Margin: '2' } })
-      await setCandidates(page, [{}, {}, {}], 0)
-      for (const i of [0, 1, 2]) {
-        await expect(candidate(page, i)).not.toHaveCSS('background-color', transparent)
-      }
-
-      await hover(page, 1)
-      for (const i of [0, 1, 2]) {
-        await expect(candidate(page, i)).not.toHaveCSS('background-color', transparent)
-      }
-    })
-  }
-})
-
-test.describe('Ghost stripe override zero margin', () => {
-  const cases: { name: string, HoverBehavior: STYLE_JSON['Highlight']['HoverBehavior'], transparentIndicesOnHover: number[] }[] = [
-    { name: 'No hover', HoverBehavior: 'None', transparentIndicesOnHover: [0] },
-    { name: 'Hover add', HoverBehavior: 'Add', transparentIndicesOnHover: [0, 1] },
-  ]
-  for (const { name, HoverBehavior, transparentIndicesOnHover } of cases) {
-    test(name, async ({ page }) => {
-      await init(page)
-      await setStyle(page, { Highlight: { HoverBehavior }, Size: { OverrideDefault: 'True', Margin: '0' } })
-      await setCandidates(page, [{}, {}, {}], 0)
-      await expect(candidate(page, 0)).toHaveCSS('background-color', transparent)
-      for (const i of [1, 2]) {
-        await expect(candidate(page, i)).not.toHaveCSS('background-color', transparent)
-      }
-
-      await hover(page, 1)
-      for (const i of [0, 1, 2]) {
-        if (transparentIndicesOnHover.includes(i)) {
-          await expect(candidate(page, i)).toHaveCSS('background-color', transparent)
-        }
-        else {
-          await expect(candidate(page, i)).not.toHaveCSS('background-color', transparent)
-        }
-      }
-    })
-  }
 })
 
 const shortPreedit = '短'

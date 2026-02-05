@@ -8,3 +8,5 @@ dist
 .parcel-cache
 .cache
 test-results
+*.bz2
+*-snapshots

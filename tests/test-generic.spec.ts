@@ -48,6 +48,7 @@ test('HTML structure', async ({ page }) => {
           <div class="fcitx-aux-down fcitx-hidden"></div>
           <div class="fcitx-horizontal fcitx-hoverables">
             <div class="fcitx-candidate fcitx-candidate-first fcitx-highlighted fcitx-highlighted-original fcitx-hoverable">
+              <div class="fcitx-candidate-background"></div>
               <div class="fcitx-candidate-inner fcitx-hoverable-inner">
                 <div class="fcitx-mark fcitx-no-text"></div>
                 <div class="fcitx-label">1</div>
@@ -61,6 +62,7 @@ test('HTML structure', async ({ page }) => {
               <div class="fcitx-divider-side"></div>
             </div>
             <div class="fcitx-candidate fcitx-candidate-last fcitx-hoverable">
+              <div class="fcitx-candidate-background"></div>
               <div class="fcitx-candidate-inner fcitx-hoverable-inner">
                 <div class="fcitx-label">2</div>
                 <div class="fcitx-text">测试</div>

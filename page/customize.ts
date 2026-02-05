@@ -255,5 +255,5 @@ export function setStyle(style: string) {
 
   document.head.querySelector('#fcitx-user')?.setAttribute('href', noCache(j.Advanced.UserCss))
 
-  fixGhostStripe(j)
+  fixGhostStripe()
 }
