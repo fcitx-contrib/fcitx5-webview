@@ -1,5 +1,7 @@
+import type { Page } from '@playwright/test'
 import test, { expect } from '@playwright/test'
-import { candidate, getBox, getTextBox, init, panel, scrollExpand, setCandidates, updateInputPanel } from './util'
+import { HORIZONTAL, VERTICAL } from '../page/constant'
+import { candidate, getBox, getTextBox, init, panel, scroll, scrollExpand, setCandidates, setLayout, setStyle, updateInputPanel } from './util'
 
 test('Horizontal multi-line candidate', async ({ page }) => {
   await init(page)
@@ -91,4 +93,37 @@ test('Extremely long preedit scroll', async ({ page }) => {
   await updateInputPanel(page, longPreedit)
   await expect(header).toHaveCSS('width', '400px')
   await expect(header, 'Width is restricted so text is wrapped').toHaveCSS('height', '36px')
+})
+
+async function getLabelWidths(page: Page, indices: number[]) {
+  const boxes = await Promise.all(indices.map(i => getBox(candidate(page, i).locator('.fcitx-label'))))
+  return boxes.map(box => box.width)
+}
+
+test('Uneven label width in vertical mode', async ({ page }) => {
+  await init(page)
+  await setLayout(page, VERTICAL)
+  await setStyle(page, { Font: { LabelFontFamily: { 0: 'PingFang SC' } } })
+
+  await setCandidates(page, [{ label: '1' }, { label: '2' }], 0)
+  const widths = await getLabelWidths(page, [0, 1])
+  expect(widths[0], 'Even label width for vertical').toEqual(widths[1])
+
+  await setLayout(page, HORIZONTAL)
+  await setCandidates(page, [{ label: '1' }, { label: '2' }], 0)
+  const newWidths = await getLabelWidths(page, [0, 1])
+  expect(newWidths[0], 'Revert to baseline: PingFang SC\'s 1 and 2 are not equal width.').not.toEqual(newWidths[1])
+})
+
+test('Uneval label width in scroll mode', async ({ page }) => {
+  await init(page)
+  await setStyle(page, { ScrollMode: { MaxColumnCount: '2', MaxRowCount: '2' }, Font: { LabelFontFamily: { 0: 'PingFang SC' } } })
+  await scrollExpand(page, ['1', '2', '3', '4', '5', '6'])
+  const widths = await getLabelWidths(page, [0, 2])
+  expect(widths[0], 'Even label width for first candidates of different rows').toEqual(widths[1])
+
+  // Necessary to test this since --label-width could be cleared, which should not happen during scroll mode.
+  await scroll(page, ['7', '8'], false)
+  const width = (await getLabelWidths(page, [6]))[0]
+  expect(width, 'When more candidates come, width is preserved.').toEqual(widths[0])
 })

@@ -117,6 +117,8 @@
 .fcitx-label {
   /* Label is usually a single number. Will look ugly when all parts have vertical writing mode. */
   writing-mode: horizontal-tb;
+  inline-size: var(--label-width);
+  text-align: center; /* Since width is determined by fattest label for vertical and scroll mode, thinner ones need centralizing. */
 }
 
 .fcitx-hoverables {

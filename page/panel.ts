@@ -153,7 +153,6 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
     // For horizontal/scroll mode it needs to fill the row when candidates are not enough.
     // For vertical mode, this last divider is hidden.
     hoverables.append(divider())
-    fixGhostStripe()
   }
 
   setActions(cands.map(c => c.actions))
@@ -210,6 +209,20 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
       }
     })
   }
+
+  // Unify label width for vertical and scroll mode, as some fonts have different widths for numbers.
+  if ((isVertical && new Set(cands.map(cand => cand.label.length)).size === 1) || scrollStart) {
+    let maxWidth = 0
+    hoverables.querySelectorAll('.fcitx-label').forEach((label) => {
+      maxWidth = Math.max(maxWidth, label.getBoundingClientRect().width)
+    })
+    theme.style.setProperty('--label-width', `${maxWidth}px`)
+  }
+  else if (scrollState !== SCROLLING) {
+    theme.style.removeProperty('--label-width')
+  }
+
+  fixGhostStripe()
 }
 
 function updateElement(element: Element, formatted: [string, number][]) {

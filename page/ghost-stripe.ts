@@ -50,46 +50,44 @@ function getClipPath(candidate: HTMLElement, panelBox: DOMRect, panelStyle: CSSS
 }
 
 export function fixGhostStripe() {
-  requestAnimationFrame(() => { // Necessary for catppuccin case with vertical + horizontal-tb with paging buttons.
-    let style = document.head.querySelector(`#${id}`)
-    do { // eslint-disable-line no-unreachable-loop
-      if (hoverables.classList.contains('fcitx-horizontal-scroll')) {
-        break
+  let style = document.head.querySelector(`#${id}`)
+  do { // eslint-disable-line no-unreachable-loop
+    if (hoverables.classList.contains('fcitx-horizontal-scroll')) {
+      break
+    }
+    const candidates = hoverables.querySelectorAll('.fcitx-candidate') as NodeListOf<HTMLElement>
+    if (candidates.length === 0) {
+      break
+    }
+    const panelBox = panel.getBoundingClientRect()
+    const panelStyle = getComputedStyle(panel)
+    const firstClipPath = getClipPath(candidates[0], panelBox, panelStyle)
+    const lastClipPath = candidates.length > 1 ? getClipPath(candidates[candidates.length - 1], panelBox, panelStyle) : ''
+    if (!firstClipPath && !lastClipPath) {
+      break
+    }
+    if (!style) {
+      style = document.createElement('style')
+      style.id = id
+      document.head.appendChild(style)
+    }
+    let innerHTML = ''
+    const hoverBehavior = getHoverBehavior()
+    if (firstClipPath) {
+      innerHTML += `.fcitx-candidate-first.fcitx-highlighted .fcitx-candidate-background { clip-path: ${firstClipPath}; }\n`
+      if (hoverBehavior === 'Add') {
+        innerHTML += `.fcitx-candidate-first:hover .fcitx-candidate-background { clip-path: ${firstClipPath}; }\n`
       }
-      const candidates = hoverables.querySelectorAll('.fcitx-candidate') as NodeListOf<HTMLElement>
-      if (candidates.length === 0) {
-        break
+    }
+    if (lastClipPath) {
+      innerHTML += `.fcitx-candidate-last.fcitx-highlighted .fcitx-candidate-background { clip-path: ${lastClipPath}; }\n`
+      if (hoverBehavior === 'Add') {
+        innerHTML += `.fcitx-candidate-last:hover .fcitx-candidate-background { clip-path: ${lastClipPath}; }\n`
       }
-      const panelBox = panel.getBoundingClientRect()
-      const panelStyle = getComputedStyle(panel)
-      const firstClipPath = getClipPath(candidates[0], panelBox, panelStyle)
-      const lastClipPath = candidates.length > 1 ? getClipPath(candidates[candidates.length - 1], panelBox, panelStyle) : ''
-      if (!firstClipPath && !lastClipPath) {
-        break
-      }
-      if (!style) {
-        style = document.createElement('style')
-        style.id = id
-        document.head.appendChild(style)
-      }
-      let innerHTML = ''
-      const hoverBehavior = getHoverBehavior()
-      if (firstClipPath) {
-        innerHTML += `.fcitx-candidate-first.fcitx-highlighted .fcitx-candidate-background { clip-path: ${firstClipPath}; }\n`
-        if (hoverBehavior === 'Add') {
-          innerHTML += `.fcitx-candidate-first:hover .fcitx-candidate-background { clip-path: ${firstClipPath}; }\n`
-        }
-      }
-      if (lastClipPath) {
-        innerHTML += `.fcitx-candidate-last.fcitx-highlighted .fcitx-candidate-background { clip-path: ${lastClipPath}; }\n`
-        if (hoverBehavior === 'Add') {
-          innerHTML += `.fcitx-candidate-last:hover .fcitx-candidate-background { clip-path: ${lastClipPath}; }\n`
-        }
-      }
-      style.innerHTML = innerHTML
-      return
-    } while (false)
+    }
+    style.innerHTML = innerHTML
+    return
+  } while (false)
 
-    style?.remove()
-  })
+  style?.remove()
 }
