@@ -209,6 +209,7 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
 
   // Unify label width for vertical and scroll mode, as some fonts have different widths for numbers.
   if ((isVertical && new Set(cands.map(cand => cand.label.length)).size === 1) || scrollStart) {
+    theme.style.removeProperty('--label-width')
     let maxWidth = 0
     hoverables.querySelectorAll('.fcitx-label').forEach((label) => {
       maxWidth = Math.max(maxWidth, label.getBoundingClientRect().width)
