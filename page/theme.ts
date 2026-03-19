@@ -14,7 +14,7 @@ function withTransition(remove: string, add: string) {
   setColorTransition(true)
   theme.classList.remove(remove)
   theme.classList.add(add)
-  setTimeout(() => setColorTransition(false), 500)
+  setTimeout(setColorTransition, 500, false)
 }
 
 function setLightTheme() {
