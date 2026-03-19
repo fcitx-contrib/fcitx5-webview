@@ -7,6 +7,9 @@ export function setLastLabels(labels: string[]) {
   formatter = null
 }
 
+const APPLE_MODIFIERS = /[⌃⌥⇧⌘]/
+const LINUX_MODIFIERS = /C-|A-|S-|M-/
+
 function guessLabelFormatter() {
   if (lastLabels.length === 0) {
     return defaultFormatter
@@ -14,7 +17,7 @@ function guessLabelFormatter() {
   const label1 = lastLabels[0]
 
   // Check for special modifier characters or combinations
-  if (/[⌃⌥⇧⌘]/.test(label1) || /C-|A-|S-|M-/.test(label1)) {
+  if (APPLE_MODIFIERS.test(label1) || LINUX_MODIFIERS.test(label1)) {
     return defaultFormatter
   }
 
