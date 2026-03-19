@@ -4,7 +4,7 @@ import { getLabelFormatter, setLastLabels } from './format-label'
 import { fixGhostStripe } from './ghost-stripe'
 import { fetchComplete, recalculateScroll, setScrollEnd, setScrollState } from './scroll'
 import { auxDown, auxUp, hoverables, preedit, theme } from './selector'
-import { div, getHoverBehavior, getPagingButtonsStyle, hideContextmenu, resetMouseMoveState, setActions, setColorTransition } from './ux'
+import { div, getHoverBehavior, getPagingButtonsStyle, hideContextmenu, resetMouseMoveState, setActions } from './ux'
 
 const regex = emojiRegex()
 const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
@@ -83,8 +83,6 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
     hoverables.classList.add('fcitx-horizontal-scroll')
     hoverables.style.maxBlockSize = '' // Fallback to non-inline larger max-block-size.
     setScrollEnd(scrollEnd)
-    // Disable transition to avoid flash on scroll expand and highlight move under light theme.
-    setColorTransition(false)
   }
   else {
     hoverables.classList.remove('fcitx-horizontal-scroll')
@@ -95,7 +93,6 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
       // Cleanup all leftovers.
       hoverables.style.maxBlockSize = ''
     }
-    setColorTransition(true)
   }
   const label0 = getLabelFormatter()(0)
   for (let i = 0; i < cands.length; ++i) {
