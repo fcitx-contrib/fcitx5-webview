@@ -6,14 +6,23 @@ const darkMQL = window.matchMedia('(prefers-color-scheme: dark)')
 let isSystemDark = darkMQL.matches
 let followSystemTheme = true
 
+function setColorTransition(enabled: boolean) {
+  theme.style.setProperty('--color-transition', enabled ? '' : 'none')
+}
+
+function withTransition(remove: string, add: string) {
+  setColorTransition(true)
+  theme.classList.remove(remove)
+  theme.classList.add(add)
+  setTimeout(() => setColorTransition(false), 500)
+}
+
 function setLightTheme() {
-  theme.classList.remove('fcitx-dark')
-  theme.classList.add('fcitx-light')
+  withTransition('fcitx-dark', 'fcitx-light')
 }
 
 function setDarkTheme() {
-  theme.classList.remove('fcitx-light')
-  theme.classList.add('fcitx-dark')
+  withTransition('fcitx-light', 'fcitx-dark')
 }
 
 function systemThemeHandler() {
