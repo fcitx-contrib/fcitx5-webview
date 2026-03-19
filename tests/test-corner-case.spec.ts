@@ -105,8 +105,13 @@ test('Uneven label width in vertical mode', async ({ page }) => {
   await setLayout(page, VERTICAL)
   await setStyle(page, { Font: { LabelFontFamily: { 0: 'PingFang SC' } } })
 
+  // When clipboard is not empty, Ctrl+Alt+Shift+U shows unicode of clipboard text with no label, thus set --label-width=0.
+  await setCandidates(page, [{ label: '' }], 0)
+
+  // Then typing a character shows unicode search result with ⌥1 label, which shouldn't be affected by previous --label-width.
   await setCandidates(page, [{ label: '1' }, { label: '2' }], 0)
   const widths = await getLabelWidths(page, [0, 1])
+  expect(widths[0], 'Not affected by previous render').toBeGreaterThan(0)
   expect(widths[0], 'Even label width for vertical').toEqual(widths[1])
 
   await setLayout(page, HORIZONTAL)
