@@ -140,7 +140,7 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
     if (cands[i].comment) {
       const comment = div('fcitx-comment')
       comment.textContent = cands[i].comment
-      if (!cands[i].spaceBetweenComment) {
+      if (cands[i].spaceBetweenComment === false) {
         comment.style.setProperty('--text-margin-left-scale', '-1')
         comment.style.setProperty('--vertical-comment-flex', '0')
       }
