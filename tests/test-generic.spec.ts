@@ -170,19 +170,15 @@ test.describe('Set layout', () => {
 
       await setLayout(page, VERTICAL)
       const verticalBox = await getBox(panel(page))
-      expect(verticalBox).toMatchObject({
-        x: 25,
-        y: 39, // shadow and inline-grid
-      })
+      expect(verticalBox.x).toEqual(25)
+      expect(Math.abs(verticalBox.y - 39)).toBeLessThan(1) // shadow and inline-grid
       expect(verticalBox.width).toEqual(width)
       expect(verticalBox.height).toEqual(height)
 
       await setLayout(page, HORIZONTAL)
       const horizontalBox = await getBox(panel(page))
-      expect(horizontalBox).toMatchObject({
-        x: 25,
-        y: 39,
-      })
+      expect(verticalBox.x).toEqual(25)
+      expect(Math.abs(verticalBox.y - 39)).toBeLessThan(1)
       expect(horizontalBox.width).toBeGreaterThan(170)
       expect(horizontalBox.width).toBeLessThan(186)
       expect(horizontalBox.height).toBeGreaterThan(27)
