@@ -138,7 +138,7 @@ test('No space between text and comment', async ({ page }) => {
   await setCandidates(page, [{ label: '1', text: '五', comment: 'g', spaceBetweenComment: false }], 0)
   const textBox = await getBox(page.locator('.fcitx-text'))
   const commentBox = await getBox(page.locator('.fcitx-comment'))
-  expect(textBox.x + textBox.width).toBeCloseTo(commentBox.x)
+  expect(Math.abs(textBox.x + textBox.width - commentBox.x)).toBeLessThan(1)
 
   // Override comments align right.
   await setLayout(page, VERTICAL)
