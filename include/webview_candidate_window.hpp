@@ -74,6 +74,7 @@ struct Candidate {
     std::string label;
     std::string comment;
     std::vector<CandidateAction> actions;
+    bool spaceBetweenComment;
 };
 
 void to_json(nlohmann::json &j, const CandidateAction &a);

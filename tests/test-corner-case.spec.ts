@@ -132,3 +132,22 @@ test('Uneval label width in scroll mode', async ({ page }) => {
   const width = (await getLabelWidths(page, [6]))[0]
   expect(width, 'When more candidates come, width is preserved.').toEqual(widths[0])
 })
+
+test('No space between text and comment', async ({ page }) => {
+  await init(page)
+  await setCandidates(page, [{ label: '1', text: '五', comment: 'g', spaceBetweenComment: false }], 0)
+  const textBox = await getBox(page.locator('.fcitx-text'))
+  const commentBox = await getBox(page.locator('.fcitx-comment'))
+  expect(textBox.x + textBox.width).toBeCloseTo(commentBox.x)
+
+  // Override comments align right.
+  await setLayout(page, VERTICAL)
+  await setStyle(page, { Typography: { VerticalCommentsAlignRight: 'True'}})
+  await setCandidates(page, [
+    { label: '1', text: '短', comment: 's', spaceBetweenComment: false },
+    { label: '2', text: '长长长长', comment: 'l', spaceBetweenComment: false },
+  ], 0)
+  const firstCommentBox = await getBox(page.locator('.fcitx-comment').nth(0))
+  const secondCommentBox = await getBox(page.locator('.fcitx-comment').nth(1))
+  expect(firstCommentBox.x + firstCommentBox.width).not.toBeCloseTo(secondCommentBox.x + secondCommentBox.width)
+})
