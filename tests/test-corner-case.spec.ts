@@ -149,5 +149,8 @@ test('No space between text and comment', async ({ page }) => {
   ], 0)
   const firstCommentBox = await getBox(page.locator('.fcitx-comment').nth(0))
   const secondCommentBox = await getBox(page.locator('.fcitx-comment').nth(1))
-  expect(firstCommentBox.x + firstCommentBox.width).not.toBeCloseTo(secondCommentBox.x + secondCommentBox.width)
+  const firstRight = firstCommentBox.x + firstCommentBox.width
+  const secondRight = secondCommentBox.x + secondCommentBox.width
+  const rightEdgeDiff = Math.abs(firstRight - secondRight)
+  expect(rightEdgeDiff, 'Comments should not be right-aligned in vertical mode').toBeGreaterThan(1)
 })
