@@ -424,7 +424,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       font-family: var(--comment-font-family);
       font-size: $comment-font-size;
       font-weight: var(--comment-font-weight);
-      margin-inline-start: calc(var(--text-margin-left-scale, 0) * $label-text-gap)
+      margin-inline-start: calc(var(--text-margin-left-scale, 0) * $label-text-gap);
     }
 
     .fcitx-preedit {
