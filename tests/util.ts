@@ -32,11 +32,11 @@ export function updateInputPanel(page: Page, preedit: string, auxUp: string = ''
 
 export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, pageable = false, hasPrev = false) {
   return page.evaluate(({ cands, highlighted, pageable, hasPrev }) =>
-    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], ...cand })), highlighted, pageable, hasPrev, false, 0, false, false), { cands, highlighted, pageable, hasPrev })
+    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], spaceBetweenComment: true, ...cand })), highlighted, pageable, hasPrev, false, 0, false, false), { cands, highlighted, pageable, hasPrev })
 }
 
 export async function scrollExpand(page: Page, texts: string[]) {
-  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [] }))
+  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
   await page.evaluate(({ cands }) =>
     window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false), { cands })
   return page.evaluate(({ cands }) =>
@@ -44,7 +44,7 @@ export async function scrollExpand(page: Page, texts: string[]) {
 }
 
 export function scroll(page: Page, texts: string[], scrollEnd: boolean) {
-  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [] }))
+  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
   return page.evaluate(({ cands, scrollEnd }) =>
     window.fcitx.setCandidates(cands, -1, false, false, false, 2, false, scrollEnd), { cands, scrollEnd })
 }

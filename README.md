@@ -1,7 +1,7 @@
 # Fcitx5 webview
 
 Customizable candidate window for
-[fcitx5-macos](https://github.com/fcitx-contrib/fcitx5-macos)
+[fcitx5-macos](https://github.com/fcitx/fcitx5-macos)
 and [fcitx5-js](https://github.com/fcitx-contrib/fcitx5-js),
 powered by [webview](https://github.com/webview/webview).
 
@@ -19,7 +19,7 @@ pnpm i
 
 ## Tweak style
 ```sh
-npm run dev
+pnpm dev
 ```
 Open http://localhost:1234 with Safari,
 as the real candidate window on macOS is rendered by WebKit.

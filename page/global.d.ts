@@ -109,6 +109,7 @@ declare global {
     label: string
     comment: string
     actions: CandidateAction[]
+    spaceBetweenComment: boolean
   }
 
   type LAYOUT = typeof HORIZONTAL | typeof VERTICAL

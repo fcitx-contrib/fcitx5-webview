@@ -37,7 +37,8 @@ void to_json(nlohmann::json &j, const Candidate &c) {
     j = nlohmann::json{{"text", c.text},
                        {"label", c.label},
                        {"comment", c.comment},
-                       {"actions", c.actions}};
+                       {"actions", c.actions},
+                       {"spaceBetweenComment", c.spaceBetweenComment}};
 }
 
 WebviewCandidateWindow::WebviewCandidateWindow(
