@@ -142,7 +142,7 @@ test('No space between text and comment', async ({ page }) => {
 
   // Override comments align right.
   await setLayout(page, VERTICAL)
-  await setStyle(page, { Typography: { VerticalCommentsAlignRight: 'True'}})
+  await setStyle(page, { Typography: { VerticalCommentsAlignRight: 'True' } })
   await setCandidates(page, [
     { label: '1', text: '短', comment: 's', spaceBetweenComment: false },
     { label: '2', text: '长长长长', comment: 'l', spaceBetweenComment: false },
