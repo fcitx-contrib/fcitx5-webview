@@ -1,12 +1,12 @@
 diff --git a/core/include/webview/detail/backends/cocoa_webkit.hh b/core/include/webview/detail/backends/cocoa_webkit.hh
-index 1a0a2c6..42cb5d4 100755
+index 1a0a2c6..beb65e2 100755
 --- a/core/include/webview/detail/backends/cocoa_webkit.hh
 +++ b/core/include/webview/detail/backends/cocoa_webkit.hh
 @@ -57,6 +57,13 @@
  
  #include <objc/objc-runtime.h>
  
-+#ifdef WKWEBVIEW_PROTOCOL
++#if defined(WKWEBVIEW_PROTOCOL) && defined(__OBJC__)
 +#import <WebKit/WebKit.h>
 +
 +@interface FileSchemeHandler : NSObject <WKURLSchemeHandler>
@@ -22,8 +22,8 @@ index 1a0a2c6..42cb5d4 100755
        : engine_base{!window}, m_app{NSApplication_get_sharedApplication()} {
 +#ifdef WKWEBVIEW_PROTOCOL
 +    m_scheme_handler =
-+        objc::retain(objc::msg_send<id>(objc::get_class("FileSchemeHandler"),
-+                                        objc::selector("new")));
++        objc::msg_send<id>(objc::get_class("FileSchemeHandler"),
++                           objc::selector("new"));
 +#endif
      window_init(window);
      window_settings(debug);
