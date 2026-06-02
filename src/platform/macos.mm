@@ -93,10 +93,20 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
     NSString *filePath = [url.path substringFromIndex:[@"/file" length]];
     std::cerr << "Accessing " << [filePath UTF8String] << " from webview"
               << std::endl;
-    NSString *homeDirectory = NSHomeDirectory();
-    NSString *localFilePath =
-        [[homeDirectory stringByAppendingString:@"/" WEBVIEW_WWW_PATH]
-            stringByAppendingString:filePath];
+    NSString *wwwPath = [NSString stringWithUTF8String:WEBVIEW_WWW_PATH];
+    NSString *baseDir = [[NSHomeDirectory()
+        stringByAppendingPathComponent:wwwPath] stringByStandardizingPath];
+    NSString *localFilePath = [[baseDir stringByAppendingPathComponent:filePath]
+        stringByStandardizingPath];
+
+    if (![localFilePath hasPrefix:baseDir] ||
+        ([localFilePath length] > [baseDir length] &&
+         [localFilePath characterAtIndex:[baseDir length]] != '/')) {
+        [urlSchemeTask didFailWithError:[NSError errorWithDomain:F5mErrorDomain
+                                                            code:0
+                                                        userInfo:nil]];
+        return;
+    }
 #ifndef NDEBUG
     std::cerr << "Resolved to " << [localFilePath UTF8String] << std::endl;
 #endif
@@ -200,16 +210,6 @@ static void setViewCornerRadius(NSView *view, CGFloat width, CGFloat height,
     CGPathRelease(path);
 }
 
-template <typename T> T *unwrap_webview_handle(webview::result<void *> handle) {
-    handle.ensure_ok();
-    return static_cast<T *>(handle.value());
-}
-
-id unwrap_webview_id(webview::result<void *> handle) {
-    handle.ensure_ok();
-    return static_cast<id>(handle.value());
-}
-
 void WebviewCandidateWindow::platform_init() {
     auto listener = [[NotificationListener alloc] init];
     [listener setCandidateWindow:this];
@@ -237,7 +237,7 @@ void *WebviewCandidateWindow::create_window() {
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {
-    [unwrap_webview_id(w_->window())
+    [unwrap_webview_handle<HoverableWindow>(w_->window())
         close]; // By default NSWindow is released on close.
     auto listener = static_cast<NotificationListener *>(this->platform_data);
     [listener release];

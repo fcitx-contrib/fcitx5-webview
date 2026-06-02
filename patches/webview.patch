@@ -46,9 +46,11 @@ index 1a0a2c6..beb65e2 100755
      auto config{objc::autorelease(WKWebViewConfiguration_new())};
  
 +#ifdef WKWEBVIEW_PROTOCOL
-+    WKWebViewConfiguration_set_URLSchemeHandler(
-+        config, m_scheme_handler,
-+        NSString_stringWithUTF8String(WKWEBVIEW_PROTOCOL));
++    if (m_scheme_handler) {
++      WKWebViewConfiguration_set_URLSchemeHandler(
++          config, m_scheme_handler,
++          NSString_stringWithUTF8String(WKWEBVIEW_PROTOCOL));
++    }
 +#endif
 +
      m_manager = WKWebViewConfiguration_get_userContentController(config);

@@ -3,11 +3,6 @@
 
 namespace candidate_window {
 
-template <typename T> T *unwrap_webview_handle(webview::result<void *> handle) {
-    handle.ensure_ok();
-    return static_cast<T *>(handle.value());
-}
-
 void WebviewCandidateWindow::platform_init() {}
 
 void *WebviewCandidateWindow::create_window() {
