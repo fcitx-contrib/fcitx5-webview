@@ -94,10 +94,11 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
     std::cerr << "Accessing " << [filePath UTF8String] << " from webview"
               << std::endl;
     NSString *wwwPath = [NSString stringWithUTF8String:WEBVIEW_WWW_PATH];
-    NSString *baseDir = [[NSHomeDirectory()
-        stringByAppendingPathComponent:wwwPath] stringByStandardizingPath];
+    NSString *baseDir =
+        [[NSHomeDirectory() stringByAppendingPathComponent:wwwPath]
+            stringByResolvingSymlinksInPath];
     NSString *localFilePath = [[baseDir stringByAppendingPathComponent:filePath]
-        stringByStandardizingPath];
+        stringByResolvingSymlinksInPath];
 
     if (![localFilePath hasPrefix:baseDir] ||
         ([localFilePath length] > [baseDir length] &&
