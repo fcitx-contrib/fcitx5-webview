@@ -244,7 +244,8 @@ WebviewCandidateWindow::~WebviewCandidateWindow() {
 }
 
 void WebviewCandidateWindow::set_transparent_background() {
-    HoverableWindow *window = unwrap_webview_handle<HoverableWindow>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
 
     // Transparent NSWindow
     window.opaque = NO;
@@ -381,7 +382,8 @@ void WebviewCandidateWindow::resize(
         }
     }
     hidden_ = false;
-    HoverableWindow *window = unwrap_webview_handle<HoverableWindow>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
     [window setFrame:NSMakeRect(x_, y_, width, height) display:YES animate:NO];
     [window orderFront:nil];
 
@@ -417,7 +419,8 @@ void WebviewCandidateWindow::resize(
 }
 
 void WebviewCandidateWindow::set_native_blur(blur_t value) const {
-    HoverableWindow *window = unwrap_webview_handle<HoverableWindow>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
     if (window.blurView.hidden == NO) {
         [window.blurView removeFromSuperview];
     }
@@ -447,7 +450,8 @@ void WebviewCandidateWindow::set_native_blur(blur_t value) const {
 }
 
 void WebviewCandidateWindow::set_native_shadow(bool enabled) const {
-    HoverableWindow *window = unwrap_webview_handle<HoverableWindow>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
     if (enabled) {
         [window setHasShadow:YES];
     } else {
