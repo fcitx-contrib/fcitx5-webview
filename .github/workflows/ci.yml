@@ -62,6 +62,9 @@ jobs:
             libcurl4-openssl-dev
           # npx playwright install-deps
 
+      - name: Patch
+        run: git apply --directory=webview patches/webview.patch
+
       - name: Configure (macOS)
         if: startsWith(matrix.os, 'macos')
         run: |

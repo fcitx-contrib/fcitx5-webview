@@ -8,7 +8,7 @@ if(NOT EMSCRIPTEN)
 endif()
 
 add_library(WebviewCandidateWindow STATIC ${WCW_SRC})
-target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview")
+target_include_directories(WebviewCandidateWindow PUBLIC "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/webview/core/include")
 target_link_libraries(WebviewCandidateWindow ${LIBS})
 if(APPLE)
     target_compile_options(WebviewCandidateWindow PRIVATE "-Wno-auto-var-id" "-ObjC++")

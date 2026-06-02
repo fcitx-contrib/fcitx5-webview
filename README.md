@@ -55,6 +55,7 @@ add `div` to the selectors so it has higher precedence.
 
 ## Build
 ```sh
+git apply --directory=webview patches/webview.patch
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ```
