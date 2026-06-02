@@ -14,11 +14,11 @@ void *WebviewCandidateWindow::create_window() {
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {
-    gtk_widget_destroy(static_cast<GtkWidget *>(w_->window()));
+    gtk_widget_destroy(unwrap_webview_handle<GtkWidget>(w_->window()));
 }
 
 void WebviewCandidateWindow::set_transparent_background() {
-    auto window = static_cast<GtkWidget *>(w_->window());
+    auto window = unwrap_webview_handle<GtkWidget>(w_->window());
 
     GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(window));
     GdkVisual *rgba_visual = gdk_screen_get_rgba_visual(screen);
@@ -32,7 +32,7 @@ void WebviewCandidateWindow::set_transparent_background() {
     gtk_widget_set_app_paintable(GTK_WIDGET(window), TRUE);
     GdkRGBA rgba{};
     webkit_web_view_set_background_color(
-        static_cast<WebKitWebView *>(w_->widget()), &rgba);
+        unwrap_webview_handle<WebKitWebView>(w_->widget()), &rgba);
 }
 
 void WebviewCandidateWindow::update_accent_color() {}
@@ -48,7 +48,7 @@ void WebviewCandidateWindow::resize(
     double top_left_radius, double top_right_radius, double bottom_right_radius,
     double bottom_left_radius, double border_width, double width, double height,
     bool dragging) {
-    gtk_widget_show_all(static_cast<GtkWidget *>(w_->window()));
+    gtk_widget_show_all(unwrap_webview_handle<GtkWidget>(w_->window()));
 }
 
 void WebviewCandidateWindow::set_native_blur(blur_t value) const {}

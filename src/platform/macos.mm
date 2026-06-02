@@ -93,10 +93,21 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
     NSString *filePath = [url.path substringFromIndex:[@"/file" length]];
     std::cerr << "Accessing " << [filePath UTF8String] << " from webview"
               << std::endl;
-    NSString *homeDirectory = NSHomeDirectory();
-    NSString *localFilePath =
-        [[homeDirectory stringByAppendingString:@"/" WEBVIEW_WWW_PATH]
-            stringByAppendingString:filePath];
+    NSString *wwwPath = [NSString stringWithUTF8String:WEBVIEW_WWW_PATH];
+    NSString *baseDir =
+        [[NSHomeDirectory() stringByAppendingPathComponent:wwwPath]
+            stringByResolvingSymlinksInPath];
+    NSString *localFilePath = [[baseDir stringByAppendingPathComponent:filePath]
+        stringByResolvingSymlinksInPath];
+
+    if (![localFilePath hasPrefix:baseDir] ||
+        ([localFilePath length] > [baseDir length] &&
+         [localFilePath characterAtIndex:[baseDir length]] != '/')) {
+        [urlSchemeTask didFailWithError:[NSError errorWithDomain:F5mErrorDomain
+                                                            code:0
+                                                        userInfo:nil]];
+        return;
+    }
 #ifndef NDEBUG
     std::cerr << "Resolved to " << [localFilePath UTF8String] << std::endl;
 #endif
@@ -227,20 +238,23 @@ void *WebviewCandidateWindow::create_window() {
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {
-    [(id)w_->window() close]; // By default NSWindow is released on close.
+    [unwrap_webview_handle<HoverableWindow>(w_->window())
+        close]; // By default NSWindow is released on close.
     auto listener = static_cast<NotificationListener *>(this->platform_data);
     [listener release];
 }
 
 void WebviewCandidateWindow::set_transparent_background() {
-    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
 
     // Transparent NSWindow
     window.opaque = NO;
     [window setBackgroundColor:[NSColor clearColor]];
 
     // Transparent WKWebView
-    WKWebView *webView = static_cast<WKWebView *>(w_->widget());
+    WKWebView *webView =
+        unwrap_webview_handle<WKWebView>(w_->browser_controller());
     [webView setValue:@NO forKey:@"drawsBackground"];
     [webView setUnderPageBackgroundColor:[NSColor clearColor]];
 
@@ -308,7 +322,7 @@ void WebviewCandidateWindow::update_accent_color() {
 }
 
 void WebviewCandidateWindow::hide() const {
-    auto window = static_cast<NSWindow *>(w_->window());
+    auto window = unwrap_webview_handle<NSWindow>(w_->window());
     [window orderBack:nil];
     [window setIsVisible:NO];
     hidden_ = true;
@@ -369,7 +383,8 @@ void WebviewCandidateWindow::resize(
         }
     }
     hidden_ = false;
-    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
     [window setFrame:NSMakeRect(x_, y_, width, height) display:YES animate:NO];
     [window orderFront:nil];
 
@@ -405,7 +420,8 @@ void WebviewCandidateWindow::resize(
 }
 
 void WebviewCandidateWindow::set_native_blur(blur_t value) const {
-    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
     if (window.blurView.hidden == NO) {
         [window.blurView removeFromSuperview];
     }
@@ -423,7 +439,8 @@ void WebviewCandidateWindow::set_native_blur(blur_t value) const {
         } else {
             window.blurView = window.visualView;
         }
-        WKWebView *webView = static_cast<WKWebView *>(w_->widget());
+        WKWebView *webView =
+            unwrap_webview_handle<WKWebView>(w_->browser_controller());
         NSView *contentView = window.contentView;
         [contentView addSubview:window.blurView
                      positioned:NSWindowBelow
@@ -434,7 +451,8 @@ void WebviewCandidateWindow::set_native_blur(blur_t value) const {
 }
 
 void WebviewCandidateWindow::set_native_shadow(bool enabled) const {
-    HoverableWindow *window = static_cast<HoverableWindow *>(w_->window());
+    HoverableWindow *window =
+        unwrap_webview_handle<HoverableWindow>(w_->window());
     if (enabled) {
         [window setHasShadow:YES];
     } else {

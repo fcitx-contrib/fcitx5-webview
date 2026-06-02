@@ -1,0 +1,86 @@
+diff --git a/core/include/webview/detail/backends/cocoa_webkit.hh b/core/include/webview/detail/backends/cocoa_webkit.hh
+index 1a0a2c6..60d01eb 100755
+--- a/core/include/webview/detail/backends/cocoa_webkit.hh
++++ b/core/include/webview/detail/backends/cocoa_webkit.hh
+@@ -57,6 +57,13 @@
+ 
+ #include <objc/objc-runtime.h>
+ 
++#if defined(WKWEBVIEW_PROTOCOL) && defined(__OBJC__)
++#import <WebKit/WebKit.h>
++
++@interface FileSchemeHandler : NSObject <WKURLSchemeHandler>
++@end
++#endif
++
+ namespace webview {
+ namespace detail {
+ 
+@@ -90,6 +97,11 @@ class cocoa_wkwebview_engine : public engine_base {
+ public:
+   cocoa_wkwebview_engine(bool debug, void *window)
+       : engine_base{!window}, m_app{NSApplication_get_sharedApplication()} {
++#ifdef WKWEBVIEW_PROTOCOL
++    m_scheme_handler =
++        objc::msg_send<id>(objc::get_class("FileSchemeHandler"),
++                           objc::selector("new"));
++#endif
+     window_init(window);
+     window_settings(debug);
+     dispatch_size_default();
+@@ -141,6 +153,12 @@ public:
+       // Needed for the window to close immediately.
+       deplete_run_loop_event_queue();
+     }
++#ifdef WKWEBVIEW_PROTOCOL
++    if (m_scheme_handler) {
++      objc::release(m_scheme_handler);
++      m_scheme_handler = nullptr;
++    }
++#endif
+     // TODO: Figure out why m_manager is still alive after the autoreleasepool
+     // has been drained.
+   }
+@@ -449,6 +467,14 @@ private:
+ 
+     auto config{objc::autorelease(WKWebViewConfiguration_new())};
+ 
++#ifdef WKWEBVIEW_PROTOCOL
++    if (m_scheme_handler) {
++      WKWebViewConfiguration_set_URLSchemeHandler(
++          config, m_scheme_handler,
++          NSString_stringWithUTF8String(WKWEBVIEW_PROTOCOL));
++    }
++#endif
++
+     m_manager = WKWebViewConfiguration_get_userContentController(config);
+ 
+     auto preferences = WKWebViewConfiguration_get_preferences(config);
+@@ -611,6 +637,9 @@ private:
+   id m_widget{};
+   id m_webview{};
+   id m_manager{};
++#ifdef WKWEBVIEW_PROTOCOL
++  id m_scheme_handler{};
++#endif
+   bool m_is_window_shown{};
+ };
+ 
+diff --git a/core/include/webview/detail/platform/darwin/webkit/WKWebViewConfiguration.hh b/core/include/webview/detail/platform/darwin/webkit/WKWebViewConfiguration.hh
+index c932565..57df82d 100644
+--- a/core/include/webview/detail/platform/darwin/webkit/WKWebViewConfiguration.hh
++++ b/core/include/webview/detail/platform/darwin/webkit/WKWebViewConfiguration.hh
+@@ -51,6 +51,13 @@ inline id WKWebViewConfiguration_get_preferences(id self) {
+   return objc::msg_send<id>(self, objc::selector("preferences"));
+ }
+ 
++inline void WKWebViewConfiguration_set_URLSchemeHandler(id self, id handler,
++                                                        id scheme) {
++  objc::msg_send<void>(self,
++                       objc::selector("setURLSchemeHandler:forURLScheme:"),
++                       handler, scheme);
++}
++
+ } // namespace webkit
+ } // namespace detail
+ } // namespace webview

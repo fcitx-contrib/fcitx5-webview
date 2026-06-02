@@ -50,3 +50,13 @@ template <typename T> function_traits<T> make_function_traits(const T &) {
 }
 
 std::string base64(const std::string &s);
+
+#ifndef __EMSCRIPTEN__
+#include "webview.h"
+namespace candidate_window {
+template <typename T> T *unwrap_webview_handle(webview::result<void *> handle) {
+    handle.ensure_ok();
+    return static_cast<T *>(handle.value());
+}
+} // namespace candidate_window
+#endif
