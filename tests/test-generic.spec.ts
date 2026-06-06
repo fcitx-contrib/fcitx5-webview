@@ -190,7 +190,7 @@ test.describe('Set layout', () => {
 test('WebKit prefix', async ({ page }) => {
   await init(page)
 
-  const style = (await page.locator('style').first().textContent())!
+  const style = (await page.locator('#fcitx-style').textContent())!
   // macOS 26 uses WebKit 26, which doesn't support user-select.
   expect(style.includes('-webkit-user-select:none')).toBe(true)
   // macOS 13 uses WebKit 16, which doesn't support backdrop-filter.

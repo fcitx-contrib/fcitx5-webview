@@ -38,18 +38,20 @@ if(NOT "${WKWEBVIEW_PROTOCOL}" STREQUAL "")
     add_definitions(-DWEBVIEW_WWW_PATH="${WEBVIEW_WWW_PATH}")
 endif()
 
-file(GLOB HTML_SOURCES CONFIGURE_DEPENDS "page/*")
-add_custom_command(
-    OUTPUT ${PROJECT_SOURCE_DIR}/include/html_template.hpp
-    COMMAND pnpm run clean && pnpm run build
-    COMMAND xxd -n HTML_TEMPLATE -i "${PROJECT_SOURCE_DIR}/dist/index.html" > "${PROJECT_SOURCE_DIR}/include/html_template.hpp"
-    DEPENDS ${HTML_SOURCES}
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating the HTML template..."
-)
-add_custom_target(GenerateHTML ALL
-    DEPENDS ${PROJECT_SOURCE_DIR}/include/html_template.hpp
-)
+if(NOT EMSCRIPTEN)
+    file(GLOB HTML_SOURCES CONFIGURE_DEPENDS "page/*")
+    add_custom_command(
+        OUTPUT ${PROJECT_SOURCE_DIR}/include/html_template.hpp
+        COMMAND pnpm run clean && pnpm run build:universal
+        COMMAND xxd -n HTML_TEMPLATE -i "${PROJECT_SOURCE_DIR}/dist/index.html" > "${PROJECT_SOURCE_DIR}/include/html_template.hpp"
+        DEPENDS ${HTML_SOURCES}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating the HTML template..."
+    )
+    add_custom_target(GenerateHTML ALL
+        DEPENDS ${PROJECT_SOURCE_DIR}/include/html_template.hpp
+    )
+endif()
 
 add_subdirectory(src)
 

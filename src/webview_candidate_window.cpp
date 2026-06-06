@@ -1,8 +1,8 @@
 #include "webview_candidate_window.hpp"
 #ifndef __EMSCRIPTEN__
 #include "curl.hpp"
-#endif
 #include "html_template.hpp"
+#endif
 #include "utility.hpp"
 #include <algorithm>
 #include <iostream>
@@ -95,11 +95,11 @@ WebviewCandidateWindow::WebviewCandidateWindow(
 
     bind("copyHTML", [this](std::string html) { write_clipboard(html); });
 
+#ifdef __EMSCRIPTEN__
+    EM_ASM(fcitx.createPanel());
+#else
     std::string html_template(reinterpret_cast<char *>(HTML_TEMPLATE),
                               HTML_TEMPLATE_len);
-#ifdef __EMSCRIPTEN__
-    EM_ASM(fcitx.createPanel(UTF8ToString($0)), html_template.c_str());
-#else
     w_->bind("fcitx", call_handler);
     w_->set_html(html_template.c_str());
 #endif

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "Candidate window for desktop, based on webview",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "targets": {
     "universal": {
       "source": "page/index.html",
@@ -21,7 +23,8 @@
     "stylelint:fix": "stylelint --fix page/*.scss",
     "check": "tsc --noEmit",
     "clean": "rm -rf dist .parcel-cache",
-    "build": "parcel build --target universal",
+    "build": "parcel build page/index.ts",
+    "build:universal": "parcel build --target universal",
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "vitest",
     "test:e2e": "playwright test"
@@ -29,16 +32,21 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",
+    "@parcel/packager-ts": "2.16.4",
+    "@parcel/transformer-inline-string": "^2.16.4",
     "@parcel/transformer-sass": "^2.16.4",
-    "@playwright/test": "^1.59.0",
-    "@types/node": "^25.5.0",
-    "emoji-regex": "^10.6.0",
-    "eslint": "^10.1.0",
+    "@parcel/transformer-typescript-types": "2.16.4",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.2",
+    "eslint": "^10.4.1",
     "eslint-plugin-format": "^2.0.1",
     "parcel": "^2.16.4",
-    "stylelint": "^17.6.0",
+    "stylelint": "^17.13.0",
     "stylelint-config-standard-scss": "^17.0.0",
-    "typescript": "^6.0.2",
-    "vitest": "^4.1.2"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  },
+  "dependencies": {
+    "emoji-regex": "^10.6.0"
   }
 }

@@ -14,4 +14,6 @@ if(APPLE)
     target_compile_options(WebviewCandidateWindow PRIVATE "-Wno-auto-var-id" "-ObjC++")
 endif()
 
-add_dependencies(WebviewCandidateWindow GenerateHTML)
+if (NOT EMSCRIPTEN)
+    add_dependencies(WebviewCandidateWindow GenerateHTML)
+endif()
