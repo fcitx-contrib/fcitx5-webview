@@ -9,7 +9,7 @@ import { hidePanel, setCandidates, updateInputPanel } from './panel'
 import { loadPlugins, pluginManager, unloadPlugins } from './plugin'
 import { initScroll, scrollKeyAction } from './scroll'
 import { hoverables, initSelectors, panel } from './selector'
-import { setAccentColor, setTheme } from './theme'
+import { initTheme, setAccentColor, setTheme } from './theme'
 import { answerActions, initUx, resize } from './ux'
 
 function setLayout(layout: 0 | 1) {
@@ -92,6 +92,7 @@ export function initPanel(container: HTMLElement) {
     </div>
   `)
   initSelectors(container)
+  initTheme()
   initUx()
   initScroll()
 

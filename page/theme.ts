@@ -2,8 +2,8 @@ import {
   theme,
 } from './selector'
 
-const darkMQL = window.matchMedia('(prefers-color-scheme: dark)')
-let isSystemDark = darkMQL.matches
+let darkMQL: MediaQueryList | undefined
+let isSystemDark = false
 let followSystemTheme = true
 
 function setColorTransition(enabled: boolean) {
@@ -34,12 +34,19 @@ function systemThemeHandler() {
   }
 }
 
-darkMQL.addEventListener('change', (event) => {
-  isSystemDark = event.matches
-  if (followSystemTheme) {
-    systemThemeHandler()
+export function initTheme() {
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return
   }
-})
+  darkMQL = window.matchMedia('(prefers-color-scheme: dark)')
+  isSystemDark = darkMQL.matches
+  darkMQL.addEventListener('change', (event) => {
+    isSystemDark = event.matches
+    if (followSystemTheme) {
+      systemThemeHandler()
+    }
+  })
+}
 
 export function setTheme(theme: 0 | 1 | 2) {
   switch (theme) {

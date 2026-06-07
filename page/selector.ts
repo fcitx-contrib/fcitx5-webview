@@ -8,7 +8,7 @@ export let auxUp: HTMLElement
 export let auxDown: HTMLElement
 export let contextmenu: HTMLElement
 
-export function initSelectors(container: HTMLElement | Document = document) {
+export function initSelectors(container: HTMLElement | Document) {
   theme = container.querySelector('#fcitx-theme') as HTMLElement
   decoration = container.querySelector('.fcitx-decoration') as HTMLElement
   panel = container.querySelector('.fcitx-panel')!
