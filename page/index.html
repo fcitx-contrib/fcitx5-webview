@@ -2,56 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <style>
-      @import './generic.scss';
-    </style>
-    <style id="fcitx-macos">
-      @import './macos.scss';
-    </style>
-    <style id="fcitx-macos-15">
-      @import './macos-15.scss';
-    </style>
-    <style id="fcitx-macos-26">
-      @import './macos-26.scss';
-    </style>
-    <style>
-      @import './user.scss';
-    </style>
-    <link id="fcitx-user" rel="stylesheet" />
   </head>
   <body>
-    <div id="fcitx-theme" class="fcitx-blue fcitx-macos fcitx-macos-15 fcitx-macos-26">
-      <div class="fcitx-decoration">
-        <div class="fcitx-panel-topleft"></div>
-        <div class="fcitx-panel-top"></div>
-        <div class="fcitx-panel-topright"></div>
-        <div class="fcitx-panel-left"></div>
-        <div class="fcitx-panel-right"></div>
-        <div class="fcitx-panel-bottomleft"></div>
-        <div class="fcitx-panel-bottom"></div>
-        <div class="fcitx-panel-bottomright"></div>
-        <!-- The last child is the highest. -->
-        <div class="fcitx-panel-center">
-          <div class="fcitx-panel fcitx-horizontal-tb">
-            <div class="fcitx-panel-blur">
-              <div class="fcitx-header">
-                <div class="fcitx-aux-up fcitx-hidden"></div>
-                <div class="fcitx-preedit fcitx-hidden">
-                  <div class="fcitx-pre-caret"></div>
-                  <div class="fcitx-caret"></div>
-                  <div class="fcitx-post-caret"></div>
-                </div>
-              </div>
-              <div class="fcitx-aux-down fcitx-hidden"></div>
-              <div class="fcitx-hoverables fcitx-horizontal"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="fcitx-contextmenu fcitx-blur"></div>
-    </div>
     <script type="module">
-      import './api.ts'
+      import { initPanel } from './index.ts'
+      initPanel(document.body)
     </script>
   </body>
 </html>

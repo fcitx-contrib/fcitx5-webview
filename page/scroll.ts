@@ -1,4 +1,4 @@
-import { COLLAPSE, COMMIT, DOWN, END, HOME, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, UP } from './constant'
+import { COLLAPSE, COMMIT, DOWN, END, HOME, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCROLL_NONE, SCROLL_READY, SCROLLING, UP } from './constant'
 import { getLabelFormatter } from './format-label'
 import {
   hoverables,
@@ -271,27 +271,36 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
   }
 }
 
-hoverables.addEventListener('scroll', () => {
-  if (scrollEnd || fetching) {
-    return
-  }
-  // This is safe since there are at least 2 lines.
-  const bottomRightIndex = itemCountInFirstNRows(rowItemCount.length - 1) - 1
-  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
-  const bottomRight = candidates[bottomRightIndex]
-  if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
-    fetching = true
-    window.fcitx('scroll', candidates.length, MAX_ROW * MAX_COLUMN)
-  }
-})
+export function initScroll() {
+  hoverables.addEventListener('wheel', (e) => {
+    if (getScrollState() === SCROLLING) {
+      return
+    }
+    window.fcitx('page', e.deltaY > 0)
+  })
 
-// Expand/collapse animation. Sync with native window for position, size and blur.
-const resizeObserver = new ResizeObserver((entries) => {
-  if (scrollState === SCROLL_READY) {
-    collapseHeight = Math.max(ROW_HEIGHT, entries[0].contentRect.height /* may be 0 so trust it only if a candidate has multiple lines */)
-    // Set max-block-size as the actual value to enable expand animation.
-    hoverables.style.maxBlockSize = `${collapseHeight}px`
-  }
-  resizeForAnimation()
-})
-resizeObserver.observe(hoverables)
+  hoverables.addEventListener('scroll', () => {
+    if (scrollEnd || fetching) {
+      return
+    }
+    // This is safe since there are at least 2 lines.
+    const bottomRightIndex = itemCountInFirstNRows(rowItemCount.length - 1) - 1
+    const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+    const bottomRight = candidates[bottomRightIndex]
+    if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
+      fetching = true
+      window.fcitx('scroll', candidates.length, MAX_ROW * MAX_COLUMN)
+    }
+  })
+
+  // Expand/collapse animation. Sync with native window for position, size and blur.
+  const resizeObserver = new ResizeObserver((entries) => {
+    if (scrollState === SCROLL_READY) {
+      collapseHeight = Math.max(ROW_HEIGHT, entries[0].contentRect.height /* may be 0 so trust it only if a candidate has multiple lines */)
+      // Set max-block-size as the actual value to enable expand animation.
+      hoverables.style.maxBlockSize = `${collapseHeight}px`
+    }
+    resizeForAnimation()
+  })
+  resizeObserver.observe(hoverables)
+}

@@ -1,4 +1,4 @@
-import { distribution } from './distribution'
+import { moveHighlight } from './panel'
 import {
   expand,
   getScrollState,
@@ -29,6 +29,42 @@ export function resetMouseMoveState() {
   mouseMoveState = 0
   hoverables.classList.remove('fcitx-mousemoved')
 }
+
+let actions: CandidateAction[][] = []
+export function setActions(newActions: CandidateAction[][]) {
+  actions = newActions
+}
+
+let actionX = 0
+let actionY = 0
+let actionIndex = 0
+
+export function answerActions(actions: CandidateAction[]) {
+  showContextmenu(actionX, actionY, actionIndex, actions)
+}
+
+let setBlurFunc = (_enabled: boolean) => {}
+
+export function setBlur(enabled: boolean) {
+  setBlurFunc(enabled)
+}
+
+function showCaret(show: boolean) {
+  const caret = document.querySelector('.fcitx-caret')
+  if (caret) {
+    (<HTMLElement>caret).style.opacity = show ? '1' : '0'
+  }
+}
+
+let blinkEnabled = true
+export function setBlink(enabled: boolean) {
+  blinkEnabled = enabled
+  if (!enabled) {
+    showCaret(true)
+  }
+}
+
+let blinkSwitch = false
 
 interface ShadowBox {
   anchorTop: number
@@ -188,152 +224,135 @@ export function hideContextmenu() {
   contextmenu.style.display = 'none'
 }
 
-const receiver = (distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
+let receiver: HTMLElement
 
-receiver.addEventListener('mousedown', (e) => {
-  if (e.button !== 0) {
-    return
-  }
-  pressed = true
-  startX = e.clientX
-  startY = e.clientY
-  dX = 0
-  dY = 0
-  dragOffset = 0
-})
+export function initUx() {
+  receiver = (window.fcitx.distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
 
-// Use document even on f5j to avoid missing mousemove when an abrupt drag moves cursor out of decoration.
-document.addEventListener('mousemove', (e) => {
-  if (++mouseMoveState >= 2) {
-    hoverables.classList.add('fcitx-mousemoved')
-  }
-  if (e.button !== 0 || !pressed) {
-    return
-  }
-  hideContextmenu()
-  dragging = true
-  const dx = e.clientX - startX
-  const dy = e.clientY - startY
-  if (distribution === 'fcitx5-js') {
-    // On desktop mouse is always at where drag starts in the html,
-    // but on f5j mouse can be anywhere during drag.
-    startX = e.clientX
-    startY = e.clientY
-  }
-  dX += dx
-  dY += dy
-  dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
-  resize(epoch, dx, dy, true, false)
-})
+  hoverables.addEventListener('mouseleave', () => {
+    const hoverBehavior = getHoverBehavior()
+    if (hoverBehavior === 'Move') {
+      const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
+      const originalHighlighted = hoverables.querySelector('.fcitx-highlighted-original')
+      moveHighlight(lastHighlighted, originalHighlighted)
+    }
+  })
 
-document.addEventListener('mouseup', (e) => {
-  if (e.button !== 0) {
-    return
-  }
-  pressed = false
-  if (dragging) {
-    dragging = false
-    if (dragOffset > DRAG_THRESHOLD) {
+  receiver.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) {
       return
     }
-  }
-  let target = e.target as Element
-  if (!isInsideHoverables(target)) {
-    return
-  }
-  while (target.parentElement !== hoverables) {
-    if (target.classList.contains('fcitx-prev')) {
-      return window.fcitx('page', false)
+    pressed = true
+    startX = e.clientX
+    startY = e.clientY
+    dX = 0
+    dY = 0
+    dragOffset = 0
+  })
+
+  // Use document even on f5j to avoid missing mousemove when an abrupt drag moves cursor out of decoration.
+  document.addEventListener('mousemove', (e) => {
+    if (++mouseMoveState >= 2) {
+      hoverables.classList.add('fcitx-mousemoved')
     }
-    else if (target.classList.contains('fcitx-next')) {
-      return window.fcitx('page', true)
+    if (e.button !== 0 || !pressed) {
+      return
     }
-    else if (target.classList.contains('fcitx-expand')) {
-      return expand()
-    }
-    target = target.parentElement!
-  }
-  const i = getCandidateIndex(target)
-  if (i >= 0) {
-    return window.fcitx('select', i)
-  }
-})
-
-let actions: CandidateAction[][] = []
-export function setActions(newActions: CandidateAction[][]) {
-  actions = newActions
-}
-
-let actionX = 0
-let actionY = 0
-let actionIndex = 0
-
-export function answerActions(actions: CandidateAction[]) {
-  showContextmenu(actionX, actionY, actionIndex, actions)
-}
-
-receiver.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
-  let target = e.target as Element
-  if (!isInsideHoverables(target)) {
-    return
-  }
-
-  const x = e.clientX - (distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
-  const y = e.clientY - (distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
-
-  while (target.parentElement !== hoverables) {
-    target = target.parentElement!
-  }
-  const i = getCandidateIndex(target)
-  if (i >= 0 && getScrollState() === 2) {
-    actionX = x
-    actionY = y
-    actionIndex = i
-    return window.fcitx('askActions', i)
-  }
-  if (i >= 0 && actions[i].length > 0) {
-    showContextmenu(x, y, i, actions[i])
-  }
-  else {
     hideContextmenu()
-  }
-})
+    dragging = true
+    const dx = e.clientX - startX
+    const dy = e.clientY - startY
+    if (window.fcitx.distribution === 'fcitx5-js') {
+      // On desktop mouse is always at where drag starts in the html,
+      // but on f5j mouse can be anywhere during drag.
+      startX = e.clientX
+      startY = e.clientY
+    }
+    dX += dx
+    dY += dy
+    dragOffset = Math.max(dragOffset, dX * dX + dY * dY)
+    resize(epoch, dx, dy, true, false)
+  })
 
-const panelBlur = document.querySelector('.fcitx-panel-blur')!
+  document.addEventListener('mouseup', (e) => {
+    if (e.button !== 0) {
+      return
+    }
+    pressed = false
+    if (dragging) {
+      dragging = false
+      if (dragOffset > DRAG_THRESHOLD) {
+        return
+      }
+    }
+    let target = e.target as Element
+    if (!isInsideHoverables(target)) {
+      return
+    }
+    while (target.parentElement !== hoverables) {
+      if (target.classList.contains('fcitx-prev')) {
+        return window.fcitx('page', false)
+      }
+      else if (target.classList.contains('fcitx-next')) {
+        return window.fcitx('page', true)
+      }
+      else if (target.classList.contains('fcitx-expand')) {
+        return expand()
+      }
+      target = target.parentElement!
+    }
+    const i = getCandidateIndex(target)
+    if (i >= 0) {
+      return window.fcitx('select', i)
+    }
+  })
 
-export function setBlur(enabled: boolean) {
-  if (enabled) {
-    panelBlur.classList.add('fcitx-blur')
+  receiver.addEventListener('contextmenu', (e) => {
+    e.preventDefault()
+    let target = e.target as Element
+    if (!isInsideHoverables(target)) {
+      return
+    }
+
+    const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
+    const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
+
+    while (target.parentElement !== hoverables) {
+      target = target.parentElement!
+    }
+    const i = getCandidateIndex(target)
+    if (i >= 0 && getScrollState() === 2) {
+      actionX = x
+      actionY = y
+      actionIndex = i
+      return window.fcitx('askActions', i)
+    }
+    if (i >= 0 && actions[i].length > 0) {
+      showContextmenu(x, y, i, actions[i])
+    }
+    else {
+      hideContextmenu()
+    }
+  })
+
+  setBlurFunc = (enabled: boolean) => {
+    const panelBlur = document.querySelector('.fcitx-panel-blur')!
+    if (enabled) {
+      panelBlur.classList.add('fcitx-blur')
+    }
+    else {
+      panelBlur.classList.remove('fcitx-blur')
+    }
   }
-  else {
-    panelBlur.classList.remove('fcitx-blur')
-  }
+
+  setInterval(() => {
+    if (!blinkEnabled) {
+      return
+    }
+    showCaret(blinkSwitch)
+    blinkSwitch = !blinkSwitch
+  }, 500)
 }
-
-function showCaret(show: boolean) {
-  const caret = document.querySelector('.fcitx-caret')
-  if (caret) {
-    (<HTMLElement>caret).style.opacity = show ? '1' : '0'
-  }
-}
-
-let blinkEnabled = true
-export function setBlink(enabled: boolean) {
-  blinkEnabled = enabled
-  if (!enabled) {
-    showCaret(true)
-  }
-}
-
-let blinkSwitch = false
-setInterval(() => {
-  if (!blinkEnabled) {
-    return
-  }
-  showCaret(blinkSwitch)
-  blinkSwitch = !blinkSwitch
-}, 500)
 
 let hoverBehavior: HOVER_BEHAVIOR = 'None'
 export function setHoverBehavior(behavior: HOVER_BEHAVIOR) {
