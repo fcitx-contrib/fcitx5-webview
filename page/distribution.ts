@@ -19,6 +19,8 @@ export function initDistribution() {
   height: 1080px;
 }`
     document.head.append(style)
+    // window.fcitx is a function with properties, created by webview or f5j.
+    // This ||= is for pnpm run dev.
     window.fcitx ||= ((...args: any[]) => console.log(...args)) as any // eslint-disable-line no-console
     window.fcitx.distribution = distribution
   }
