@@ -52,6 +52,13 @@ export function initPanel(container: HTMLElement) {
     document.head.append(style)
   }
 
+  if (!document.head.querySelector('#fcitx-user')) {
+    const link = document.createElement('link')
+    link.id = 'fcitx-user'
+    link.rel = 'stylesheet'
+    document.head.append(link)
+  }
+
   // The last child of fcitx-decoration is the highest.
   container.insertAdjacentHTML('beforeend', `
     <div id="fcitx-theme" class="fcitx-blue fcitx-macos fcitx-macos-15 fcitx-macos-26">
