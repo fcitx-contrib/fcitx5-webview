@@ -111,7 +111,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       transition: $color-transition;
     }
 
-    .fcitx-text, .fcitx-header {
+    .fcitx-text, .fcitx-header, .fcitx-tab-inner {
       color: $text-color;
       transition: $color-transition;
     }
@@ -183,6 +183,20 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       .fcitx-comment {
         color: $highlight-comment-color;
       }
+    }
+
+    .fcitx-mousemoved .fcitx-tab:not(.fcitx-highlighted):hover:not(:active) .fcitx-tab-inner {
+      background-color: $hover-color;
+    }
+
+    .fcitx-tab:not(.fcitx-highlighted):active .fcitx-tab-inner {
+      background-color: $press-color;
+    }
+
+    .fcitx-tab.fcitx-highlighted .fcitx-tab-inner {
+      background-color: $highlight-color;
+      color: $highlight-text-color;
+      transition: $color-transition;
     }
 
     .fcitx-comment {
@@ -400,11 +414,11 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       min-inline-size: $vertical-min-width; /* avoid abrupt enlarging when start typing. */
     }
 
-    .fcitx-candidate-inner, .fcitx-paging-inner, .fcitx-menu-item {
+    .fcitx-candidate-inner, .fcitx-paging-inner, .fcitx-menu-item, .fcitx-tab-inner {
       border-radius: $highlight-radius;
     }
 
-    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-prev, .fcitx-next {
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-prev, .fcitx-next, .fcitx-tab-inner {
       margin: $margin;
     }
 
@@ -479,7 +493,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       }
     }
 
-    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item {
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-tab-inner {
       /* combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
       padding-block: $top-padding $bottom-padding;
       padding-inline: $left-padding $right-padding;
@@ -497,6 +511,10 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
     */
     .fcitx-vertical .fcitx-divider {
       block-size: $horizontal-divider-width;
+    }
+
+    .fcitx-tab {
+      min-block-size: $candidate-height;
     }
 
     .fcitx-horizontal-scroll {

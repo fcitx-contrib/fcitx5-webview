@@ -67,6 +67,9 @@ enum scroll_key_action_t {
 struct CandidateAction {
     int id;
     std::string text;
+    bool checked = false;
+    bool checkable = false;
+    bool separator = false;
 };
 
 struct Candidate {
@@ -122,6 +125,7 @@ class WebviewCandidateWindow {
     void set_candidates(std::vector<Candidate> candidates, int highlighted,
                         scroll_state_t scroll_state, bool scroll_start,
                         bool scroll_end);
+    void set_tab_actions(std::vector<CandidateAction> actions);
     void set_layout(layout_t layout) { layout_ = layout; }
     void set_writing_mode(writing_mode_t mode) { writing_mode_ = mode; }
 
@@ -155,6 +159,10 @@ class WebviewCandidateWindow {
         action_callback = callback;
     }
 
+    void set_tab_action_callback(std::function<void(int id)> callback) {
+        tab_action_callback = callback;
+    }
+
     // Fetch system accent color.
     void update_accent_color();
 
@@ -182,6 +190,7 @@ class WebviewCandidateWindow {
     formatted auxUp_;
     formatted auxDown_;
     std::vector<Candidate> candidates_;
+    std::vector<CandidateAction> tab_actions_;
     int highlighted_ = -1;
     scroll_state_t scroll_state_;
     bool scroll_start_;
@@ -196,6 +205,7 @@ class WebviewCandidateWindow {
     std::function<void(int, int)> scroll_callback = [](int, int) {};
     std::function<void(int index)> ask_actions_callback = [](int) {};
     std::function<void(int index, int id)> action_callback = [](int, int) {};
+    std::function<void(int id)> tab_action_callback = [](int) {};
     std::string system_ = "";
     int version_ = 0;
     bool pageable_ = false;

@@ -3,7 +3,7 @@ import { SCROLL_NONE, SCROLL_READY, SCROLLING } from './constant'
 import { getLabelFormatter, setLastLabels } from './format-label'
 import { fixGhostStripe } from './ghost-stripe'
 import { fetchComplete, recalculateScroll, setScrollEnd, setScrollState } from './scroll'
-import { auxDown, auxUp, hoverables, preedit, theme } from './selector'
+import { auxDown, auxUp, hoverables, panel, preedit, tabs, theme } from './selector'
 import { div, getHoverBehavior, getPagingButtonsStyle, hideContextmenu, resetMouseMoveState, setActions } from './ux'
 
 const regex = emojiRegex()
@@ -62,7 +62,36 @@ const caretRight = common.replace('{}', '0 0 192 512').replace('{}', 'M0 384.662
 const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z')
 const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
-export function setCandidates(cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
+function renderTabAction(action: CandidateAction) {
+  const tab = div('fcitx-tab')
+  const tabInner = div('fcitx-tab-inner')
+  tabInner.textContent = action.text
+  tab.appendChild(tabInner)
+  if (action.checked) {
+    tab.classList.add('fcitx-highlighted')
+  }
+  tab.addEventListener('click', () => window.fcitx('tabAction', action.id))
+  return tab
+}
+
+function setTabActions(actions: CandidateAction[]) {
+  const scrollable = tabs.querySelector('.fcitx-tabs-scrollable')!
+  const pinned = tabs.querySelector('.fcitx-tabs-pinned')!
+  scrollable.innerHTML = ''
+  pinned.innerHTML = ''
+  const index = actions.findIndex(action => action.separator)
+  const scrollableActions = index !== -1 ? actions.slice(0, index) : actions
+  const pinnedActions = index !== -1 ? actions.slice(index + 1).filter(action => !action.separator) : []
+  for (const action of scrollableActions) {
+    scrollable.appendChild(renderTabAction(action))
+  }
+  for (const action of pinnedActions) {
+    pinned.appendChild(renderTabAction(action))
+  }
+  panel.classList.toggle('fcitx-has-tab-actions', actions.length > 0)
+}
+
+export function setCandidates(cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean, tabActions: CandidateAction[]) {
   if (cands.length) {
     // Auto layout requires display: not none so that getBoundingClientRect works.
     theme.classList.remove('fcitx-hidden')
@@ -71,6 +100,7 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   resetMouseMoveState()
   hideContextmenu()
   setScrollState(scrollState)
+  setTabActions(scrollState === SCROLLING ? tabActions : [])
   // Clear existing candidates when scroll continues.
   if (scrollState !== SCROLLING || scrollStart) {
     hoverables.innerHTML = ''
@@ -276,6 +306,6 @@ export function updateInputPanel(formattedPreCaret: [string, number][], hasCaret
 
 export function hidePanel() {
   updateInputPanel([], false, [], [], [])
-  setCandidates([], -1, false, false, false, SCROLL_NONE, false, false)
+  setCandidates([], -1, false, false, false, SCROLL_NONE, false, false, [])
   theme.classList.add('fcitx-hidden')
 }

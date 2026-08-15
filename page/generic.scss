@@ -72,6 +72,43 @@
   }
 }
 
+.fcitx-panel-body {
+  display: flex;
+}
+
+.fcitx-tabs {
+  display: none;
+  flex-direction: column;
+}
+
+.fcitx-panel.fcitx-has-tab-actions .fcitx-tabs {
+  display: flex;
+}
+
+.fcitx-tabs-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: none;
+}
+
+.fcitx-tabs-pinned {
+  flex-shrink: 0;
+}
+
+.fcitx-tab {
+  display: flex;
+  justify-content: center;
+}
+
+.fcitx-tab-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  /* Tabs should not be rotated by vertical writing mode. */
+  writing-mode: horizontal-tb;
+}
+
 .fcitx-preedit, .fcitx-aux-up {
   display: inline-flex; /* put the caret on the same line with preedit */
   align-items: center;
