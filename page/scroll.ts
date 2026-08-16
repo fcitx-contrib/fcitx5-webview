@@ -109,6 +109,9 @@ function distanceToTop(element: Element, basis: 'top' | 'bottom') {
 
 function scrollForHighlight() {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+  if (!candidates[highlighted]) {
+    return
+  }
 
   const bottomOffset = distanceToTop(candidates[highlighted], 'bottom') - hoverables.clientHeight
   // Highlighted candidate below bottom of panel
@@ -137,10 +140,12 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
     const skipped = itemCountInFirstNRows(highlightedRow)
     for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
       const candidate = candidates[i]
-      candidate.classList.remove('fcitx-highlighted-row')
-      renderLabel(candidate, 0)
+      if (candidate) {
+        candidate.classList.remove('fcitx-highlighted-row')
+        renderLabel(candidate, 0)
+      }
     }
-    candidates[highlighted].classList.remove('fcitx-highlighted', 'fcitx-highlighted-original')
+    candidates[highlighted]?.classList.remove('fcitx-highlighted', 'fcitx-highlighted-original')
   }
 
   highlighted = newHighlighted
@@ -149,10 +154,12 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   const skipped = itemCountInFirstNRows(highlightedRow)
   for (let i = skipped; i < skipped + rowItemCount[highlightedRow]; ++i) {
     const candidate = candidates[i]
-    candidate.classList.add('fcitx-highlighted-row')
-    renderLabel(candidate, (i - skipped + 1) % 10)
+    if (candidate) {
+      candidate.classList.add('fcitx-highlighted-row')
+      renderLabel(candidate, (i - skipped + 1) % 10)
+    }
   }
-  candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
+  candidates[highlighted]?.classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
 
 // Normalize candidate widths to the same cell grid used by scroll mode.
@@ -183,9 +190,15 @@ export function normalizeCandidateWidths() {
   return counts
 }
 
-export function recalculateScroll(scrollStart: boolean) {
+export function recalculateScroll(scrollStart: boolean, initialHighlighted?: number) {
   rowItemCount = normalizeCandidateWidths()
-  renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
+  const targetHighlighted = scrollStart
+    ? (initialHighlighted !== undefined && initialHighlighted >= 0 ? initialHighlighted : 0)
+    : highlighted
+  renderHighlightAndLabels(targetHighlighted, !scrollStart)
+  if (scrollStart && targetHighlighted > 0) {
+    scrollForHighlight()
+  }
 }
 
 function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {

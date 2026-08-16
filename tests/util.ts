@@ -35,12 +35,12 @@ export function setCandidates(page: Page, cands: Partial<Candidate>[], highlight
     window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], spaceBetweenComment: true, ...cand })), highlighted, pageable, hasPrev, false, 0, false, false), { cands, highlighted, pageable, hasPrev })
 }
 
-export async function scrollExpand(page: Page, texts: string[]) {
+export async function scrollExpand(page: Page, texts: string[], highlighted = 0) {
   const cands = texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
-  await page.evaluate(({ cands }) =>
-    window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false), { cands })
-  return page.evaluate(({ cands }) =>
-    window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false), { cands })
+  await page.evaluate(({ cands, highlighted }) =>
+    window.fcitx.setCandidates(cands, highlighted, false, false, false, 1, false, false), { cands, highlighted })
+  return page.evaluate(({ cands, highlighted }) =>
+    window.fcitx.setCandidates(cands, highlighted, false, false, false, 2, true, false), { cands, highlighted })
 }
 
 export function scrollReady(page: Page, cands: Partial<Candidate>[], highlighted = 0, dynamic = false) {

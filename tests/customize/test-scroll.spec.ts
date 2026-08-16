@@ -121,3 +121,40 @@ test('Dynamic first row matches scroll candidate cells', async ({ page }) => {
   expect(dynamicInner.width).toBe(scrollInner.width)
   expect(dynamicInner.height).toBe(scrollInner.height)
 })
+
+test('Expand with initial highlight preserves selection', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '6' },
+  })
+  const texts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+  await scrollExpand(page, texts, 2)
+  await expect(candidate(page, 2)).toContainClass('fcitx-highlighted')
+  const cppCalls = await getCppCalls(page)
+  expect(cppCalls.filter(call => JSON.stringify(call) === '{"highlight":[2]}').length).toBeGreaterThanOrEqual(1)
+})
+
+test('Navigate down a row with DOWN and collapse on top row with UP', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '6' },
+  })
+  const texts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+  await scrollExpand(page, texts, 1)
+  await expect(candidate(page, 1)).toContainClass('fcitx-highlighted')
+
+  // Move down to next row
+  await page.evaluate(() => window.fcitx.scrollKeyAction(11)) // DOWN = 11
+  await expect(candidate(page, 7)).toContainClass('fcitx-highlighted')
+
+  // Move back up to top row
+  await page.evaluate(() => window.fcitx.scrollKeyAction(10)) // UP = 10
+  await expect(candidate(page, 1)).toContainClass('fcitx-highlighted')
+
+  // Pressing UP on top row triggers collapse
+  await page.evaluate(() => window.fcitx.scrollKeyAction(10)) // UP = 10
+  // Wait for collapse timeout
+  await page.waitForTimeout(350)
+  const cppCalls = await getCppCalls(page)
+  expect(cppCalls.filter(call => JSON.stringify(call) === '{"scroll":[-1,0]}').length).toEqual(1)
+})

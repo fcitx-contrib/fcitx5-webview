@@ -300,7 +300,7 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
     hoverables.appendChild(paging)
   }
   else if (scrollState === SCROLLING) {
-    recalculateScroll(scrollStart)
+    recalculateScroll(scrollStart, highlighted)
   }
 
   recalculateDynamicCandidateLayout()
