@@ -127,13 +127,14 @@ void WebviewCandidateWindow::set_accent_color() const {
 void WebviewCandidateWindow::set_candidates(std::vector<Candidate> candidates,
                                             int highlighted,
                                             scroll_state_t scroll_state,
-                                            bool scroll_start,
-                                            bool scroll_end) {
+                                            bool scroll_start, bool scroll_end,
+                                            bool dynamic) {
     candidates_ = std::move(candidates);
     highlighted_ = highlighted;
     scroll_state_ = scroll_state;
     scroll_start_ = scroll_start;
     scroll_end_ = scroll_end;
+    dynamic_ = dynamic;
 }
 
 void WebviewCandidateWindow::scroll_key_action(
@@ -171,7 +172,7 @@ void WebviewCandidateWindow::show(double x, double y, double height) const {
     invoke_js("updateInputPanel", preeditPreCaret_, hasCaret_,
               preeditPostCaret_, auxUp_, auxDown_);
     invoke_js("setCandidates", candidates_, highlighted_, pageable_, has_prev_,
-              has_next_, scroll_state_, scroll_start_, scroll_end_);
+              has_next_, scroll_state_, scroll_start_, scroll_end_, dynamic_);
     invoke_js("resize", epoch, 0., 0., false);
 }
 

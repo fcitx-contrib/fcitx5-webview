@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { candidate, getCppCalls, init, panel, scrollExpand, setStyle } from '../util'
+import { candidate, getBox, getCppCalls, init, panel, scrollExpand, scrollReady, setStyle } from '../util'
 
 test('Row, column and cell width', async ({ page }) => {
   await init(page)
@@ -37,4 +37,87 @@ test('Hide scrollbar', async ({ page }) => {
   await scrollExpand(page, Array.from({ length: 42 }).map((_, i) => (i + 1).toString()))
   const pane = panel(page)
   await expect(pane).toHaveCSS('width', '390px')
+})
+
+test('Dynamic candidate count in collapsed horizontal mode', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '6' },
+  })
+  await scrollReady(page, Array.from({ length: 7 }).map(() => ({ text: '短' })), 0, true)
+
+  await expect(panel(page)).toHaveCSS('width', '400px')
+  await expect(page.locator('.fcitx-expand')).toBeVisible()
+  await expect(page.locator('.fcitx-candidate:visible')).toHaveCount(5)
+})
+
+test('Dynamic candidate count selects only visible candidates', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '6' },
+  })
+  await scrollReady(page, Array.from({ length: 7 }).map(() => ({ text: '短' })), 0, true)
+
+  await page.evaluate(() => window.fcitx.scrollKeyAction(6))
+  expect((await getCppCalls(page)).filter(call => 'select' in call)).toEqual([])
+
+  await page.evaluate(() => window.fcitx.scrollKeyAction(4))
+  expect((await getCppCalls(page)).filter(call => 'select' in call)).toEqual([{ select: [3] }])
+})
+
+test('Dynamic candidate count can be enabled without scroll state', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '6' },
+  })
+  const cands = Array.from({ length: 7 }).map(() => ({ text: '短', label: '', comment: '', actions: [], spaceBetweenComment: true }))
+  await page.evaluate(({ cands }) => window.fcitx.setCandidates(cands, 0, false, false, false, 0, false, false, true), { cands })
+  await expect(page.locator('.fcitx-candidate:visible')).toHaveCount(6)
+})
+
+test('Dynamic candidate count can be disabled', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '6' },
+  })
+  await scrollReady(page, Array.from({ length: 7 }).map(() => ({ text: '短' })), 0, true)
+  await expect(page.locator('.fcitx-candidate:visible')).toHaveCount(5)
+
+  await setStyle(page, {
+    ScrollMode: { DynamicCandidateCount: 'False' },
+  })
+  await expect(page.locator('.fcitx-expand')).toBeVisible()
+  await expect(page.locator('.fcitx-candidate:visible')).toHaveCount(7)
+
+  await setStyle(page, {
+    ScrollMode: { DynamicCandidateCount: 'True' },
+  })
+  await expect(page.locator('.fcitx-candidate:visible')).toHaveCount(5)
+})
+
+test('Dynamic first row matches scroll candidate cells', async ({ page }) => {
+  await init(page)
+  await setStyle(page, {
+    Font: { LabelFontSize: '24', TextFontSize: '40' },
+    ScrollMode: { MaxColumnCount: '6' },
+    Size: { OverrideDefault: 'True', ScrollCellWidth: '130' },
+  })
+  const cands = [
+    { label: '1', text: '动态码', comment: '', actions: [], spaceBetweenComment: true },
+    { label: '2', text: '动态漫', comment: '', actions: [], spaceBetweenComment: true },
+    { label: '3', text: '动态美', comment: '', actions: [], spaceBetweenComment: true },
+    { label: '4', text: '动态嗨', comment: '', actions: [], spaceBetweenComment: true },
+  ]
+  await page.evaluate(({ cands }) => window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false, true), { cands })
+  const dynamicCandidate = await getBox(candidate(page, 0))
+  const dynamicInner = await getBox(candidate(page, 0).locator('.fcitx-candidate-inner'))
+
+  await page.evaluate(({ cands }) => window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false), { cands })
+  const scrollCandidate = await getBox(candidate(page, 0))
+  const scrollInner = await getBox(candidate(page, 0).locator('.fcitx-candidate-inner'))
+
+  expect(dynamicCandidate.width).toBe(scrollCandidate.width)
+  expect(dynamicCandidate.height).toBe(scrollCandidate.height)
+  expect(dynamicInner.width).toBe(scrollInner.width)
+  expect(dynamicInner.height).toBe(scrollInner.height)
 })

@@ -13,6 +13,20 @@ let MAX_COLUMN = 6
 let UNIT_WIDTH = 65 // Math.floor((400 - 8)/MAX_COLUMN)
 let ROW_HEIGHT = 28
 
+let dynamicCandidateCount = false
+
+export function setDynamicCandidateCount(enable: boolean) {
+  dynamicCandidateCount = enable
+}
+
+export function getDynamicCandidateCount() {
+  return dynamicCandidateCount
+}
+
+export function getCandidateAreaWidth() {
+  return MAX_COLUMN * UNIT_WIDTH
+}
+
 export function setScrollParams(row: number, column: number, width: number, height: number) {
   MAX_ROW = row
   MAX_COLUMN = column
@@ -141,9 +155,12 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   candidates[highlighted].classList.add('fcitx-highlighted', 'fcitx-highlighted-original')
 }
 
-export function recalculateScroll(scrollStart: boolean) {
+// Normalize candidate widths to the same cell grid used by scroll mode.
+// Keeping this shared with dynamic mode is important: the collapsed first row
+// must use exactly the same widths as the expanded first row.
+export function normalizeCandidateWidths() {
   const candidates = hoverables.querySelectorAll('.fcitx-candidate')
-  rowItemCount = []
+  const counts: number[] = []
   let itemCount = 0
   let unitCount = 0
   for (const candidate of candidates) {
@@ -156,13 +173,18 @@ export function recalculateScroll(scrollStart: boolean) {
       ++itemCount
     }
     else {
-      rowItemCount.push(itemCount)
+      counts.push(itemCount)
       candidate.previousElementSibling?.setAttribute('style', 'flex-grow: 1')
       itemCount = 1
       unitCount = nUnits
     }
   }
-  rowItemCount.push(itemCount)
+  counts.push(itemCount)
+  return counts
+}
+
+export function recalculateScroll(scrollStart: boolean) {
+  rowItemCount = normalizeCandidateWidths()
   renderHighlightAndLabels(scrollStart ? 0 : highlighted, !scrollStart)
 }
 
@@ -229,6 +251,14 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
   hideContextmenu()
   if (action >= 0 && action <= 9) {
     const offset = (action + 9) % 10
+    if (hoverables.classList.contains('fcitx-horizontal-dynamic')) {
+      const candidates = Array.from(hoverables.querySelectorAll('.fcitx-candidate'))
+      const visibleCandidates = candidates.filter(candidate => getComputedStyle(candidate).display !== 'none')
+      if (offset >= visibleCandidates.length) {
+        return
+      }
+      return window.fcitx('select', candidates.indexOf(visibleCandidates[offset]))
+    }
     const highlightedRow = getHighlightedRow()
     const n = rowItemCount[highlightedRow]
     if (offset >= n) {

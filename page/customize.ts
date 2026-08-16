@@ -1,5 +1,5 @@
 import { fixGhostStripe } from './ghost-stripe'
-import { setCaretText, setHighlightMarkText } from './panel'
+import { refreshDynamicCandidateLayout, setCaretText, setDynamicCandidateCount, setHighlightMarkText } from './panel'
 import { setAnimation, setScrollParams } from './scroll'
 import { theme } from './selector'
 import {
@@ -205,8 +205,10 @@ export function setStyle(style: string) {
   theme.style.setProperty('--max-row', j.ScrollMode.MaxRowCount)
   theme.style.setProperty('--max-column', j.ScrollMode.MaxColumnCount)
   setScrollParams(maxRow, maxColumn, cellWidth, candidateHeight)
+  setDynamicCandidateCount(j.ScrollMode.DynamicCandidateCount === 'True')
   theme.style.setProperty('--scrollbar-redundancy-width', j.ScrollMode.ShowScrollBar === 'False' ? '0px' : '2px')
   theme.style.setProperty('--scrollbar-width', j.ScrollMode.ShowScrollBar === 'False' ? '0px' : '8px')
+  refreshDynamicCandidateLayout()
   const animation = j.ScrollMode.Animation === 'True'
   theme.style.setProperty('--scroll-animation', animation ? '' : 'none')
   setAnimation(animation)

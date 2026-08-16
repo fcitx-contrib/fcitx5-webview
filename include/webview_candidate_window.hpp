@@ -121,7 +121,7 @@ class WebviewCandidateWindow {
                             formatted auxDown);
     void set_candidates(std::vector<Candidate> candidates, int highlighted,
                         scroll_state_t scroll_state, bool scroll_start,
-                        bool scroll_end);
+                        bool scroll_end, bool dynamic = false);
     void set_layout(layout_t layout) { layout_ = layout; }
     void set_writing_mode(writing_mode_t mode) { writing_mode_ = mode; }
 
@@ -186,6 +186,7 @@ class WebviewCandidateWindow {
     scroll_state_t scroll_state_;
     bool scroll_start_;
     bool scroll_end_;
+    bool dynamic_ = false;
     mutable uint32_t epoch = 0; // A timestamp for async results from
                                 // webview
 

@@ -43,6 +43,11 @@ export async function scrollExpand(page: Page, texts: string[]) {
     window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false), { cands })
 }
 
+export function scrollReady(page: Page, cands: Partial<Candidate>[], highlighted = 0, dynamic = false) {
+  return page.evaluate(({ cands, highlighted, dynamic }) =>
+    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: '', actions: [], spaceBetweenComment: true, ...cand })), highlighted, false, false, false, 1, false, false, dynamic), { cands, highlighted, dynamic })
+}
+
 export function scroll(page: Page, texts: string[], scrollEnd: boolean) {
   const cands = texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
   return page.evaluate(({ cands, scrollEnd }) =>
@@ -150,6 +155,7 @@ const defaultStyle: STYLE_JSON = {
   },
   ScrollMode: {
     Animation: 'True',
+    DynamicCandidateCount: 'True',
     MaxRowCount: '6',
     MaxColumnCount: '6',
     ShowScrollBar: 'True',

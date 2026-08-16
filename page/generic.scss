@@ -200,6 +200,37 @@
       overflow-wrap: anywhere; /* Disallow long comment to introduce horizontal scrollbar. */
     }
   }
+
+  &.fcitx-horizontal-dynamic {
+    overflow: hidden;
+    overscroll-behavior: none;
+
+    .fcitx-candidate, .fcitx-divider, .fcitx-paging {
+      flex-shrink: 0;
+    }
+
+    .fcitx-candidate-inner {
+      flex: 1 1 0;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .fcitx-comment {
+      overflow-wrap: anywhere;
+    }
+
+    .fcitx-dynamic-last {
+      flex-grow: 1;
+
+      .fcitx-divider-middle {
+        block-size: 0;
+      }
+
+      .fcitx-divider-side {
+        flex-grow: 1;
+      }
+    }
+  }
 }
 
 :is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-paging svg {

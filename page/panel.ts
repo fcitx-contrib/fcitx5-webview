@@ -2,8 +2,8 @@ import emojiRegex from 'emoji-regex'
 import { SCROLL_NONE, SCROLL_READY, SCROLLING } from './constant'
 import { getLabelFormatter, setLastLabels } from './format-label'
 import { fixGhostStripe } from './ghost-stripe'
-import { fetchComplete, recalculateScroll, setScrollEnd, setScrollState } from './scroll'
-import { auxDown, auxUp, hoverables, preedit, theme } from './selector'
+import { fetchComplete, getCandidateAreaWidth, getDynamicCandidateCount, normalizeCandidateWidths, recalculateScroll, setDynamicCandidateCount as setDynamicCandidateCountState, setScrollEnd, setScrollState } from './scroll'
+import { auxDown, auxUp, hoverables, panel, preedit, theme } from './selector'
 import { div, getHoverBehavior, getPagingButtonsStyle, hideContextmenu, resetMouseMoveState, setActions } from './ux'
 
 const regex = emojiRegex()
@@ -37,6 +37,102 @@ export function setCaretText(text: string) {
   caretText = text
 }
 
+let currentScrollState: SCROLL_STATE = SCROLL_NONE
+let currentIsVertical = false
+let currentDynamic = false
+
+function resetDynamicCandidateLayout() {
+  const wasDynamic = hoverables.classList.contains('fcitx-horizontal-dynamic')
+  hoverables.classList.remove('fcitx-horizontal-dynamic')
+  if (!wasDynamic) {
+    return
+  }
+  hoverables.querySelectorAll('.fcitx-candidate, .fcitx-divider').forEach((element) => {
+    const candidate = element as HTMLElement
+    candidate.style.removeProperty('display')
+    candidate.style.removeProperty('width')
+    candidate.style.removeProperty('flex-grow')
+    element.classList.remove('fcitx-dynamic-last')
+  })
+}
+
+function recalculateDynamicCandidateLayout() {
+  if (currentIsVertical || currentScrollState === SCROLLING || !currentDynamic || !getDynamicCandidateCount()) {
+    resetDynamicCandidateLayout()
+    return
+  }
+
+  hoverables.classList.add('fcitx-horizontal-dynamic')
+  const candidates = Array.from(hoverables.querySelectorAll('.fcitx-candidate')) as HTMLElement[]
+  const paging = hoverables.querySelector('.fcitx-paging') as HTMLElement | null
+
+  for (const candidate of candidates) {
+    candidate.style.removeProperty('display')
+    candidate.style.removeProperty('width')
+    candidate.style.removeProperty('flex-grow')
+  }
+  for (const divider of hoverables.querySelectorAll('.fcitx-divider')) {
+    const element = divider as HTMLElement
+    element.style.removeProperty('display')
+    element.style.removeProperty('flex-grow')
+    element.classList.remove('fcitx-dynamic-last')
+  }
+
+  // Use the same cell rounding and row-break markers as scroll mode before
+  // hiding the candidates that are beyond the collapsed row.
+  normalizeCandidateWidths()
+
+  // Paging occupies the right edge of the collapsed row. Without paging, use
+  // the same candidate-area width as scroll mode.
+  const pagingDivider = paging?.previousElementSibling as HTMLElement | null
+  const hoverablesRect = hoverables.getBoundingClientRect()
+  const pagingWidth = paging?.getBoundingClientRect().width ?? 0
+  const pagingDividerWidth = pagingDivider?.getBoundingClientRect().width ?? 0
+  const limit = paging
+    ? Math.min(
+        paging.getBoundingClientRect().left,
+        hoverablesRect.right - pagingWidth - pagingDividerWidth,
+      )
+    : hoverablesRect.left + getCandidateAreaWidth()
+  let hide = false
+  let lastVisible = candidates.length - 1
+  for (let i = 0; i < candidates.length; ++i) {
+    const candidate = candidates[i]
+    // Keep the first candidate visible, matching scroll mode's handling of an
+    // item wider than the configured candidate area.
+    if (!hide && i > 0 && candidate.getBoundingClientRect().right > limit) {
+      hide = true
+      lastVisible = i - 1
+    }
+    if (hide) {
+      candidates[i].style.display = 'none'
+      const divider = candidate.nextElementSibling as HTMLElement | null
+      if (divider?.classList.contains('fcitx-divider') && !divider.classList.contains('fcitx-divider-paging')) {
+        divider.style.display = 'none'
+      }
+    }
+  }
+
+  // If the paging limit cuts through a scroll row, preserve the row-filling
+  // divider so the visible candidates keep the same alignment as scroll mode.
+  const lastVisibleDivider = candidates[lastVisible]?.nextElementSibling
+  if (lastVisibleDivider) {
+    lastVisibleDivider.classList.add('fcitx-dynamic-last')
+    lastVisibleDivider.removeAttribute('style')
+  }
+}
+
+export function setDynamicCandidateCount(enable: boolean) {
+  // Keep the setting in scroll.ts, which is also the source of the cell
+  // geometry used by the expanded view.
+  setDynamicCandidateCountState(enable)
+  recalculateDynamicCandidateLayout()
+}
+
+export function refreshDynamicCandidateLayout() {
+  recalculateDynamicCandidateLayout()
+}
+
 export function moveHighlight(from: Element | null, to: Element | null) {
   from?.classList.remove('fcitx-highlighted')
   to?.classList.add('fcitx-highlighted')
@@ -62,14 +158,20 @@ const caretRight = common.replace('{}', '0 0 192 512').replace('{}', 'M0 384.662
 const arrowBack = common.replace('{}', '0 0 24 24').replace('{}', 'M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z')
 const arrowForward = common.replace('{}', '0 0 24 24').replace('{}', 'M7.38 21.01c.49.49 1.28.49 1.77 0l8.31-8.31a.996.996 0 0 0 0-1.41L9.15 2.98c-.49-.49-1.28-.49-1.77 0s-.49 1.28 0 1.77L14.62 12l-7.25 7.25c-.48.48-.48 1.28.01 1.76z')
 
-export function setCandidates(cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) {
+export function setCandidates(cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean, dynamic?: boolean) {
   if (cands.length) {
     // Auto layout requires display: not none so that getBoundingClientRect works.
     theme.classList.remove('fcitx-hidden')
   }
   const isVertical = hoverables.classList.contains('fcitx-vertical')
+  currentScrollState = scrollState
+  currentIsVertical = isVertical || !panel.classList.contains('fcitx-horizontal-tb')
+  // The native caller passes this per-update state explicitly. Keep omitted
+  // arguments compatible with the pre-dynamic WebView API.
+  currentDynamic = cands.length > 0 && dynamic === true && !currentIsVertical && scrollState !== SCROLLING
   resetMouseMoveState()
   hideContextmenu()
+  resetDynamicCandidateLayout()
   setScrollState(scrollState)
   // Clear existing candidates when scroll continues.
   if (scrollState !== SCROLLING || scrollStart) {
@@ -121,9 +223,9 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
       candidateInner.append(mark)
     }
 
-    if (cands[i].label || scrollState === SCROLLING) {
+    if (cands[i].label || scrollState === SCROLLING || currentDynamic) {
       const label = div('fcitx-label')
-      label.textContent = cands[i].label || label0
+      label.textContent = currentDynamic ? getLabelFormatter()((i + 1) % 10) : cands[i].label || label0
       candidateInner.append(label)
     }
 
@@ -200,6 +302,8 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   else if (scrollState === SCROLLING) {
     recalculateScroll(scrollStart)
   }
+
+  recalculateDynamicCandidateLayout()
 
   for (const hoverable of hoverables.querySelectorAll('.fcitx-hoverable')) {
     hoverable.addEventListener('mousemove', () => {

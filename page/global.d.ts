@@ -44,6 +44,7 @@ declare global {
       PagingButtonsStyle: PAGING_BUTTONS_STYLE
     }
     ScrollMode: {
+      DynamicCandidateCount: CONFIG_BOOL
       MaxRowCount: string
       MaxColumnCount: string
       ShowScrollBar: CONFIG_BOOL
@@ -143,7 +144,7 @@ declare global {
 
     // JavaScript APIs that webview_candidate_window.mm calls
     setHost: (system: string, version: number) => void
-    setCandidates: (cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
+    setCandidates: (cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean, dynamic?: boolean) => void
     setLayout: (layout: LAYOUT) => void
     updateInputPanel: (preCaret: [string, number][], hasCaret: boolean, postCaret: [string, number][], auxUp: [string, number][], auxDown: [string, number][]) => void
     hidePanel: () => void

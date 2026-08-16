@@ -374,7 +374,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       border-end-end-radius: calc($candidate-height / 2 + $border-width);
     }
 
-    .fcitx-panel:has(.fcitx-horizontal-scroll) {
+    .fcitx-panel:has(.fcitx-horizontal-scroll), .fcitx-panel:has(.fcitx-horizontal-dynamic) {
       /* Apply to panel to restrict both candidates and preedit width. */
       inline-size: calc($cell-width * var(--max-column, 6) + var(--scrollbar-redundancy-width, 2px) + var(--scrollbar-width, 8px) /* 2px redundance + 8px scrollbar making default 400px */);
     }
