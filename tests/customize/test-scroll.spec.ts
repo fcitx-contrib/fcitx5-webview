@@ -153,8 +153,8 @@ test('Navigate down a row with DOWN and collapse on top row with UP', async ({ p
 
   // Pressing UP on top row triggers collapse
   await page.evaluate(() => window.fcitx.scrollKeyAction(10)) // UP = 10
-  // Wait for collapse timeout
-  await page.waitForTimeout(350)
-  const cppCalls = await getCppCalls(page)
-  expect(cppCalls.filter(call => JSON.stringify(call) === '{"scroll":[-1,0]}').length).toEqual(1)
+  await expect.poll(async () => {
+    const cppCalls = await getCppCalls(page)
+    return cppCalls.filter(call => JSON.stringify(call) === '{"scroll":[-1,0]}').length
+  }).toEqual(1)
 })
