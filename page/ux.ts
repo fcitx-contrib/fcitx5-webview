@@ -28,6 +28,7 @@ let mouseMoveState = 0
 export function resetMouseMoveState() {
   mouseMoveState = 0
   hoverables.classList.remove('fcitx-mousemoved')
+  panel.classList.remove('fcitx-mousemoved')
 }
 
 let actions: CandidateAction[][] = []
@@ -254,6 +255,7 @@ export function initUx() {
   document.addEventListener('mousemove', (e) => {
     if (++mouseMoveState >= 2) {
       hoverables.classList.add('fcitx-mousemoved')
+      panel.classList.add('fcitx-mousemoved')
     }
     if (e.button !== 0 || !pressed) {
       return

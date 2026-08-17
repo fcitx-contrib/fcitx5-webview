@@ -1,5 +1,5 @@
 import test, { expect } from '@playwright/test'
-import { getBox, getCppCalls, init, panel } from './util'
+import { getBox, getCppCalls, hoverables, init, panel } from './util'
 
 function cands(texts: string[]) {
   return texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
@@ -40,7 +40,7 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
   expect(cppCalls.filter(call => JSON.stringify(call) === '{"tabAction":[1]}').length).toEqual(1)
 })
 
-test('Actions after a separator are pinned at the bottom', async ({ page }) => {
+test('Actions after a separator are pinned at the right end', async ({ page }) => {
   await init(page)
   const texts = Array.from({ length: 24 }, (_, i) => (i + 1).toString())
   await page.evaluate(({ cands, tabActions }) =>
@@ -52,11 +52,18 @@ test('Actions after a separator are pinned at the bottom', async ({ page }) => {
   await expect(scrollableTabs).toHaveCount(2)
   await expect(pinnedTabs).toHaveCount(2)
 
-  const lastTabBox = await getBox(tabs.locator('.fcitx-tab').last())
+  // Tabs are shown as a row below the candidates, like the desktop candidate window.
   const tabsBox = await getBox(tabs)
+  const candidatesBox = await getBox(hoverables(page))
   expect(
-    Math.abs(lastTabBox.y + lastTabBox.height - (tabsBox.y + tabsBox.height)),
-    'Last tab should be pinned at the bottom',
+    tabsBox.y - (candidatesBox.y + candidatesBox.height),
+    'Tabs should be below candidates',
+  ).toBeGreaterThanOrEqual(-1)
+
+  const lastTabBox = await getBox(tabs.locator('.fcitx-tab').last())
+  expect(
+    Math.abs(lastTabBox.x + lastTabBox.width - (tabsBox.x + tabsBox.width)),
+    'Last tab should be pinned at the right end',
   ).toBeLessThan(1)
 
   await pinnedTabs.first().click()

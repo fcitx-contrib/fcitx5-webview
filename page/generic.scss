@@ -74,11 +74,19 @@
 
 .fcitx-panel-body {
   display: flex;
+  flex-direction: column;
+}
+
+/* In vertical writing modes, the inline axis is vertical, so a row body
+   stacks candidates above the tab actions, keeping them at the bottom. */
+.fcitx-panel.fcitx-vertical-rl .fcitx-panel-body,
+.fcitx-panel.fcitx-vertical-lr .fcitx-panel-body {
+  flex-direction: row;
 }
 
 .fcitx-tabs {
   display: none;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .fcitx-panel.fcitx-has-tab-actions .fcitx-tabs {
@@ -86,12 +94,14 @@
 }
 
 .fcitx-tabs-scrollable {
+  display: flex;
   flex: 1;
-  overflow-y: auto;
+  overflow-x: auto;
   overscroll-behavior: none;
 }
 
 .fcitx-tabs-pinned {
+  display: flex;
   flex-shrink: 0;
 }
 
@@ -105,6 +115,7 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
+
   /* Tabs should not be rotated by vertical writing mode. */
   writing-mode: horizontal-tb;
 }

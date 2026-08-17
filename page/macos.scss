@@ -68,6 +68,10 @@
     width: var(--scrollbar-width, 8px);
   }
 
+  .fcitx-tabs-scrollable::-webkit-scrollbar {
+    height: var(--scrollbar-width, 8px);
+  }
+
   .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
     border-radius: 4px;
   }
