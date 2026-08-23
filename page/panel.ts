@@ -3,7 +3,7 @@ import { SCROLL_NONE, SCROLL_READY, SCROLLING } from './constant'
 import { getLabelFormatter, setLastLabels } from './format-label'
 import { fixGhostStripe } from './ghost-stripe'
 import { fetchComplete, recalculateScroll, setScrollEnd, setScrollState } from './scroll'
-import { auxDown, auxUp, hoverables, panel, preedit, tabs, theme } from './selector'
+import { auxDown, auxUp, hoverables, panel, preedit, scrollArea, tabs, theme } from './selector'
 import { div, getHoverBehavior, getPagingButtonsStyle, hideContextmenu, resetMouseMoveState, setActions } from './ux'
 
 const regex = emojiRegex()
@@ -103,8 +103,8 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   setTabActions(scrollState === SCROLLING ? tabActions : [])
   // Clear existing candidates when scroll continues.
   if (scrollState !== SCROLLING || scrollStart) {
-    hoverables.innerHTML = ''
-    hoverables.scrollTop = 0 // Otherwise last scroll position will be kept.
+    scrollArea.innerHTML = ''
+    scrollArea.scrollTop = 0 // Otherwise last scroll position will be kept.
   }
   else {
     fetchComplete()
@@ -179,26 +179,26 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
 
     candidate.append(div('fcitx-candidate-background')) // The only purpose is to fix ghost stripe.
     candidate.append(candidateInner)
-    hoverables.append(candidate)
+    scrollArea.append(candidate)
 
     // For horizontal/scroll mode it needs to fill the row when candidates are not enough.
     // For vertical mode, this last divider is hidden.
-    hoverables.append(divider())
+    scrollArea.append(divider())
   }
 
   setActions(cands.map(c => c.actions))
 
   if (scrollState === SCROLL_READY && getPagingButtonsStyle() !== 'None') {
-    hoverables.append(divider(true))
+    scrollArea.append(divider(true))
     const expand = div('fcitx-expand', 'fcitx-paging-inner', 'fcitx-hoverable-inner')
     expand.innerHTML = arrowForward
     const paging = div('fcitx-paging', 'fcitx-scroll', 'fcitx-hoverable')
     paging.append(expand)
-    hoverables.append(paging)
+    scrollArea.append(paging)
   }
   else if (scrollState === SCROLL_NONE && pageable) {
     const isArrow = getPagingButtonsStyle() === 'Arrow'
-    hoverables.append(divider(true))
+    scrollArea.append(divider(true))
 
     const prev = div('fcitx-prev', 'fcitx-hoverable')
     const prevInner = div('fcitx-paging-inner')
@@ -225,17 +225,17 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
     }
     paging.appendChild(prev)
     paging.appendChild(next)
-    hoverables.appendChild(paging)
+    scrollArea.appendChild(paging)
   }
   else if (scrollState === SCROLLING) {
     recalculateScroll(scrollStart)
   }
 
-  for (const hoverable of hoverables.querySelectorAll('.fcitx-hoverable')) {
+  for (const hoverable of scrollArea.querySelectorAll('.fcitx-hoverable')) {
     hoverable.addEventListener('mousemove', () => {
       const hoverBehavior = getHoverBehavior()
       if (hoverBehavior === 'Move' && hoverables.classList.contains('fcitx-mousemoved')) {
-        const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
+        const lastHighlighted = scrollArea.querySelector('.fcitx-highlighted')
         moveHighlight(lastHighlighted, hoverable)
       }
     })
@@ -245,7 +245,7 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   if ((isVertical && new Set(cands.map(cand => cand.label.length)).size === 1) || scrollStart) {
     theme.style.removeProperty('--label-width')
     let maxWidth = 0
-    hoverables.querySelectorAll('.fcitx-label').forEach((label) => {
+    scrollArea.querySelectorAll('.fcitx-label').forEach((label) => {
       maxWidth = Math.max(maxWidth, label.getBoundingClientRect().width)
     })
     theme.style.setProperty('--label-width', `${maxWidth}px`)

@@ -72,18 +72,6 @@
   }
 }
 
-.fcitx-panel-body {
-  display: flex;
-  flex-direction: column;
-}
-
-/* In vertical writing modes, the inline axis is vertical, so a row body
-   stacks candidates above the tab actions, keeping them at the bottom. */
-.fcitx-panel.fcitx-vertical-rl .fcitx-panel-body,
-.fcitx-panel.fcitx-vertical-lr .fcitx-panel-body {
-  flex-direction: row;
-}
-
 .fcitx-tabs {
   display: none;
   flex-direction: row;
@@ -228,9 +216,14 @@
   }
 
   &.fcitx-horizontal-scroll {
-    flex-wrap: wrap;
-    overflow-y: auto;
-    overscroll-behavior: none;
+    flex-direction: column;
+    overflow: hidden;
+
+    .fcitx-scroll-area {
+      flex-wrap: wrap;
+      overflow-y: auto;
+      overscroll-behavior: none;
+    }
 
     .fcitx-candidate-inner {
       width: 100%;
@@ -248,6 +241,21 @@
       overflow-wrap: anywhere; /* Disallow long comment to introduce horizontal scrollbar. */
     }
   }
+}
+
+.fcitx-scroll-area {
+  flex: 1;
+  flex-shrink: 0;
+  display: flex;
+  min-block-size: 0;
+}
+
+.fcitx-horizontal .fcitx-scroll-area {
+  flex-direction: row;
+}
+
+.fcitx-vertical .fcitx-scroll-area {
+  flex-direction: column;
 }
 
 :is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-paging svg {

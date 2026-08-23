@@ -83,8 +83,8 @@ export function initPanel(container: HTMLElement) {
                 </div>
               </div>
               <div class="fcitx-aux-down fcitx-hidden"></div>
-              <div class="fcitx-panel-body">
-                <div class="fcitx-hoverables fcitx-horizontal"></div>
+              <div class="fcitx-hoverables fcitx-horizontal">
+                <div class="fcitx-scroll-area"></div>
                 <div class="fcitx-tabs">
                   <div class="fcitx-tabs-scrollable"></div>
                   <div class="fcitx-tabs-pinned"></div>

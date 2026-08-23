@@ -8,6 +8,7 @@ import {
   decoration,
   hoverables,
   panel,
+  scrollArea,
   theme,
 } from './selector'
 
@@ -194,7 +195,7 @@ function isInsideHoverables(target: Element) {
 }
 
 function getCandidateIndex(target: Element) {
-  const allCandidates = hoverables.querySelectorAll('.fcitx-candidate')
+  const allCandidates = scrollArea.querySelectorAll('.fcitx-candidate')
   for (let i = 0; i < allCandidates.length; ++i) {
     if (allCandidates[i] === target) {
       return i
@@ -233,8 +234,8 @@ export function initUx() {
   hoverables.addEventListener('mouseleave', () => {
     const hoverBehavior = getHoverBehavior()
     if (hoverBehavior === 'Move') {
-      const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
-      const originalHighlighted = hoverables.querySelector('.fcitx-highlighted-original')
+      const lastHighlighted = scrollArea.querySelector('.fcitx-highlighted')
+      const originalHighlighted = scrollArea.querySelector('.fcitx-highlighted-original')
       moveHighlight(lastHighlighted, originalHighlighted)
     }
   })
@@ -291,7 +292,7 @@ export function initUx() {
     if (!isInsideHoverables(target)) {
       return
     }
-    while (target.parentElement !== hoverables) {
+    while (target.parentElement !== scrollArea) {
       if (target.classList.contains('fcitx-prev')) {
         return window.fcitx('page', false)
       }
@@ -319,7 +320,7 @@ export function initUx() {
     const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
     const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
 
-    while (target.parentElement !== hoverables) {
+    while (target.parentElement !== scrollArea) {
       target = target.parentElement!
     }
     const i = getCandidateIndex(target)

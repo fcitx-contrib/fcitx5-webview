@@ -2,6 +2,7 @@ import { COLLAPSE, COMMIT, DOWN, END, HOME, LEFT, PAGE_DOWN, PAGE_UP, RIGHT, SCR
 import { getLabelFormatter } from './format-label'
 import {
   hoverables,
+  scrollArea,
 } from './selector'
 import {
   hideContextmenu,
@@ -90,22 +91,22 @@ function getHighlightedRow(): number {
 }
 
 function distanceToTop(element: Element, basis: 'top' | 'bottom') {
-  return element.getBoundingClientRect()[basis] - hoverables.getBoundingClientRect().top
+  return element.getBoundingClientRect()[basis] - scrollArea.getBoundingClientRect().top
 }
 
 function scrollForHighlight() {
-  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+  const candidates = scrollArea.querySelectorAll('.fcitx-candidate')
 
-  const bottomOffset = distanceToTop(candidates[highlighted], 'bottom') - hoverables.clientHeight
+  const bottomOffset = distanceToTop(candidates[highlighted], 'bottom') - scrollArea.clientHeight
   // Highlighted candidate below bottom of panel
   if (bottomOffset > 0) {
-    hoverables.scrollTop += bottomOffset
+    scrollArea.scrollTop += bottomOffset
   }
 
   const topOffset = distanceToTop(candidates[highlighted], 'top')
   // Highlighted candidate above top of panel
   if (topOffset < 0) {
-    hoverables.scrollTop += topOffset
+    scrollArea.scrollTop += topOffset
   }
 }
 
@@ -117,7 +118,7 @@ function renderLabel(candidate: Element, i: number) {
 
 function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
   window.fcitx('highlight', newHighlighted) // Call it on both expand and highlight move.
-  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+  const candidates = scrollArea.querySelectorAll('.fcitx-candidate')
   if (clearOld) {
     const highlightedRow = getHighlightedRow()
     const skipped = itemCountInFirstNRows(highlightedRow)
@@ -142,7 +143,7 @@ function renderHighlightAndLabels(newHighlighted: number, clearOld: boolean) {
 }
 
 export function recalculateScroll(scrollStart: boolean) {
-  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+  const candidates = scrollArea.querySelectorAll('.fcitx-candidate')
   rowItemCount = []
   let itemCount = 0
   let unitCount = 0
@@ -168,7 +169,7 @@ export function recalculateScroll(scrollStart: boolean) {
 
 function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): number {
   const row = getRowOf(index)
-  const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+  const candidates = scrollArea.querySelectorAll('.fcitx-candidate')
   const { left, right } = candidates[index].getBoundingClientRect()
   const mid = (left + right) / 2
 
@@ -272,22 +273,22 @@ export function scrollKeyAction(action: SCROLL_KEY_ACTION) {
 }
 
 export function initScroll() {
-  hoverables.addEventListener('wheel', (e) => {
+  scrollArea.addEventListener('wheel', (e) => {
     if (getScrollState() === SCROLLING) {
       return
     }
     window.fcitx('page', e.deltaY > 0)
   })
 
-  hoverables.addEventListener('scroll', () => {
+  scrollArea.addEventListener('scroll', () => {
     if (scrollEnd || fetching) {
       return
     }
     // This is safe since there are at least 2 lines.
     const bottomRightIndex = itemCountInFirstNRows(rowItemCount.length - 1) - 1
-    const candidates = hoverables.querySelectorAll('.fcitx-candidate')
+    const candidates = scrollArea.querySelectorAll('.fcitx-candidate')
     const bottomRight = candidates[bottomRightIndex]
-    if (distanceToTop(bottomRight, 'top') < hoverables.clientHeight) {
+    if (distanceToTop(bottomRight, 'top') < scrollArea.clientHeight) {
       fetching = true
       window.fcitx('scroll', candidates.length, MAX_ROW * MAX_COLUMN)
     }
@@ -302,5 +303,5 @@ export function initScroll() {
     }
     resizeForAnimation()
   })
-  resizeObserver.observe(hoverables)
+  resizeObserver.observe(scrollArea)
 }
