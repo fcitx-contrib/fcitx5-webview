@@ -21,6 +21,8 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
   await page.evaluate(({ cands, tabActions }) =>
     window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false, tabActions), { cands: cands(texts), tabActions })
   await expect(panel(page)).not.toHaveClass(/fcitx-has-tab-actions/)
+  const divider = page.locator('.fcitx-divider-paging .fcitx-divider-middle')
+  const dividerColor = await divider.evaluate(element => getComputedStyle(element).backgroundColor)
 
   await page.evaluate(({ cands, tabActions }) =>
     window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false, tabActions), { cands: cands(texts), tabActions })
@@ -30,7 +32,10 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
   await expect(tab).toHaveCount(4)
   const candidateBackground = page.locator('.fcitx-candidate-background').first()
   const candidateBackgroundColor = await candidateBackground.evaluate(element => getComputedStyle(element).backgroundColor)
-  await expect(page.locator('.fcitx-tabs')).toHaveCSS('background-color', candidateBackgroundColor)
+  const tabs = page.locator('.fcitx-tabs')
+  await expect(tabs).toHaveCSS('background-color', candidateBackgroundColor)
+  await expect(tabs).toHaveCSS('border-block-start-width', '1px')
+  await expect(tabs).toHaveCSS('border-block-start-color', dividerColor)
   for (const i of [0, 2]) {
     await expect(tab.nth(i)).toContainClass('fcitx-highlighted')
   }
@@ -41,11 +46,10 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
   const highlightedTabInner = tab.first().locator('.fcitx-tab-inner')
   const highlightColor = await highlightedTabInner.evaluate(element => getComputedStyle(element).backgroundColor)
   const unhighlightedTabInner = tab.nth(1).locator('.fcitx-tab-inner')
-  await unhighlightedTabInner.hover()
-  await page.mouse.down()
+  await unhighlightedTabInner.dispatchEvent('pointerdown', { button: 0 })
   await expect(tab.nth(1)).toContainClass('fcitx-pressed')
   await expect(unhighlightedTabInner).toHaveCSS('background-color', highlightColor)
-  await page.mouse.up()
+  await page.locator('body').dispatchEvent('pointerup', { button: 0 })
   await expect(tab.nth(1)).not.toContainClass('fcitx-pressed')
 
   await tab.first().click()

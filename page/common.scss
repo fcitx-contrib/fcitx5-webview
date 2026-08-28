@@ -44,6 +44,10 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       transition: $color-transition;
     }
 
+    .fcitx-tabs {
+      border-block-start: 1px solid $divider-color;
+    }
+
     .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
       background-color: $panel-color;
       transition: $color-transition;
