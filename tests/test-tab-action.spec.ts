@@ -38,6 +38,16 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
     await expect(tab.nth(i)).not.toContainClass('fcitx-highlighted')
   }
 
+  const highlightedTabInner = tab.first().locator('.fcitx-tab-inner')
+  const highlightColor = await highlightedTabInner.evaluate(element => getComputedStyle(element).backgroundColor)
+  const unhighlightedTabInner = tab.nth(1).locator('.fcitx-tab-inner')
+  await unhighlightedTabInner.hover()
+  await page.mouse.down()
+  await expect(tab.nth(1)).toContainClass('fcitx-pressed')
+  await expect(unhighlightedTabInner).toHaveCSS('background-color', highlightColor)
+  await page.mouse.up()
+  await expect(tab.nth(1)).not.toContainClass('fcitx-pressed')
+
   await tab.first().click()
   const cppCalls = await getCppCalls(page)
   expect(cppCalls.filter(call => JSON.stringify(call) === '{"tabAction":[1]}').length).toEqual(1)
