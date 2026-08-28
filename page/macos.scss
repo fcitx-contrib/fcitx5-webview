@@ -64,7 +64,7 @@
     }
   }
 
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar {
+  .fcitx-hoverables.fcitx-horizontal-scroll > .fcitx-scroll-area::-webkit-scrollbar {
     width: var(--scrollbar-width, 8px);
   }
 
@@ -72,7 +72,7 @@
     height: var(--scrollbar-width, 8px);
   }
 
-  .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
+  .fcitx-hoverables.fcitx-horizontal-scroll > .fcitx-scroll-area::-webkit-scrollbar-thumb {
     border-radius: 4px;
   }
 
