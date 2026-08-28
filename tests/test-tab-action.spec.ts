@@ -1,5 +1,5 @@
 import test, { expect } from '@playwright/test'
-import { getBox, getCppCalls, hoverables, init, panel } from './util'
+import { getBox, getCppCalls, init, panel } from './util'
 
 function cands(texts: string[]) {
   return texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
@@ -28,6 +28,9 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
 
   const tab = page.locator('.fcitx-tab')
   await expect(tab).toHaveCount(4)
+  const candidateBackground = page.locator('.fcitx-candidate-background').first()
+  const candidateBackgroundColor = await candidateBackground.evaluate(element => getComputedStyle(element).backgroundColor)
+  await expect(page.locator('.fcitx-tabs')).toHaveCSS('background-color', candidateBackgroundColor)
   for (const i of [0, 2]) {
     await expect(tab.nth(i)).toContainClass('fcitx-highlighted')
   }
@@ -54,7 +57,7 @@ test('Actions after a separator are pinned at the right end', async ({ page }) =
 
   // Tabs are shown as a row below the candidates, like the desktop candidate window.
   const tabsBox = await getBox(tabs)
-  const candidatesBox = await getBox(hoverables(page))
+  const candidatesBox = await getBox(page.locator('.fcitx-scroll-area'))
   expect(
     tabsBox.y - (candidatesBox.y + candidatesBox.height),
     'Tabs should be below candidates',
