@@ -193,9 +193,10 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       background-color: $hover-color;
     }
 
-    .fcitx-tab.fcitx-pressed .fcitx-tab-inner {
+    .fcitx-tab:active .fcitx-tab-inner {
       background-color: $highlight-color;
       color: $highlight-text-color;
+      transition: none;
     }
 
     .fcitx-tab.fcitx-highlighted .fcitx-tab-inner {

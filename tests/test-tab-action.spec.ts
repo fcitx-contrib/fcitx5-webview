@@ -1,5 +1,5 @@
 import test, { expect } from '@playwright/test'
-import { getBox, getCppCalls, init, panel } from './util'
+import { getBox, getCppCalls, init, panel, setStyle } from './util'
 
 function cands(texts: string[]) {
   return texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
@@ -15,6 +15,7 @@ const tabActions = [
 
 test('Tab actions are shown only in scroll mode', async ({ page }) => {
   await init(page)
+  await setStyle(page, { ScrollMode: { Animation: 'False' } })
   const texts = Array.from({ length: 24 }, (_, i) => (i + 1).toString())
 
   // Actions are ignored when not in scroll mode.
@@ -46,11 +47,14 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
   const highlightedTabInner = tab.first().locator('.fcitx-tab-inner')
   const highlightColor = await highlightedTabInner.evaluate(element => getComputedStyle(element).backgroundColor)
   const unhighlightedTabInner = tab.nth(1).locator('.fcitx-tab-inner')
-  await unhighlightedTabInner.dispatchEvent('pointerdown', { button: 0 })
-  await expect(tab.nth(1)).toContainClass('fcitx-pressed')
+  const unhighlightedTabBox = await getBox(tab.nth(1))
+  await page.mouse.move(
+    unhighlightedTabBox.x + unhighlightedTabBox.width / 2,
+    unhighlightedTabBox.y + unhighlightedTabBox.height / 2,
+  )
+  await page.mouse.down()
   await expect(unhighlightedTabInner).toHaveCSS('background-color', highlightColor)
-  await page.locator('body').dispatchEvent('pointerup', { button: 0 })
-  await expect(tab.nth(1)).not.toContainClass('fcitx-pressed')
+  await page.mouse.up()
 
   await tab.first().click()
   const cppCalls = await getCppCalls(page)

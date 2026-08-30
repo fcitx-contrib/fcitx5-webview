@@ -70,19 +70,6 @@ function renderTabAction(action: CandidateAction) {
   if (action.checked) {
     tab.classList.add('fcitx-highlighted')
   }
-  tab.addEventListener('pointerdown', (event) => {
-    if (event.button !== 0) {
-      return
-    }
-    tab.classList.add('fcitx-pressed')
-    const resetPressed = () => {
-      tab.classList.remove('fcitx-pressed')
-      document.removeEventListener('pointerup', resetPressed)
-      document.removeEventListener('pointercancel', resetPressed)
-    }
-    document.addEventListener('pointerup', resetPressed)
-    document.addEventListener('pointercancel', resetPressed)
-  })
   tab.addEventListener('click', () => window.fcitx('tabAction', action.id))
   return tab
 }
