@@ -246,8 +246,7 @@
 }
 
 .fcitx-scroll-area {
-  flex: 1;
-  flex-shrink: 0;
+  flex: 1 0;
   display: flex;
   min-block-size: 0;
 }
