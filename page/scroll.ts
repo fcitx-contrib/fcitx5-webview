@@ -303,5 +303,5 @@ export function initScroll() {
     }
     resizeForAnimation()
   })
-  resizeObserver.observe(scrollArea)
+  resizeObserver.observe(hoverables)
 }

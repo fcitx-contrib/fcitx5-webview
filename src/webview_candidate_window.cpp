@@ -169,7 +169,8 @@ void WebviewCandidateWindow::show(double x, double y, double height) const {
     caret_x_ = x;
     caret_y_ = y;
     caret_height_ = height;
-    // It's _resize which is called by resize that actually shows the window
+    // It's WebviewCandidateWindow::resize which is called by JS resize that
+    // actually shows the window.
     if (hidden_) {
         // Ideally this could be called only on first draw since we listen on
         // accent color change, but the first draw may fail if webview is not
