@@ -219,7 +219,6 @@
 
   &.fcitx-horizontal-scroll {
     display: block; /* Reset from flex so that long tabs (typing a in pinyin) won't cause weird layout issue. */
-    overflow: hidden;
 
     .fcitx-scroll-area {
       flex-wrap: wrap;
@@ -246,9 +245,8 @@
 }
 
 .fcitx-scroll-area {
-  flex: 1 0;
+  flex: 1;
   display: flex;
-  min-block-size: 0;
 }
 
 .fcitx-horizontal .fcitx-scroll-area {
