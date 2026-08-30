@@ -38,10 +38,14 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       border-color: $panel-border-color;
     }
 
-    .fcitx-candidate-background {
+    .fcitx-candidate-background, .fcitx-tabs {
       // With background image, discard panel color for unselected candidates.
       background-color: $panel-color-no-image;
       transition: $color-transition;
+    }
+
+    .fcitx-tabs {
+      border-block-start: 1px solid $divider-color;
     }
 
     .fcitx-header, .fcitx-aux-down, .fcitx-contextmenu {
@@ -75,15 +79,15 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       transition: $color-transition;
     }
 
-    .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-track {
+    .fcitx-scroll-area::-webkit-scrollbar-track {
       background-color: $panel-color-no-image;
     }
 
-    .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb {
+    .fcitx-scroll-area::-webkit-scrollbar-thumb {
       background-color: $thumb-color;
     }
 
-    .fcitx-hoverables.fcitx-horizontal-scroll::-webkit-scrollbar-thumb:hover {
+    .fcitx-scroll-area::-webkit-scrollbar-thumb:hover {
       background-color: $thumb-hover-color;
     }
 
@@ -111,7 +115,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       transition: $color-transition;
     }
 
-    .fcitx-text, .fcitx-header {
+    .fcitx-text, .fcitx-header, .fcitx-tab-inner {
       color: $text-color;
       transition: $color-transition;
     }
@@ -183,6 +187,18 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       .fcitx-comment {
         color: $highlight-comment-color;
       }
+    }
+
+    .fcitx-tab:active .fcitx-tab-inner {
+      background-color: $highlight-color;
+      color: $highlight-text-color;
+      transition: none;
+    }
+
+    .fcitx-tab.fcitx-highlighted .fcitx-tab-inner {
+      background-color: $highlight-color;
+      color: $highlight-text-color;
+      transition: $color-transition;
     }
 
     .fcitx-comment {
@@ -400,11 +416,11 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       min-inline-size: $vertical-min-width; /* avoid abrupt enlarging when start typing. */
     }
 
-    .fcitx-candidate-inner, .fcitx-paging-inner, .fcitx-menu-item {
+    .fcitx-candidate-inner, .fcitx-paging-inner, .fcitx-menu-item, .fcitx-tab-inner {
       border-radius: $highlight-radius;
     }
 
-    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-prev, .fcitx-next {
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-prev, .fcitx-next, .fcitx-tab-inner {
       margin: $margin;
     }
 
@@ -479,7 +495,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       }
     }
 
-    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item {
+    .fcitx-candidate-inner, .fcitx-preedit, .fcitx-aux-up, .fcitx-menu-item, .fcitx-tab-inner {
       /* combine min-block-size, min-inline-size and padding to make aux-up a square for 小 and A */
       padding-block: $top-padding $bottom-padding;
       padding-inline: $left-padding $right-padding;
@@ -499,9 +515,17 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
       block-size: $horizontal-divider-width;
     }
 
+    .fcitx-tab {
+      block-size: $candidate-height;
+    }
+
     .fcitx-horizontal-scroll {
-      max-block-size: calc(var(--max-row, 6) * $candidate-height); /* If block-size, 2 rows will have 90px each. */
+      max-block-size: calc((var(--max-row, 6) + 1 /* One extra row for tabs. */) * $candidate-height); /* If block-size, 2 rows will have 90px each. */
       transition: var(--scroll-animation, max-block-size 300ms);
+
+      .fcitx-scroll-area {
+        max-block-size: calc(var(--max-row, 6) * $candidate-height);
+      }
 
       .fcitx-candidate {
         min-inline-size: $cell-width;

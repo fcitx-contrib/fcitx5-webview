@@ -30,7 +30,11 @@ std::string call_handler(std::string s) {
 }
 
 void to_json(nlohmann::json &j, const CandidateAction &a) {
-    j = nlohmann::json{{"id", a.id}, {"text", a.text}};
+    j = nlohmann::json{{"id", a.id},
+                       {"text", a.text},
+                       {"checked", a.checked},
+                       {"checkable", a.checkable},
+                       {"separator", a.separator}};
 }
 
 void to_json(nlohmann::json &j, const Candidate &c) {
@@ -86,6 +90,8 @@ WebviewCandidateWindow::WebviewCandidateWindow(
 
     bind("action", [this](int i, int id) { action_callback(i, id); });
 
+    bind("tabAction", [this](int id) { tab_action_callback(id); });
+
     bind("onload", [this, init_callback = std::move(init_callback)]() {
         invoke_js("setHost", system_, version_);
         init_callback();
@@ -136,6 +142,11 @@ void WebviewCandidateWindow::set_candidates(std::vector<Candidate> candidates,
     scroll_end_ = scroll_end;
 }
 
+void WebviewCandidateWindow::set_tab_actions(
+    std::vector<CandidateAction> actions) {
+    tab_actions_ = std::move(actions);
+}
+
 void WebviewCandidateWindow::scroll_key_action(
     scroll_key_action_t action) const {
     invoke_js("scrollKeyAction", action);
@@ -171,7 +182,8 @@ void WebviewCandidateWindow::show(double x, double y, double height) const {
     invoke_js("updateInputPanel", preeditPreCaret_, hasCaret_,
               preeditPostCaret_, auxUp_, auxDown_);
     invoke_js("setCandidates", candidates_, highlighted_, pageable_, has_prev_,
-              has_next_, scroll_state_, scroll_start_, scroll_end_);
+              has_next_, scroll_state_, scroll_start_, scroll_end_,
+              tab_actions_);
     invoke_js("resize", epoch, 0., 0., false);
 }
 

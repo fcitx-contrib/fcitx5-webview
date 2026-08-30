@@ -102,6 +102,9 @@ declare global {
   interface CandidateAction {
     id: number
     text: string
+    checked?: boolean
+    checkable?: boolean
+    separator?: boolean
   }
 
   interface Candidate {
@@ -139,11 +142,12 @@ declare global {
     (name: 'scroll', start: number, length: number): void
     (name: 'askActions', index: number): void
     (name: 'action', index: number, id: number): void
+    (name: 'tabAction', id: number): void
     (name: 'resize', epoch: number, dx: number, dy: number, anchorTop: number, anchorRight: number, anchorBottom: number, anchorLeft: number, panelTop: number, panelRight: number, panelBottom: number, panelLeft: number, topLeftRadius: number, topRightRadius: number, bottomRightRadius: number, bottomLeftRadius: number, borderWidth: number, fullWidth: number, fullHeight: number, dragging: boolean): void
 
     // JavaScript APIs that webview_candidate_window.mm calls
     setHost: (system: string, version: number) => void
-    setCandidates: (cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean) => void
+    setCandidates: (cands: Candidate[], highlighted: number, pageable: boolean, hasPrev: boolean, hasNext: boolean, scrollState: SCROLL_STATE, scrollStart: boolean, scrollEnd: boolean, tabActions: CandidateAction[]) => void
     setLayout: (layout: LAYOUT) => void
     updateInputPanel: (preCaret: [string, number][], hasCaret: boolean, postCaret: [string, number][], auxUp: [string, number][], auxDown: [string, number][]) => void
     hidePanel: () => void

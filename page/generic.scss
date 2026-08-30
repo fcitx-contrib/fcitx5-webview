@@ -72,6 +72,39 @@
   }
 }
 
+.fcitx-tabs {
+  display: none;
+}
+
+.fcitx-panel.fcitx-has-tab-actions .fcitx-tabs {
+  display: flex;
+}
+
+.fcitx-tabs-scrollable {
+  display: flex;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior: none;
+}
+
+.fcitx-tabs-pinned {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.fcitx-tab {
+  display: flex;
+  justify-content: center;
+}
+
+.fcitx-tab-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 30px; /* Prevent single-letter tabs from being too narrow. */
+}
+
 .fcitx-preedit, .fcitx-aux-up {
   display: inline-flex; /* put the caret on the same line with preedit */
   align-items: center;
@@ -135,14 +168,16 @@
   &.fcitx-vertical {
     flex-direction: column;
 
+    .fcitx-scroll-area {
+      flex-direction: column;
+    }
+
     .fcitx-comment {
       flex: var(--vertical-comment-flex);
       text-align: end;
     }
 
     .fcitx-divider {
-      flex-direction: row;
-
       &:last-child, &:has(+ .fcitx-divider-paging) {
         display: none;
       }
@@ -150,8 +185,6 @@
   }
 
   &.fcitx-horizontal {
-    flex-direction: row;
-
     .fcitx-candidate {
       /* When horizontal and there is multi-line candidate,
       make sure other candidates are vertical centered.
@@ -180,9 +213,13 @@
   }
 
   &.fcitx-horizontal-scroll {
-    flex-wrap: wrap;
-    overflow-y: auto;
-    overscroll-behavior: none;
+    display: block; /* Reset from flex so that long tabs (typing a in pinyin) won't cause weird layout issue. */
+
+    .fcitx-scroll-area {
+      flex-wrap: wrap;
+      overflow-y: auto;
+      overscroll-behavior: none;
+    }
 
     .fcitx-candidate-inner {
       width: 100%;
@@ -200,6 +237,11 @@
       overflow-wrap: anywhere; /* Disallow long comment to introduce horizontal scrollbar. */
     }
   }
+}
+
+.fcitx-scroll-area {
+  flex: 1;
+  display: flex;
 }
 
 :is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-paging svg {

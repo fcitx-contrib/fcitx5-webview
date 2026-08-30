@@ -1,4 +1,4 @@
-import { hoverables, panel } from './selector'
+import { hoverables, panel, scrollArea } from './selector'
 import { getHoverBehavior } from './ux'
 
 const id = 'fcitx-ghost-stripe'
@@ -55,7 +55,7 @@ export function fixGhostStripe() {
     if (hoverables.classList.contains('fcitx-horizontal-scroll')) {
       break
     }
-    const candidates = hoverables.querySelectorAll('.fcitx-candidate') as NodeListOf<HTMLElement>
+    const candidates = scrollArea.querySelectorAll('.fcitx-candidate') as NodeListOf<HTMLElement>
     if (candidates.length === 0) {
       break
     }

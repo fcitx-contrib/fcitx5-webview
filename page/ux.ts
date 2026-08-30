@@ -8,6 +8,7 @@ import {
   decoration,
   hoverables,
   panel,
+  scrollArea,
   theme,
 } from './selector'
 
@@ -28,6 +29,7 @@ let mouseMoveState = 0
 export function resetMouseMoveState() {
   mouseMoveState = 0
   hoverables.classList.remove('fcitx-mousemoved')
+  panel.classList.remove('fcitx-mousemoved')
 }
 
 let actions: CandidateAction[][] = []
@@ -188,12 +190,12 @@ export function div(...classList: string[]) {
   return element
 }
 
-function isInsideHoverables(target: Element) {
-  return target !== hoverables && hoverables.contains(target)
+function isInsideScrollArea(target: Element) {
+  return target !== scrollArea && scrollArea.contains(target)
 }
 
 function getCandidateIndex(target: Element) {
-  const allCandidates = hoverables.querySelectorAll('.fcitx-candidate')
+  const allCandidates = scrollArea.querySelectorAll('.fcitx-candidate')
   for (let i = 0; i < allCandidates.length; ++i) {
     if (allCandidates[i] === target) {
       return i
@@ -243,8 +245,8 @@ export function initUx() {
   hoverables.addEventListener('mouseleave', () => {
     const hoverBehavior = getHoverBehavior()
     if (hoverBehavior === 'Move') {
-      const lastHighlighted = hoverables.querySelector('.fcitx-highlighted')
-      const originalHighlighted = hoverables.querySelector('.fcitx-highlighted-original')
+      const lastHighlighted = scrollArea.querySelector('.fcitx-highlighted')
+      const originalHighlighted = scrollArea.querySelector('.fcitx-highlighted-original')
       moveHighlight(lastHighlighted, originalHighlighted)
     }
   })
@@ -265,6 +267,7 @@ export function initUx() {
   document.addEventListener('mousemove', (e) => {
     if (++mouseMoveState >= 2) {
       hoverables.classList.add('fcitx-mousemoved')
+      panel.classList.add('fcitx-mousemoved')
     }
     if (e.button !== 0 || !pressed) {
       return
@@ -297,10 +300,10 @@ export function initUx() {
       }
     }
     let target = e.target as Element
-    if (!isInsideHoverables(target)) {
+    if (!isInsideScrollArea(target)) {
       return
     }
-    while (target.parentElement !== hoverables) {
+    while (target.parentElement !== scrollArea) {
       if (target.classList.contains('fcitx-prev')) {
         return window.fcitx('page', false)
       }
@@ -321,14 +324,14 @@ export function initUx() {
   receiver.addEventListener('contextmenu', (e) => {
     e.preventDefault()
     let target = e.target as Element
-    if (!isInsideHoverables(target)) {
+    if (!isInsideScrollArea(target)) {
       return
     }
 
     const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
     const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
 
-    while (target.parentElement !== hoverables) {
+    while (target.parentElement !== scrollArea) {
       target = target.parentElement!
     }
     const i = getCandidateIndex(target)
