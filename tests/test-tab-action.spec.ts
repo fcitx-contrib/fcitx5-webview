@@ -1,5 +1,5 @@
 import test, { expect } from '@playwright/test'
-import { getBox, getCppCalls, init, panel, setStyle } from './util'
+import { getBox, getCppCalls, init, setStyle } from './util'
 
 function cands() {
   return Array.from({ length: 24 }, (_, i) => (i + 1).toString()).map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
@@ -12,6 +12,8 @@ const tabActions = [
   { id: 4, text: '单字', checked: true },
   { id: 5, text: '笔画' },
 ]
+
+const snapshotOptions = { clip: { x: 0, y: 0, width: 500, height: 400 }, threshold: 0.01 }
 
 test('Tab actions', async ({ page }) => {
   await init(page)
@@ -76,4 +78,24 @@ test('Tab actions', async ({ page }) => {
   await tab.first().click()
   const cppCalls = await getCppCalls(page)
   expect(cppCalls.filter(call => JSON.stringify(call) === '{"tabAction":[1]}').length).toEqual(1)
+})
+
+test('Tab actions snapshot', async ({ page }) => {
+  async function collapse(height: number) {
+    await page.locator('.fcitx-hoverables').evaluate((element: HTMLElement, height) => {
+      element.style.maxBlockSize = `${height}px`
+    }, height)
+  }
+
+  await init(page)
+  await setStyle(page, { ScrollMode: { Animation: 'False' } })
+  await page.evaluate(({ cands, tabActions }) =>
+    window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false, tabActions), { cands: cands(), tabActions })
+  await expect(page).toHaveScreenshot('tab-actions.png', snapshotOptions)
+
+  await collapse(126)
+  await expect(page).toHaveScreenshot('tab-actions-collapse-begin.png', snapshotOptions)
+
+  await collapse(56)
+  await expect(page).toHaveScreenshot('tab-actions-collapse-middle.png', snapshotOptions)
 })
