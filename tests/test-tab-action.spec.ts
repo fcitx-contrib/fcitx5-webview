@@ -14,6 +14,8 @@ const tabActions = [
 ]
 
 test('Tab actions are shown only in scroll mode', async ({ page }) => {
+  const pageErrors: Error[] = []
+  page.on('pageerror', error => pageErrors.push(error))
   await init(page)
   await setStyle(page, { ScrollMode: { Animation: 'False' } })
   const texts = Array.from({ length: 24 }, (_, i) => (i + 1).toString())
@@ -57,8 +59,10 @@ test('Tab actions are shown only in scroll mode', async ({ page }) => {
   await page.mouse.up()
 
   await tab.first().click()
+  await tab.nth(1).click({ button: 'right' })
   const cppCalls = await getCppCalls(page)
   expect(cppCalls.filter(call => JSON.stringify(call) === '{"tabAction":[1]}').length).toEqual(1)
+  expect(pageErrors).toEqual([])
 })
 
 test('Actions after a separator are pinned at the right end', async ({ page }) => {

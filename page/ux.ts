@@ -190,8 +190,8 @@ export function div(...classList: string[]) {
   return element
 }
 
-function isInsideHoverables(target: Element) {
-  return target !== hoverables && hoverables.contains(target)
+function isInsideScrollArea(target: Element) {
+  return target !== scrollArea && scrollArea.contains(target)
 }
 
 function getCandidateIndex(target: Element) {
@@ -300,7 +300,7 @@ export function initUx() {
       }
     }
     let target = e.target as Element
-    if (!isInsideHoverables(target)) {
+    if (!isInsideScrollArea(target)) {
       return
     }
     while (target.parentElement !== scrollArea) {
@@ -324,7 +324,7 @@ export function initUx() {
   receiver.addEventListener('contextmenu', (e) => {
     e.preventDefault()
     let target = e.target as Element
-    if (!isInsideHoverables(target)) {
+    if (!isInsideScrollArea(target)) {
       return
     }
 
