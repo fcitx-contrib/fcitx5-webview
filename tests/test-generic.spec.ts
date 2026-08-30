@@ -114,6 +114,23 @@ test('Candidate action', async ({ page }) => {
   expect(cppCalls.at(-1)).toEqual({ action: [0, 1] })
 })
 
+test('Clicking outside candidate action closes it without selecting', async ({ page }) => {
+  await init(page)
+  await setCandidates(page, [
+    { text: '不要选择', label: '1', comment: '', actions: [] },
+    { text: '可遗忘', label: '2', comment: '', actions: [{ id: 1, text: '忘记' }] },
+  ], 0)
+
+  await candidate(page, 1).click({ button: 'right' })
+  const contextmenu = page.locator('.fcitx-contextmenu')
+  await expect(contextmenu).toBeVisible()
+
+  await candidate(page, 0).click()
+  await expect(contextmenu).toBeHidden()
+  const cppCalls = await getCppCalls(page)
+  expect(cppCalls.some(call => 'select' in call || 'action' in call)).toBe(false)
+})
+
 test('Drag should not select candidate', async ({ page }) => {
   await init(page)
   await setCandidates(page, [

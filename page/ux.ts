@@ -229,6 +229,17 @@ let receiver: HTMLElement
 export function initUx() {
   receiver = (window.fcitx.distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
 
+  // Hide contextmenu when clicking outside.
+  receiver.addEventListener('mouseup', (e) => {
+    if (e.button !== 0 || contextmenu.style.display !== 'block' || contextmenu.contains(e.target as Node)) {
+      return
+    }
+    hideContextmenu()
+    pressed = false
+    dragging = false
+    e.stopImmediatePropagation()
+  }, true)
+
   hoverables.addEventListener('mouseleave', () => {
     const hoverBehavior = getHoverBehavior()
     if (hoverBehavior === 'Move') {
