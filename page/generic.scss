@@ -74,7 +74,6 @@
 
 .fcitx-tabs {
   display: none;
-  flex-direction: row;
 }
 
 .fcitx-panel.fcitx-has-tab-actions .fcitx-tabs {
@@ -173,14 +172,16 @@
   &.fcitx-vertical {
     flex-direction: column;
 
+    .fcitx-scroll-area {
+      flex-direction: column;
+    }
+
     .fcitx-comment {
       flex: var(--vertical-comment-flex);
       text-align: end;
     }
 
     .fcitx-divider {
-      flex-direction: row;
-
       &:last-child, &:has(+ .fcitx-divider-paging) {
         display: none;
       }
@@ -188,8 +189,6 @@
   }
 
   &.fcitx-horizontal {
-    flex-direction: row;
-
     .fcitx-candidate {
       /* When horizontal and there is multi-line candidate,
       make sure other candidates are vertical centered.
@@ -247,14 +246,6 @@
 .fcitx-scroll-area {
   flex: 1;
   display: flex;
-}
-
-.fcitx-horizontal .fcitx-scroll-area {
-  flex-direction: row;
-}
-
-.fcitx-vertical .fcitx-scroll-area {
-  flex-direction: column;
 }
 
 :is(.fcitx-vertical-rl, .fcitx-vertical-lr) .fcitx-paging svg {
