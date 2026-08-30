@@ -516,7 +516,7 @@ $color-transition: var(--color-transition, background-color 500ms ease, color 50
     }
 
     .fcitx-tab {
-      min-block-size: $candidate-height;
+      block-size: $candidate-height;
     }
 
     .fcitx-horizontal-scroll {
