@@ -103,10 +103,6 @@
   align-items: center;
   justify-content: center;
   min-inline-size: 30px; /* Prevent single-letter tabs from being too narrow. */
-  white-space: nowrap;
-
-  /* Tabs should not be rotated by vertical writing mode. */
-  writing-mode: horizontal-tb;
 }
 
 .fcitx-preedit, .fcitx-aux-up {
