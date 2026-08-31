@@ -70,22 +70,10 @@ function setDefaultTheme(defaultTheme: DEFAULT_THEME) {
       break
   }
   for (const c of allSystemClasses) {
-    const klass = `fcitx-${c}`
-    if (c === systemClass) {
-      theme.classList.add(klass)
-    }
-    else {
-      theme.classList.remove(klass)
-    }
+    theme.classList.toggle(`fcitx-${c}`, c === systemClass)
   }
   for (const c of allVersionClasses) {
-    const klass = `fcitx-${c}`
-    if (c === versionClass) {
-      theme.classList.add(klass)
-    }
-    else {
-      theme.classList.remove(klass)
-    }
+    theme.classList.toggle(`fcitx-${c}`, c === versionClass)
   }
 }
 
