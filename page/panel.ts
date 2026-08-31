@@ -109,20 +109,17 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   else {
     fetchComplete()
   }
+  hoverables.classList.toggle('fcitx-horizontal-scroll', scrollState === SCROLLING)
   if (scrollState === SCROLLING) {
-    hoverables.classList.add('fcitx-horizontal-scroll')
     hoverables.style.maxBlockSize = '' // Fallback to non-inline larger max-block-size.
     setScrollEnd(scrollEnd)
   }
+  else if (scrollState === SCROLL_READY) {
+    setLastLabels(cands.map(c => c.label))
+  }
   else {
-    hoverables.classList.remove('fcitx-horizontal-scroll')
-    if (scrollState === SCROLL_READY) {
-      setLastLabels(cands.map(c => c.label))
-    }
-    else {
-      // Cleanup all leftovers.
-      hoverables.style.maxBlockSize = ''
-    }
+    // Cleanup all leftovers.
+    hoverables.style.maxBlockSize = ''
   }
   const label0 = getLabelFormatter()(0)
   for (let i = 0; i < cands.length; ++i) {
@@ -259,16 +256,13 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
 
 function updateElement(element: Element, formatted: [string, number][]) {
   element.innerHTML = ''
-  if (formatted.length === 0) {
-    element.classList.add('fcitx-hidden')
-  }
-  else {
+  element.classList.toggle('fcitx-hidden', formatted.length === 0)
+  if (formatted.length > 0) {
     for (const [text, _] of formatted) { // Ignore format for now.
       const child = document.createElement('span') // So that element doesn't need display: flex.
       child.textContent = text
       element.appendChild(child)
     }
-    element.classList.remove('fcitx-hidden')
   }
 }
 
@@ -286,20 +280,10 @@ export function updateInputPanel(formattedPreCaret: [string, number][], hasCaret
   updateElement(preCaret, formattedPreCaret)
   if (hasCaret) {
     caret.textContent = caretText
-    if (caretText) {
-      caret.classList.remove('fcitx-no-text')
-    }
-    else {
-      caret.classList.add('fcitx-no-text')
-    }
+    caret.classList.toggle('fcitx-no-text', !caretText)
   }
   updateElement(postCaret, formattedPostCaret)
-  if (hasPreedit) {
-    preedit.classList.remove('fcitx-hidden')
-  }
-  else {
-    preedit.classList.add('fcitx-hidden')
-  }
+  preedit.classList.toggle('fcitx-hidden', !hasPreedit)
   updateElement(auxUp, formattedAuxUp)
   updateElement(auxDown, formattedAuxDown)
 }

@@ -12,28 +12,15 @@ import { hoverables, initSelectors, panel } from './selector'
 import { initTheme, setAccentColor, setTheme } from './theme'
 import { answerActions, initUx, resize } from './ux'
 
-function setLayout(layout: 0 | 1) {
-  switch (layout) {
-    case HORIZONTAL:
-      hoverables.classList.remove('fcitx-vertical')
-      hoverables.classList.add('fcitx-horizontal')
-      break
-    case VERTICAL:
-      hoverables.classList.remove('fcitx-horizontal')
-      hoverables.classList.add('fcitx-vertical')
-      break
-  }
+function setLayout(layout: LAYOUT) {
+  hoverables.classList.toggle('fcitx-horizontal', layout === HORIZONTAL)
+  hoverables.classList.toggle('fcitx-vertical', layout === VERTICAL)
 }
 
 function setWritingMode(mode: 0 | 1 | 2) {
   const classes = ['fcitx-horizontal-tb', 'fcitx-vertical-rl', 'fcitx-vertical-lr']
   for (let i = 0; i < classes.length; ++i) {
-    if (mode === i) {
-      panel.classList.add(classes[i])
-    }
-    else {
-      panel.classList.remove(classes[i])
-    }
+    panel.classList.toggle(classes[i], mode === i)
   }
 }
 

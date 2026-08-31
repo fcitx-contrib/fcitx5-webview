@@ -350,12 +350,7 @@ export function initUx() {
 
   setBlurFunc = (enabled: boolean) => {
     const panelBlur = document.querySelector('.fcitx-panel-blur')!
-    if (enabled) {
-      panelBlur.classList.add('fcitx-blur')
-    }
-    else {
-      panelBlur.classList.remove('fcitx-blur')
-    }
+    panelBlur.classList.toggle('fcitx-blur', enabled)
   }
 
   setInterval(() => {
