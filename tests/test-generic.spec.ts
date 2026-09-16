@@ -16,6 +16,8 @@ import {
 } from './util'
 
 test('HTML structure', async ({ page }) => {
+  // Freeze timers before initialization to keep theme transitions and caret blinking out of the HTML.
+  await page.clock.pauseAt(Date.now())
   await init(page)
   await setCandidates(page, [
     { text: '页面结构', label: '1', comment: 'c', actions: [] },
