@@ -30,9 +30,9 @@ export function updateInputPanel(page: Page, preedit: string, auxUp: string = ''
     window.fcitx.updateInputPanel([], true, preedit ? [[preedit, 0]] : [], auxUp ? [[auxUp, 0]] : [], auxDown ? [[auxDown, 0]] : []), { preedit, auxUp, auxDown })
 }
 
-export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, pageable = false, hasPrev = false) {
-  return page.evaluate(({ cands, highlighted, pageable, hasPrev }) =>
-    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], spaceBetweenComment: true, ...cand })), highlighted, pageable, hasPrev, false, 0, false, false, []), { cands, highlighted, pageable, hasPrev })
+export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, pageable = false, hasPrev = false, hasNext = false) {
+  return page.evaluate(({ cands, highlighted, pageable, hasPrev, hasNext }) =>
+    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], spaceBetweenComment: true, ...cand })), highlighted, pageable, hasPrev, hasNext, 0, false, false, []), { cands, highlighted, pageable, hasPrev, hasNext })
 }
 
 export async function scrollExpand(page: Page, texts: string[]) {

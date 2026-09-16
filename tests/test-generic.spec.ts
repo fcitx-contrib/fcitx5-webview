@@ -110,6 +110,24 @@ test('Select candidate', async ({ page }) => {
   expect(cppCalls.at(-1)).toEqual({ select: [1] })
 })
 
+test('Disabled paging buttons do not trigger paging', async ({ page }) => {
+  await init(page)
+  await setCandidates(page, [{}], 0, true, false, true)
+
+  await page.locator('.fcitx-prev').click()
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([])
+
+  await page.locator('.fcitx-next').click()
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([{ page: [true] }])
+
+  await setCandidates(page, [{}], 0, true, true, false)
+  await page.locator('.fcitx-next').click()
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([{ page: [true] }])
+
+  await page.locator('.fcitx-prev').click()
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([{ page: [true] }, { page: [false] }])
+})
+
 test('Candidate action', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
