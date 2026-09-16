@@ -304,9 +304,16 @@ export function initUx() {
     }
     while (target.parentElement !== scrollArea) {
       if (target.classList.contains('fcitx-prev')) {
+        // Mozc can page to the last from first, so disable for visual consistency.
+        if (!target.querySelector('.fcitx-hoverable-inner')) {
+          return
+        }
         return window.fcitx('page', false)
       }
       else if (target.classList.contains('fcitx-next')) {
+        if (!target.querySelector('.fcitx-hoverable-inner')) {
+          return
+        }
         return window.fcitx('page', true)
       }
       else if (target.classList.contains('fcitx-expand')) {
