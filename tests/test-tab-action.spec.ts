@@ -2,7 +2,13 @@ import test, { expect } from '@playwright/test'
 import { getBox, getCppCalls, init, setStyle } from './util'
 
 function cands() {
-  return Array.from({ length: 24 }, (_, i) => (i + 1).toString()).map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
+  return Array.from({ length: 24 }, (_, i) => (i + 1).toString()).map(text => ({
+    text,
+    label: '',
+    comment: '',
+    actions: [],
+    spaceBetweenComment: true,
+  }))
 }
 
 const tabActions = [
@@ -13,14 +19,22 @@ const tabActions = [
   { id: 5, text: '笔画' },
 ]
 
-const snapshotOptions = { clip: { x: 0, y: 0, width: 500, height: 400 }, threshold: 0.01 }
+const snapshotOptions = {
+  clip: { x: 0, y: 0, width: 500, height: 400 },
+  threshold: 0.01,
+}
 
 test('Tab actions', async ({ page }) => {
   await init(page)
-  await setStyle(page, { ScrollMode: { Animation: 'False' } })
+  await setStyle(page, {
+    ScrollMode: { Animation: 'False' },
+  })
 
   await page.evaluate(({ cands, tabActions }) =>
-    window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false, tabActions), { cands: cands(), tabActions })
+    window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false, tabActions), {
+    cands: cands(),
+    tabActions,
+  })
   const tabs = page.locator('.fcitx-tabs')
   await expect(tabs, 'Tab actions are shown only in scroll mode').not.toBeVisible()
 
@@ -30,7 +44,10 @@ test('Tab actions', async ({ page }) => {
   const dividerColor = await divider.evaluate(element => getComputedStyle(element).backgroundColor)
 
   await page.evaluate(({ cands, tabActions }) =>
-    window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false, tabActions), { cands: cands(), tabActions })
+    window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false, tabActions), {
+    cands: cands(),
+    tabActions,
+  })
   await expect(tabs).toBeVisible()
   await expect(tabs).toHaveCSS('background-color', candidateBackgroundColor)
   await expect(tabs).toHaveCSS('border-block-start-width', '1px')
@@ -88,9 +105,14 @@ test('Tab actions snapshot', async ({ page }) => {
   }
 
   await init(page)
-  await setStyle(page, { ScrollMode: { Animation: 'False' } })
+  await setStyle(page, {
+    ScrollMode: { Animation: 'False' },
+  })
   await page.evaluate(({ cands, tabActions }) =>
-    window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false, tabActions), { cands: cands(), tabActions })
+    window.fcitx.setCandidates(cands, -1, false, false, false, 2, true, false, tabActions), {
+    cands: cands(),
+    tabActions,
+  })
   await expect(page).toHaveScreenshot('tab-actions.png', snapshotOptions)
 
   await collapse(126)

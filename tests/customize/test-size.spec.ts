@@ -6,18 +6,20 @@ test('Independent sizes', async ({ page }) => {
   await init(page)
 
   await setLayout(page, VERTICAL)
-  await setStyle(page, { Size: {
-    OverrideDefault: 'True',
-    BorderRadius: '4',
-    BorderWidth: '2',
-    HighlightRadius: '3',
-    TopPadding: '4',
-    RightPadding: '2',
-    BottomPadding: '5',
-    LeftPadding: '1',
-    LabelTextGap: '3',
-    VerticalMinWidth: '180',
-  } })
+  await setStyle(page, {
+    Size: {
+      OverrideDefault: 'True',
+      BorderRadius: '4',
+      BorderWidth: '2',
+      HighlightRadius: '3',
+      TopPadding: '4',
+      RightPadding: '2',
+      BottomPadding: '5',
+      LeftPadding: '1',
+      LabelTextGap: '3',
+      VerticalMinWidth: '180',
+    },
+  })
   await setCandidates(page, [{}], 0)
   await expect(panel(page)).toHaveCSS('border-radius', '4px')
   await expect(panel(page)).toHaveCSS('border-width', '2px')

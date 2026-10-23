@@ -18,7 +18,19 @@ test('Select candidate', async ({ page }) => {
   await setStyle(page, {
     ScrollMode: { MaxColumnCount: '10' },
   })
-  await scrollExpand(page, ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
+  await scrollExpand(page, [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+  ])
   await expect(candidate(page, 10).locator('.fcitx-label')).toHaveText('0')
 
   await page.evaluate(() => {
@@ -26,7 +38,14 @@ test('Select candidate', async ({ page }) => {
     window.fcitx.scrollKeyAction(1)
   })
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls.filter(call => 'select' in call)).toEqual([{ select: [9] }, { select: [0] }])
+  expect(cppCalls.filter(call => 'select' in call)).toEqual([
+    {
+      select: [9],
+    },
+    {
+      select: [0],
+    },
+  ])
 })
 
 test('Hide scrollbar', async ({ page }) => {

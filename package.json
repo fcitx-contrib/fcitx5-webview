@@ -31,7 +31,7 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@antfu/eslint-config": "^9.0.0",
+    "@antfu/eslint-config": "^10.0.0",
     "@parcel/packager-ts": "2.16.4",
     "@parcel/transformer-inline-string": "^2.16.4",
     "@parcel/transformer-sass": "^2.16.4",

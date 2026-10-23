@@ -12,7 +12,15 @@ test.describe('Actively expand', () => {
       await followHostTheme(page, system, version)
 
       await page.evaluate(() =>
-        window.fcitx.setCandidates([{ text: '1', label: '1', comment: '', actions: [], spaceBetweenComment: true }], 0, true, false, true, 1, false, false, []))
+        window.fcitx.setCandidates([
+          {
+            text: '1',
+            label: '1',
+            comment: '',
+            actions: [],
+            spaceBetweenComment: true,
+          },
+        ], 0, true, false, true, 1, false, false, []))
       const pane = panel(page)
       await expect(pane).toHaveCSS('border-start-end-radius', radius)
       await expect(pane).toHaveCSS('border-end-end-radius', radius)
@@ -48,8 +56,20 @@ test.describe('Passively expand', () => {
 
 test.describe('Max height', () => {
   const cases = [
-    { system: 'macOS', version: 26, height6: '168px', height10: '280px', heightFont: '216px' },
-    { system: 'macOS', version: 15, height6: '180px', height10: '300px', heightFont: '228px' },
+    {
+      system: 'macOS',
+      version: 26,
+      height6: '168px',
+      height10: '280px',
+      heightFont: '216px',
+    },
+    {
+      system: 'macOS',
+      version: 15,
+      height6: '180px',
+      height10: '300px',
+      heightFont: '228px',
+    },
   ]
   for (const { system, version, height6, height10, heightFont } of cases) {
     test(`${system} ${version}`, async ({ page }) => {
@@ -60,13 +80,24 @@ test.describe('Max height', () => {
       await expect(pane, 'Height of 6 rows').toHaveCSS('height', height6)
       await expect(pane).toHaveCSS('width', '400px')
 
-      await setStyle(page, { ScrollMode: { MaxRowCount: '10' } })
+      await setStyle(page, {
+        ScrollMode: { MaxRowCount: '10' },
+      })
       await expect(pane, 'Height of 10 rows').toHaveCSS('height', height10)
 
-      await setStyle(page, { Size: { OverrideDefault: 'True', Margin: '4', TopPadding: '1', BottomPadding: '1' } })
+      await setStyle(page, {
+        Size: {
+          OverrideDefault: 'True',
+          Margin: '4',
+          TopPadding: '1',
+          BottomPadding: '1',
+        },
+      })
       await expect(pane, 'Height of 6 rows with win11 theme').toHaveCSS('height', '204px')
 
-      await setStyle(page, { Font: { TextFontSize: '32' } })
+      await setStyle(page, {
+        Font: { TextFontSize: '32' },
+      })
       await expect(pane, 'Height of 6 rows with big font size').toHaveCSS('height', heightFont)
     })
   }

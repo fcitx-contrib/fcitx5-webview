@@ -62,7 +62,9 @@ export function fixGhostStripe() {
     const panelBox = panel.getBoundingClientRect()
     const panelStyle = getComputedStyle(panel)
     const firstClipPath = getClipPath(candidates[0], panelBox, panelStyle)
-    const lastClipPath = candidates.length > 1 ? getClipPath(candidates[candidates.length - 1], panelBox, panelStyle) : ''
+    const lastClipPath = candidates.length > 1
+      ? getClipPath(candidates[candidates.length - 1], panelBox, panelStyle)
+      : ''
     if (!firstClipPath && !lastClipPath) {
       break
     }

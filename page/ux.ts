@@ -80,11 +80,26 @@ interface ShadowBox {
 function expandRadiusTo4(radius: number[]): number[] {
   switch (radius.length) {
     case 1:
-      return [radius[0], radius[0], radius[0], radius[0]]
+      return [
+        radius[0],
+        radius[0],
+        radius[0],
+        radius[0],
+      ]
     case 2:
-      return [radius[0], radius[1], radius[0], radius[1]]
+      return [
+        radius[0],
+        radius[1],
+        radius[0],
+        radius[1],
+      ]
     case 3:
-      return [radius[0], radius[1], radius[2], radius[0]]
+      return [
+        radius[0],
+        radius[1],
+        radius[2],
+        radius[0],
+      ]
     case 4:
       return radius
     default:
@@ -167,8 +182,12 @@ function getBoundingRectWithShadow(element: Element): ShadowBox {
     const spreadRadius = vals[7 * i + 6]
     const deltaX = offsetX + blurRadius + spreadRadius
     const deltaY = offsetY + blurRadius + spreadRadius
-    const shadowXHi = rect.right + (deltaX > 0 ? deltaX : 0)
-    const shadowYHi = rect.bottom + (deltaY > 0 ? deltaY : 0)
+    const shadowXHi = rect.right + (deltaX > 0
+      ? deltaX
+      : 0)
+    const shadowYHi = rect.bottom + (deltaY > 0
+      ? deltaY
+      : 0)
     if (shadowXHi > xHi)
       xHi = shadowXHi
     if (shadowYHi > yHi)
@@ -229,7 +248,9 @@ export function hideContextmenu() {
 let receiver: HTMLElement
 
 export function initUx() {
-  receiver = (window.fcitx.distribution === 'fcitx5-js' ? decoration : document) as HTMLElement
+  receiver = (window.fcitx.distribution === 'fcitx5-js'
+    ? decoration
+    : document) as HTMLElement
 
   // Hide contextmenu when clicking outside.
   receiver.addEventListener('mouseup', (e) => {
@@ -334,8 +355,12 @@ export function initUx() {
       return
     }
 
-    const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().left : 0)
-    const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js' ? theme.getBoundingClientRect().top : 0)
+    const x = e.clientX - (window.fcitx.distribution === 'fcitx5-js'
+      ? theme.getBoundingClientRect().left
+      : 0)
+    const y = e.clientY - (window.fcitx.distribution === 'fcitx5-js'
+      ? theme.getBoundingClientRect().top
+      : 0)
 
     while (target.parentElement !== scrollArea) {
       target = target.parentElement!

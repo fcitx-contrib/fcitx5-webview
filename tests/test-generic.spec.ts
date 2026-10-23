@@ -20,8 +20,18 @@ test('HTML structure', async ({ page }) => {
   await page.clock.pauseAt(Date.now())
   await init(page)
   await setCandidates(page, [
-    { text: '页面结构', label: '1', comment: 'c', actions: [] },
-    { text: '测试', label: '2', comment: '', actions: [] },
+    {
+      text: '页面结构',
+      label: '1',
+      comment: 'c',
+      actions: [],
+    },
+    {
+      text: '测试',
+      label: '2',
+      comment: '',
+      actions: [],
+    },
   ], 0)
 
   const actual = (await theme(page).evaluate(el => el.outerHTML)).replaceAll(/>\s+</g, '><').replaceAll(/ class="([^"]+)"/g, (_, classes) => ` class="${classes.split(' ').sort().join(' ')}"`)
@@ -92,22 +102,44 @@ test('HTML structure', async ({ page }) => {
   expect(actual).toEqual(expected)
 
   await followHostTheme(page, 'macOS', 15)
-  expect((await theme(page).getAttribute('class'))!.split(' ').sort()).toEqual(['fcitx-blue', 'fcitx-dark', 'fcitx-macos', 'fcitx-macos-15'])
+  expect((await theme(page).getAttribute('class'))!.split(' ').sort()).toEqual([
+    'fcitx-blue',
+    'fcitx-dark',
+    'fcitx-macos',
+    'fcitx-macos-15',
+  ])
   await followHostTheme(page, 'macOS', 26)
-  expect((await theme(page).getAttribute('class'))!.split(' ').sort()).toEqual(['fcitx-blue', 'fcitx-dark', 'fcitx-macos', 'fcitx-macos-26'])
+  expect((await theme(page).getAttribute('class'))!.split(' ').sort()).toEqual([
+    'fcitx-blue',
+    'fcitx-dark',
+    'fcitx-macos',
+    'fcitx-macos-26',
+  ])
 })
 
 test('Select candidate', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
-    { text: '点击', label: '1', comment: '', actions: [] },
-    { text: '候选词', label: '2', comment: '', actions: [] },
+    {
+      text: '点击',
+      label: '1',
+      comment: '',
+      actions: [],
+    },
+    {
+      text: '候选词',
+      label: '2',
+      comment: '',
+      actions: [],
+    },
   ], 0)
 
   await candidate(page, 1).click()
   const cppCalls = await getCppCalls(page)
   expect(cppCalls[0]).toHaveProperty('resize') // ResizeObserver
-  expect(cppCalls.at(-1)).toEqual({ select: [1] })
+  expect(cppCalls.at(-1)).toEqual({
+    select: [1],
+  })
 })
 
 test('Disabled paging buttons do not trigger paging', async ({ page }) => {
@@ -118,33 +150,69 @@ test('Disabled paging buttons do not trigger paging', async ({ page }) => {
   expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([])
 
   await page.locator('.fcitx-next').click()
-  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([{ page: [true] }])
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([
+    {
+      page: [true],
+    },
+  ])
 
   await setCandidates(page, [{}], 0, true, true, false)
   await page.locator('.fcitx-next').click()
-  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([{ page: [true] }])
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([
+    {
+      page: [true],
+    },
+  ])
 
   await page.locator('.fcitx-prev').click()
-  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([{ page: [true] }, { page: [false] }])
+  expect((await getCppCalls(page)).filter(call => 'page' in call)).toEqual([
+    {
+      page: [true],
+    },
+    {
+      page: [false],
+    },
+  ])
 })
 
 test('Candidate action', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
-    { text: '可遗忘', label: '1', comment: '', actions: [{ id: 1, text: '忘记' }] },
+    {
+      text: '可遗忘',
+      label: '1',
+      comment: '',
+      actions: [
+        { id: 1, text: '忘记' },
+      ],
+    },
   ], 0)
 
   await candidate(page, 0).click({ button: 'right' })
   await page.getByText('忘记').click()
   const cppCalls = await getCppCalls(page)
-  expect(cppCalls.at(-1)).toEqual({ action: [0, 1] })
+  expect(cppCalls.at(-1)).toEqual({
+    action: [0, 1],
+  })
 })
 
 test('Clicking outside candidate action closes it without selecting', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
-    { text: '不要选择', label: '1', comment: '', actions: [] },
-    { text: '可遗忘', label: '2', comment: '', actions: [{ id: 1, text: '忘记' }] },
+    {
+      text: '不要选择',
+      label: '1',
+      comment: '',
+      actions: [],
+    },
+    {
+      text: '可遗忘',
+      label: '2',
+      comment: '',
+      actions: [
+        { id: 1, text: '忘记' },
+      ],
+    },
   ], 0)
 
   await candidate(page, 1).click({ button: 'right' })
@@ -160,8 +228,18 @@ test('Clicking outside candidate action closes it without selecting', async ({ p
 test('Drag should not select candidate', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
-    { text: '拖动', label: '1', comment: '', actions: [] },
-    { text: '不选词', label: '2', comment: '', actions: [] },
+    {
+      text: '拖动',
+      label: '1',
+      comment: '',
+      actions: [],
+    },
+    {
+      text: '不选词',
+      label: '2',
+      comment: '',
+      actions: [],
+    },
   ], 0)
 
   const box = await getBox(candidate(page, 0))
@@ -178,8 +256,18 @@ test('Drag should not select candidate', async ({ page }) => {
 test('But micro drag is tolerated', async ({ page }) => {
   await init(page)
   await setCandidates(page, [
-    { text: '微动', label: '1', comment: '', actions: [] },
-    { text: '选词', label: '2', comment: '', actions: [] },
+    {
+      text: '微动',
+      label: '1',
+      comment: '',
+      actions: [],
+    },
+    {
+      text: '选词',
+      label: '2',
+      comment: '',
+      actions: [],
+    },
   ], 0)
 
   const box = await getBox(candidate(page, 0))
@@ -191,13 +279,25 @@ test('But micro drag is tolerated', async ({ page }) => {
   await page.mouse.up()
   const cppCalls = await getCppCalls(page)
   expect(cppCalls.filter(call => 'resize' in call).length).toBeGreaterThanOrEqual(2) // ResizeObserver and drag
-  expect(cppCalls.at(-1)).toEqual({ select: [0] })
+  expect(cppCalls.at(-1)).toEqual({
+    select: [0],
+  })
 })
 
 test.describe('Set layout', () => {
   const cases = [
-    { system: 'macOS', version: 26, width: 257, height: 116 },
-    { system: 'macOS', version: 15, width: 202, height: 125 },
+    {
+      system: 'macOS',
+      version: 26,
+      width: 257,
+      height: 116,
+    },
+    {
+      system: 'macOS',
+      version: 15,
+      width: 202,
+      height: 125,
+    },
   ]
   for (const { system, version, width, height } of cases) {
     test(`${system} ${version}`, async ({ page }) => {
@@ -205,10 +305,30 @@ test.describe('Set layout', () => {
       await followHostTheme(page, system, version)
 
       await setCandidates(page, [
-        { text: '横', label: '1', comment: '', actions: [] },
-        { text: '竖', label: '1', comment: '', actions: [] },
-        { text: '分', label: '1', comment: '', actions: [] },
-        { text: '明', label: '1', comment: '', actions: [] },
+        {
+          text: '横',
+          label: '1',
+          comment: '',
+          actions: [],
+        },
+        {
+          text: '竖',
+          label: '1',
+          comment: '',
+          actions: [],
+        },
+        {
+          text: '分',
+          label: '1',
+          comment: '',
+          actions: [],
+        },
+        {
+          text: '明',
+          label: '1',
+          comment: '',
+          actions: [],
+        },
       ], 0)
 
       await setLayout(page, VERTICAL)

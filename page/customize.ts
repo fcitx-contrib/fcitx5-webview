@@ -88,14 +88,20 @@ export function setStyle(style: string) {
   }
 
   function setColor(name: string, property: keyof STYLE_JSON['LightMode'] | '', fallback = '') {
-    theme.style.setProperty(`--light-${name}`, j.LightMode.OverrideDefault === 'True' && property ? j.LightMode[property] : fallback)
+    theme.style.setProperty(`--light-${name}`, j.LightMode.OverrideDefault === 'True' && property
+      ? j.LightMode[property]
+      : fallback)
     theme.style.setProperty(`--dark-${name}`, j.DarkMode.OverrideDefault === 'True' && property
-      ? (j.DarkMode.SameWithLightMode === 'True' && j.LightMode.OverrideDefault === 'True' ? j.LightMode[property] : j.DarkMode[property])
+      ? (j.DarkMode.SameWithLightMode === 'True' && j.LightMode.OverrideDefault === 'True'
+          ? j.LightMode[property]
+          : j.DarkMode[property])
       : fallback.replace('--light-', '--dark-'))
   }
 
   function setSize(name: string, value: number | string) {
-    theme.style.setProperty(`--${name}`, j.Size.OverrideDefault === 'True' ? px(value) : '')
+    theme.style.setProperty(`--${name}`, j.Size.OverrideDefault === 'True'
+      ? px(value)
+      : '')
   }
 
   if (j.Basic.DefaultTheme === 'System') {
@@ -172,7 +178,9 @@ export function setStyle(style: string) {
   setSize('border-width', j.Size.BorderWidth)
   setSize('border-radius', j.Size.BorderRadius)
   setSize('margin', j.Size.Margin)
-  setSize('middle-margin', j.Size.HorizontalDividerWidth === '0' ? Number(j.Size.Margin) / 2 : j.Size.Margin)
+  setSize('middle-margin', j.Size.HorizontalDividerWidth === '0'
+    ? Number(j.Size.Margin) / 2
+    : j.Size.Margin)
   setSize('highlight-radius', j.Size.HighlightRadius)
   setSize('top-padding', j.Size.TopPadding)
   setSize('right-padding', j.Size.RightPadding)
@@ -184,7 +192,9 @@ export function setStyle(style: string) {
   setSize('horizontal-divider-width', j.Size.HorizontalDividerWidth)
 
   // Typography
-  theme.style.setProperty('--vertical-comment-flex', j.Typography.VerticalCommentsAlignRight === 'True' ? '1' : '')
+  theme.style.setProperty('--vertical-comment-flex', j.Typography.VerticalCommentsAlignRight === 'True'
+    ? '1'
+    : '')
   setPagingButtonsStyle(j.Typography.PagingButtonsStyle)
 
   // Scroll mode
@@ -193,14 +203,20 @@ export function setStyle(style: string) {
   theme.style.setProperty('--max-row', j.ScrollMode.MaxRowCount)
   theme.style.setProperty('--max-column', j.ScrollMode.MaxColumnCount)
   setScrollParams(maxRow, maxColumn, cellWidth, candidateHeight)
-  theme.style.setProperty('--scrollbar-redundancy-width', j.ScrollMode.ShowScrollBar === 'False' ? '0px' : '2px')
-  theme.style.setProperty('--scrollbar-width', j.ScrollMode.ShowScrollBar === 'False' ? '0px' : '8px')
+  theme.style.setProperty('--scrollbar-redundancy-width', j.ScrollMode.ShowScrollBar === 'False'
+    ? '0px'
+    : '2px')
+  theme.style.setProperty('--scrollbar-width', j.ScrollMode.ShowScrollBar === 'False'
+    ? '0px'
+    : '8px')
   const animation = j.ScrollMode.Animation === 'True'
   theme.style.setProperty('--scroll-animation', animation ? '' : 'none')
   setAnimation(animation)
 
   // Background
-  theme.style.setProperty('--background-image', backgroundImage ? `url(${JSON.stringify(backgroundImage)})` : '')
+  theme.style.setProperty('--background-image', backgroundImage
+    ? `url(${JSON.stringify(backgroundImage)})`
+    : '')
 
   if (window.fcitx.distribution === 'fcitx5-js') {
     if (j.Background.Blur === 'True') {
@@ -213,7 +229,9 @@ export function setStyle(style: string) {
     theme.style.setProperty('--backdrop-filter', blur)
   }
 
-  theme.style.setProperty('--panel-shadow', j.Background.Shadow === 'True' ? '' : 'none')
+  theme.style.setProperty('--panel-shadow', j.Background.Shadow === 'True'
+    ? ''
+    : 'none')
 
   // Font
   setFontFamily('--text-font-family', j.Font.TextFontFamily)
@@ -234,11 +252,15 @@ export function setStyle(style: string) {
 
   // Caret
   setBlink(j.Caret.Style === 'Blink')
-  setCaretText(j.Caret.Style === 'Text' ? j.Caret.Text : '')
+  setCaretText(j.Caret.Style === 'Text'
+    ? j.Caret.Text
+    : '')
 
   // Highlight
   setHoverBehavior(j.Highlight.HoverBehavior)
-  theme.style.setProperty('--mark-opacity', j.Highlight.MarkStyle === 'None' ? '0' : '1')
+  theme.style.setProperty('--mark-opacity', j.Highlight.MarkStyle === 'None'
+    ? '0'
+    : '1')
 
   document.head.querySelector('#fcitx-user')?.setAttribute('href', noCache(j.Advanced.UserCss))
 

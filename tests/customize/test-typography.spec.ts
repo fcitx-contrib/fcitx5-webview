@@ -30,7 +30,9 @@ test('Comments align right in vertical layout', async ({ page }) => {
   const leftLongBox = await getBox(longComment)
   expect(leftShortBox.x + leftShortBox.width).toBeLessThan(leftLongBox.x + leftLongBox.width)
 
-  await setStyle(page, { Typography: { VerticalCommentsAlignRight: 'True' } })
+  await setStyle(page, {
+    Typography: { VerticalCommentsAlignRight: 'True' },
+  })
   const rightShortBox = await getBox(shortComment)
   const rightLongBox = await getBox(longComment)
   expect(rightLongBox.x + rightLongBox.width).toBeGreaterThan(leftLongBox.x + leftLongBox.width)

@@ -55,9 +55,12 @@ test('Preedit caret', async ({ page }) => {
   await page.evaluate(() => window.fcitx.setTheme(1))
   await expect(caret).toHaveCSS('background-color', 'rgb(0, 255, 0)')
 
-  await setStyle(page, { ...colorStyle, Caret: {
-    Style: 'Text',
-  } })
+  await setStyle(page, {
+    ...colorStyle,
+    Caret: {
+      Style: 'Text',
+    },
+  })
   await updateInputPanel(page, PRE_CARET + CARET_TEXT + POST_CARET)
   await expect(caret).toHaveCSS('color', 'rgb(0, 255, 0)')
 

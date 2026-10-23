@@ -80,8 +80,12 @@ function setTabActions(actions: CandidateAction[]) {
   scrollable.innerHTML = ''
   pinned.innerHTML = ''
   const index = actions.findIndex(action => action.separator)
-  const scrollableActions = index !== -1 ? actions.slice(0, index) : actions
-  const pinnedActions = index !== -1 ? actions.slice(index + 1).filter(action => !action.separator) : []
+  const scrollableActions = index !== -1
+    ? actions.slice(0, index)
+    : actions
+  const pinnedActions = index !== -1
+    ? actions.slice(index + 1).filter(action => !action.separator)
+    : []
   for (const action of scrollableActions) {
     scrollable.appendChild(renderTabAction(action))
   }
@@ -100,7 +104,9 @@ export function setCandidates(cands: Candidate[], highlighted: number, pageable:
   resetMouseMoveState()
   hideContextmenu()
   setScrollState(scrollState)
-  setTabActions(scrollState === SCROLLING ? tabActions : [])
+  setTabActions(scrollState === SCROLLING
+    ? tabActions
+    : [])
   // Clear existing candidates when scroll continues.
   if (scrollState !== SCROLLING || scrollStart) {
     scrollArea.innerHTML = ''

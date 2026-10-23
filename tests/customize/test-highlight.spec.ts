@@ -32,7 +32,9 @@ const style: PartialStyle = {
 }
 
 function expectHighlight(page: Page, index: number, highlight: boolean | string) {
-  return expect(candidate(page, index).locator('.fcitx-candidate-inner')).toHaveCSS('background-color', typeof highlight === 'string' ? highlight : highlight ? 'rgb(0, 122, 255)' : transparent)
+  return expect(candidate(page, index).locator('.fcitx-candidate-inner')).toHaveCSS('background-color', typeof highlight === 'string'
+    ? highlight
+    : highlight ? 'rgb(0, 122, 255)' : transparent)
 }
 
 async function expectText(page: Page, index: number, text: string, label: string, comment: string) {
@@ -66,10 +68,15 @@ test('Default theme, no mark, no hover', async ({ page }) => {
 
 test('Default theme, no mark, hover move', async ({ page }) => {
   await init(page)
-  await setStyle(page, { Highlight: { HoverBehavior: 'Move' } })
+  await setStyle(page, {
+    Highlight: { HoverBehavior: 'Move' },
+  })
   await setCandidates(page, [{}, {}, {}], 0)
 
-  for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+  for (const action of [
+    () => hover(page, 2),
+    () => press(page, 2),
+  ]) {
     await action()
 
     await expect(mark(page, 0)).toHaveCount(0)
@@ -84,10 +91,15 @@ test('Default theme, no mark, hover move', async ({ page }) => {
 
 test('Default theme, no mark, hover add', async ({ page }) => {
   await init(page)
-  await setStyle(page, { Highlight: { HoverBehavior: 'Add' } })
+  await setStyle(page, {
+    Highlight: { HoverBehavior: 'Add' },
+  })
   await setCandidates(page, [{}, {}, {}], 0)
 
-  for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+  for (const action of [
+    () => hover(page, 2),
+    () => press(page, 2),
+  ]) {
     await action()
 
     await expect(mark(page, 0)).toHaveCSS('opacity', '0')
@@ -105,7 +117,11 @@ test('User theme, no mark, no hover', async ({ page }) => {
   await setStyle(page, style)
   await setCandidates(page, [{}, {}, {}], 0)
 
-  for (const action of [async () => {}, () => hover(page, 2), () => press(page, 2)]) {
+  for (const action of [
+    async () => {},
+    () => hover(page, 2),
+    () => press(page, 2),
+  ]) {
     await action()
 
     await expect(mark(page, 0)).toHaveCSS('opacity', '0')
@@ -133,7 +149,10 @@ test('User theme, no mark, no hover', async ({ page }) => {
 
 test('User theme, no mark, hover move', async ({ page }) => {
   await init(page)
-  await setStyle(page, { ...style, Highlight: { HoverBehavior: 'Move' } })
+  await setStyle(page, {
+    ...style,
+    Highlight: { HoverBehavior: 'Move' },
+  })
   await setCandidates(page, [{}, {}, {}], 0)
 
   await hover(page, 2)
@@ -161,7 +180,10 @@ test('User theme, no mark, hover move', async ({ page }) => {
 
 test('User theme, no mark, hover add', async ({ page }) => {
   await init(page)
-  await setStyle(page, { ...style, Highlight: { HoverBehavior: 'Add' } })
+  await setStyle(page, {
+    ...style,
+    Highlight: { HoverBehavior: 'Add' },
+  })
   await setCandidates(page, [{}, {}, {}], 0)
 
   await hover(page, 2)
@@ -195,13 +217,25 @@ test.describe('Mark bar, no hover', () => {
   for (const { name, style, markColor } of cases) {
     test(name, async ({ page }) => {
       await init(page)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Bar' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Bar' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
       for (const { action, height } of [
-        { action: async () => {}, height: '16px' },
-        { action: () => hover(page, 0), height: '16px' },
-        { action: () => press(page, 0), height: '12px' },
+        {
+          action: async () => {},
+          height: '16px',
+        },
+        {
+          action: () => hover(page, 0),
+          height: '16px',
+        },
+        {
+          action: () => press(page, 0),
+          height: '12px',
+        },
       ]) {
         await action()
         await expect(mark(page, 0)).toHaveCSS('background-color', markColor)
@@ -222,12 +256,21 @@ test.describe('Mark bar, hover move', () => {
   for (const { name, style, markColor } of cases) {
     test(name, async ({ page }) => {
       await init(page)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Bar', HoverBehavior: 'Move' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Bar', HoverBehavior: 'Move' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
       for (const { action, height } of [
-        { action: () => hover(page, 2), height: '16px' },
-        { action: () => press(page, 2), height: '12px' },
+        {
+          action: () => hover(page, 2),
+          height: '16px',
+        },
+        {
+          action: () => press(page, 2),
+          height: '12px',
+        },
       ]) {
         await action()
         await expect(mark(page, 0)).toHaveCount(0)
@@ -247,10 +290,16 @@ test.describe('Mark bar, hover add', () => {
   for (const { name, style, markColor } of cases) {
     test(name, async ({ page }) => {
       await init(page)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Bar', HoverBehavior: 'Add' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Bar', HoverBehavior: 'Add' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+      for (const action of [
+        () => hover(page, 2),
+        () => press(page, 2),
+      ]) {
         await action()
         await expect(mark(page, 0)).toHaveCSS('background-color', markColor)
         await expect(mark(page, 0)).toHaveCSS('height', '16px')
@@ -269,10 +318,17 @@ test.describe('Mark text, no hover, horizontal', () => {
   for (const { name, style, markColor } of cases) {
     test(name, async ({ page }) => {
       await init(page)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Text' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Text' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [async () => {}, () => hover(page, 0), () => press(page, 0)]) {
+      for (const action of [
+        async () => {},
+        () => hover(page, 0),
+        () => press(page, 0),
+      ]) {
         await action()
         await expect(mark(page, 0)).toHaveCSS('background-color', transparent)
         await expect(mark(page, 0)).toHaveCSS('color', markColor)
@@ -293,10 +349,17 @@ test.describe('Mark text, no hover, horizontal, different widths', () => {
     test(name, async ({ page }) => {
       await init(page)
       await setLayout(page, VERTICAL)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Text' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Text' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [async () => {}, () => hover(page, 0), () => press(page, 0)]) {
+      for (const action of [
+        async () => {},
+        () => hover(page, 0),
+        () => press(page, 0),
+      ]) {
         await action()
         await expect(mark(page, 0)).toHaveCSS('background-color', transparent)
         await expect(mark(page, 0)).toHaveCSS('color', markColor)
@@ -319,10 +382,16 @@ test.describe('Mark text, hover move, horizontal', () => {
   for (const { name, style, markColor } of cases) {
     test(name, async ({ page }) => {
       await init(page)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Text', HoverBehavior: 'Move' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Text', HoverBehavior: 'Move' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+      for (const action of [
+        () => hover(page, 2),
+        () => press(page, 2),
+      ]) {
         await action()
         await expect(mark(page, 0)).toHaveCount(0)
         await expect(mark(page, 1)).toHaveCount(0)
@@ -343,10 +412,16 @@ test.describe('Mark text, hover move, vertical', () => {
     test(name, async ({ page }) => {
       await init(page)
       await setLayout(page, VERTICAL)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Text', HoverBehavior: 'Move' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Text', HoverBehavior: 'Move' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+      for (const action of [
+        () => hover(page, 2),
+        () => press(page, 2),
+      ]) {
         await action()
         for (let i = 0; i < 3; ++i) {
           await expect(mark(page, i)).toHaveText('🐧')
@@ -369,10 +444,16 @@ test.describe('Mark text, hover add, horizontal', () => {
   for (const { name, style, markColor } of cases) {
     test(name, async ({ page }) => {
       await init(page)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Text', HoverBehavior: 'Add' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Text', HoverBehavior: 'Add' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+      for (const action of [
+        () => hover(page, 2),
+        () => press(page, 2),
+      ]) {
         await action()
         await expect(mark(page, 0)).toHaveCSS('background-color', transparent)
         await expect(mark(page, 0)).toHaveCSS('color', markColor)
@@ -393,10 +474,16 @@ test.describe('Mark text, hover add, vertical', () => {
     test(name, async ({ page }) => {
       await init(page)
       await setLayout(page, VERTICAL)
-      await setStyle(page, { ...style, Highlight: { MarkStyle: 'Text', HoverBehavior: 'Add' } })
+      await setStyle(page, {
+        ...style,
+        Highlight: { MarkStyle: 'Text', HoverBehavior: 'Add' },
+      })
       await setCandidates(page, [{}, {}, {}], 0)
 
-      for (const action of [() => hover(page, 2), () => press(page, 2)]) {
+      for (const action of [
+        () => hover(page, 2),
+        () => press(page, 2),
+      ]) {
         await action()
         for (let i = 0; i < 3; ++i) {
           await expect(mark(page, i)).toHaveText('🐧')
