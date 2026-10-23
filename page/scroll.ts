@@ -184,7 +184,9 @@ function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): 
       if (rect.right <= left) {
         continue
       }
-      return rect.right > mid || rect.right - left > left - rect.left ? i : i + 1
+      return rect.right > mid || rect.right - left > left - rect.left
+        ? i
+        : i + 1
     }
     return last
   }
@@ -206,11 +208,15 @@ function getNeighborCandidate(index: number, direction: SCROLL_MOVE_HIGHLIGHT): 
     case HOME:
     case END: {
       const skipped = itemCountInFirstNRows(row)
-      return direction === HOME ? skipped : skipped + rowItemCount[row] - 1
+      return direction === HOME
+        ? skipped
+        : skipped + rowItemCount[row] - 1
     }
     case PAGE_UP:
     case PAGE_DOWN: {
-      const d = direction === PAGE_UP ? UP : DOWN
+      const d = direction === PAGE_UP
+        ? UP
+        : DOWN
       let step = MAX_ROW
       let intermediateIndex = index
       let newIndex: number

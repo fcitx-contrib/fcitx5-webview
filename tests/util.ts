@@ -13,7 +13,9 @@ export async function init(page: Page) {
   await page.evaluate(() => {
     window.cppCalls = []
     window.fcitx = Object.assign((...args: [string, ...any[]]) => {
-      window.cppCalls.push({ [args[0]]: args.slice(1) })
+      window.cppCalls.push({
+        [args[0]]: args.slice(1),
+      })
     }, window.fcitx)
     window.fcitx.setTheme(2)
   })
@@ -22,21 +24,54 @@ export async function init(page: Page) {
 export async function followHostTheme(page: Page, system: string, version: number) {
   await page.evaluate(({ system, version }) =>
     window.fcitx.setHost(system, version), { system, version })
-  return setStyle(page, { Size: { OverrideDefault: 'False' } })
+  return setStyle(page, {
+    Size: { OverrideDefault: 'False' },
+  })
 }
 
 export function updateInputPanel(page: Page, preedit: string, auxUp: string = '', auxDown: string = '') {
   return page.evaluate(({ preedit, auxUp, auxDown }) =>
-    window.fcitx.updateInputPanel([], true, preedit ? [[preedit, 0]] : [], auxUp ? [[auxUp, 0]] : [], auxDown ? [[auxDown, 0]] : []), { preedit, auxUp, auxDown })
+    window.fcitx.updateInputPanel([], true, preedit
+      ? [
+          [preedit, 0],
+        ]
+      : [], auxUp
+      ? [
+          [auxUp, 0],
+        ]
+      : [], auxDown
+      ? [
+          [auxDown, 0],
+        ]
+      : []), { preedit, auxUp, auxDown })
 }
 
 export function setCandidates(page: Page, cands: Partial<Candidate>[], highlighted: number, pageable = false, hasPrev = false, hasNext = false) {
   return page.evaluate(({ cands, highlighted, pageable, hasPrev, hasNext }) =>
-    window.fcitx.setCandidates(cands.map(cand => ({ text: 'text', label: '1', comment: 'comment', actions: [], spaceBetweenComment: true, ...cand })), highlighted, pageable, hasPrev, hasNext, 0, false, false, []), { cands, highlighted, pageable, hasPrev, hasNext })
+    window.fcitx.setCandidates(cands.map(cand => ({
+      text: 'text',
+      label: '1',
+      comment: 'comment',
+      actions: [],
+      spaceBetweenComment: true,
+      ...cand,
+    })), highlighted, pageable, hasPrev, hasNext, 0, false, false, []), {
+    cands,
+    highlighted,
+    pageable,
+    hasPrev,
+    hasNext,
+  })
 }
 
 export async function scrollExpand(page: Page, texts: string[]) {
-  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
+  const cands = texts.map(text => ({
+    text,
+    label: '',
+    comment: '',
+    actions: [],
+    spaceBetweenComment: true,
+  }))
   await page.evaluate(({ cands }) =>
     window.fcitx.setCandidates(cands, 0, false, false, false, 1, false, false, []), { cands })
   return page.evaluate(({ cands }) =>
@@ -44,7 +79,13 @@ export async function scrollExpand(page: Page, texts: string[]) {
 }
 
 export function scroll(page: Page, texts: string[], scrollEnd: boolean) {
-  const cands = texts.map(text => ({ text, label: '', comment: '', actions: [], spaceBetweenComment: true }))
+  const cands = texts.map(text => ({
+    text,
+    label: '',
+    comment: '',
+    actions: [],
+    spaceBetweenComment: true,
+  }))
   return page.evaluate(({ cands, scrollEnd }) =>
     window.fcitx.setCandidates(cands, -1, false, false, false, 2, false, scrollEnd, []), { cands, scrollEnd })
 }
@@ -200,7 +241,9 @@ export type PartialStyle = DeepPartial<STYLE_JSON>
 
 export function setStyle(page: Page, style: PartialStyle) {
   return page.evaluate(({ style }) =>
-    window.fcitx.setStyle(JSON.stringify(style)), { style: deepMerge(defaultStyle, style) })
+    window.fcitx.setStyle(JSON.stringify(style)), {
+    style: deepMerge(defaultStyle, style),
+  })
 }
 
 export function theme(page: Page) {

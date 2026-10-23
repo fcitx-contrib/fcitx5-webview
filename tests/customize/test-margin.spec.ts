@@ -4,9 +4,24 @@ import { VERTICAL } from '../../page/constant'
 import { candidate, getBox, init, scrollExpand, setCandidates, setLayout, setStyle } from '../util'
 
 const candidates = [
-  { text: 'a', label: '', comment: '', actions: [] },
-  { text: 'b', label: '', comment: '', actions: [] },
-  { text: 'c', label: '', comment: '', actions: [] },
+  {
+    text: 'a',
+    label: '',
+    comment: '',
+    actions: [],
+  },
+  {
+    text: 'b',
+    label: '',
+    comment: '',
+    actions: [],
+  },
+  {
+    text: 'c',
+    label: '',
+    comment: '',
+    actions: [],
+  },
 ]
 const margin = 2
 const border = 1
@@ -23,7 +38,12 @@ async function getAllBoxes(page: Page) {
 
 test('Horizontal margin collapse', async ({ page }) => {
   await init(page)
-  await setStyle(page, { Size: { Margin: margin.toString(), HighlightRadius: '4' } })
+  await setStyle(page, {
+    Size: {
+      Margin: margin.toString(),
+      HighlightRadius: '4',
+    },
+  })
   await setCandidates(page, candidates, 0)
   const [firstBox, firstInnerBox, secondBox, secondInnerBox, thirdBox, thirdInnerBox] = await getAllBoxes(page)
 
@@ -53,7 +73,12 @@ test('Horizontal margin collapse', async ({ page }) => {
 test('Scroll corner', async ({ page }) => {
   await init(page)
   const margin = 2
-  await setStyle(page, { Size: { Margin: margin.toString(), HighlightRadius: '4' } })
+  await setStyle(page, {
+    Size: {
+      Margin: margin.toString(),
+      HighlightRadius: '4',
+    },
+  })
   await scrollExpand(page, ['a', 'b', 'c', 'd', 'e', 'f', 'g'])
 
   const first = candidate(page, 0)
@@ -78,7 +103,12 @@ test('Scroll corner', async ({ page }) => {
 test('Vertical no margin collapse with divider', async ({ page }) => {
   await init(page)
   await setLayout(page, VERTICAL)
-  await setStyle(page, { Size: { Margin: margin.toString(), HighlightRadius: '4' } })
+  await setStyle(page, {
+    Size: {
+      Margin: margin.toString(),
+      HighlightRadius: '4',
+    },
+  })
   await setCandidates(page, candidates, 0)
 
   const [firstBox, firstInnerBox, secondBox, secondInnerBox, thirdBox, thirdInnerBox] = await getAllBoxes(page)
@@ -106,7 +136,14 @@ test('Vertical no margin collapse with divider', async ({ page }) => {
 test('Vertical margin collapse with no divider', async ({ page }) => {
   await init(page)
   await setLayout(page, VERTICAL)
-  await setStyle(page, { Size: { OverrideDefault: 'True', HorizontalDividerWidth: '0', Margin: margin.toString(), HighlightRadius: '4' } })
+  await setStyle(page, {
+    Size: {
+      OverrideDefault: 'True',
+      HorizontalDividerWidth: '0',
+      Margin: margin.toString(),
+      HighlightRadius: '4',
+    },
+  })
   await setCandidates(page, candidates, 0)
 
   const [firstBox, firstInnerBox, secondBox, secondInnerBox, thirdBox, thirdInnerBox] = await getAllBoxes(page)

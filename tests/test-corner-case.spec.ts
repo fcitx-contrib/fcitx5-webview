@@ -7,8 +7,18 @@ test('Horizontal multi-line candidate', async ({ page }) => {
   await init(page)
   const pane = panel(page)
 
-  const singleLine = { text: '一行', label: '1', comment: '注释', actions: [] }
-  const multiLine = { text: '多\n行', label: '2', comment: '', actions: [] }
+  const singleLine = {
+    text: '一行',
+    label: '1',
+    comment: '注释',
+    actions: [],
+  }
+  const multiLine = {
+    text: '多\n行',
+    label: '2',
+    comment: '',
+    actions: [],
+  }
   await setCandidates(page, [singleLine], 0)
   const singleLineHeight = (await getBox(pane)).height
 
@@ -29,7 +39,9 @@ test('Horizontal multi-line candidate', async ({ page }) => {
 test('Multi-space and tab', async ({ page }) => {
   await init(page)
 
-  await setCandidates(page, [{ text: '基准 单空格  双空格\t制表符' }], 0)
+  await setCandidates(page, [
+    { text: '基准 单空格  双空格\t制表符' },
+  ], 0)
   const text = panel(page).locator('.fcitx-text')
   const rects: Record<number, DOMRect> = {}
   for (const i of [0, 1, 3, 5, 8, 11]) {
@@ -50,15 +62,24 @@ const shortPreedit = '短'
 const longPreedit = '长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长'
 
 test.describe('Extremely long preedit horizontal', () => {
-  const cases = [{ name: 'With paging buttons', pageable: true }, { name: 'Without paging buttons', pageable: false }]
+  const cases = [
+    { name: 'With paging buttons', pageable: true },
+    { name: 'Without paging buttons', pageable: false },
+  ]
   for (const { name, pageable } of cases) {
     test(name, async ({ page }) => {
       await init(page)
 
-      const lastDivider = page.locator('.fcitx-divider').nth(pageable ? -2 : -1)
-      const pagingDivider = pageable ? page.locator('.fcitx-divider').nth(-1) : page.locator('div' /* dummy */)
+      const lastDivider = page.locator('.fcitx-divider').nth(pageable
+        ? -2
+        : -1)
+      const pagingDivider = pageable
+        ? page.locator('.fcitx-divider').nth(-1)
+        : page.locator('div' /* dummy */)
       await updateInputPanel(page, shortPreedit)
-      await setCandidates(page, [{ text: '1' }], 0, pageable)
+      await setCandidates(page, [
+        { text: '1' },
+      ], 0, pageable)
       if (pageable) {
         await expect(pagingDivider).toHaveCSS('width', '1px')
       }
@@ -103,26 +124,43 @@ async function getLabelWidths(page: Page, indices: number[]) {
 test('Uneven label width in vertical mode', async ({ page }) => {
   await init(page)
   await setLayout(page, VERTICAL)
-  await setStyle(page, { Font: { LabelFontFamily: { 0: 'PingFang SC' } } })
+  await setStyle(page, {
+    Font: {
+      LabelFontFamily: { 0: 'PingFang SC' },
+    },
+  })
 
   // When clipboard is not empty, Ctrl+Alt+Shift+U shows unicode of clipboard text with no label, thus set --label-width=0.
-  await setCandidates(page, [{ label: '' }], 0)
+  await setCandidates(page, [
+    { label: '' },
+  ], 0)
 
   // Then typing a character shows unicode search result with ⌥1 label, which shouldn't be affected by previous --label-width.
-  await setCandidates(page, [{ label: '1' }, { label: '2' }], 0)
+  await setCandidates(page, [
+    { label: '1' },
+    { label: '2' },
+  ], 0)
   const widths = await getLabelWidths(page, [0, 1])
   expect(widths[0], 'Not affected by previous render').toBeGreaterThan(0)
   expect(widths[0], 'Even label width for vertical').toEqual(widths[1])
 
   await setLayout(page, HORIZONTAL)
-  await setCandidates(page, [{ label: '1' }, { label: '2' }], 0)
+  await setCandidates(page, [
+    { label: '1' },
+    { label: '2' },
+  ], 0)
   const newWidths = await getLabelWidths(page, [0, 1])
   expect(newWidths[0], 'Revert to baseline: PingFang SC\'s 1 and 2 are not equal width.').not.toEqual(newWidths[1])
 })
 
 test('Uneval label width in scroll mode', async ({ page }) => {
   await init(page)
-  await setStyle(page, { ScrollMode: { MaxColumnCount: '2', MaxRowCount: '2' }, Font: { LabelFontFamily: { 0: 'PingFang SC' } } })
+  await setStyle(page, {
+    ScrollMode: { MaxColumnCount: '2', MaxRowCount: '2' },
+    Font: {
+      LabelFontFamily: { 0: 'PingFang SC' },
+    },
+  })
   await scrollExpand(page, ['1', '2', '3', '4', '5', '6'])
   const widths = await getLabelWidths(page, [0, 2])
   expect(widths[0], 'Even label width for first candidates of different rows').toEqual(widths[1])
@@ -135,17 +173,36 @@ test('Uneval label width in scroll mode', async ({ page }) => {
 
 test('No space between text and comment', async ({ page }) => {
   await init(page)
-  await setCandidates(page, [{ label: '1', text: '五', comment: 'g', spaceBetweenComment: false }], 0)
+  await setCandidates(page, [
+    {
+      label: '1',
+      text: '五',
+      comment: 'g',
+      spaceBetweenComment: false,
+    },
+  ], 0)
   const textBox = await getBox(page.locator('.fcitx-text'))
   const commentBox = await getBox(page.locator('.fcitx-comment'))
   expect(Math.abs(textBox.x + textBox.width - commentBox.x)).toBeLessThan(1)
 
   // Override comments align right.
   await setLayout(page, VERTICAL)
-  await setStyle(page, { Typography: { VerticalCommentsAlignRight: 'True' } })
+  await setStyle(page, {
+    Typography: { VerticalCommentsAlignRight: 'True' },
+  })
   await setCandidates(page, [
-    { label: '1', text: '短', comment: 's', spaceBetweenComment: false },
-    { label: '2', text: '长长长长', comment: 'l', spaceBetweenComment: false },
+    {
+      label: '1',
+      text: '短',
+      comment: 's',
+      spaceBetweenComment: false,
+    },
+    {
+      label: '2',
+      text: '长长长长',
+      comment: 'l',
+      spaceBetweenComment: false,
+    },
   ], 0)
   const firstCommentBox = await getBox(page.locator('.fcitx-comment').nth(0))
   const secondCommentBox = await getBox(page.locator('.fcitx-comment').nth(1))
