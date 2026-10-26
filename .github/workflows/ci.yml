@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-26, ubuntu-24.04]
+        os: [xcode-27, ubuntu-26.04]
 
     steps:
       - uses: actions/checkout@v7
@@ -48,7 +48,7 @@ jobs:
           pnpm run check
 
       - name: Install dependencies (macOS)
-        if: startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'xcode')
         run: |
           brew install nlohmann-json
 
@@ -66,7 +66,7 @@ jobs:
         run: git apply --directory=webview patches/webview.patch
 
       - name: Configure (macOS)
-        if: startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'xcode')
         run: |
           cmake -B build -G Ninja \
             -DWKWEBVIEW_PROTOCOL="fcitx" \
@@ -83,7 +83,6 @@ jobs:
         run: cmake --build build
 
       - name: Test
-        if: startsWith(matrix.os, 'macos') # Ubuntu fails Set layout for 1px
         run: |
           npx playwright install webkit
           curl -LO https://github.com/fcitx-contrib/fcitx5-webview/releases/download/latest/snapshots.tar.bz2
@@ -94,7 +93,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v7
         with:
-          name: test-results
+          name: test-results-${{ matrix.os }}
           path: test-results
 
       - name: Setup tmate session
