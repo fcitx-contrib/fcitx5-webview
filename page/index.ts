@@ -1,6 +1,6 @@
 /// <reference path="./global.d.ts" />
 // @ts-expect-error parcel bundle-text prefix
-import css from 'bundle-text:./style.scss'
+import * as css from 'bundle-text:./style.scss'
 import { HORIZONTAL, VERTICAL } from './constant'
 import { setStyle } from './customize'
 import { initDistribution } from './distribution'
