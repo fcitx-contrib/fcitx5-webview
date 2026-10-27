@@ -60,7 +60,7 @@ jobs:
             nlohmann-json3-dev \
             libwebkit2gtk-4.1-dev \
             libcurl4-openssl-dev
-          # npx playwright install-deps
+          npx playwright install-deps
 
       - name: Patch
         run: git apply --directory=webview patches/webview.patch
