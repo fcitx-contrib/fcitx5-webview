@@ -285,6 +285,8 @@ test('But micro drag is tolerated', async ({ page }) => {
 })
 
 test.describe('Set layout', () => {
+  test.skip(process.platform !== 'darwin', 'Panel position relies on macOS font metrics')
+
   const cases = [
     {
       system: 'macOS',

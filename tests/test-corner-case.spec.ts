@@ -37,6 +37,7 @@ test('Horizontal multi-line candidate', async ({ page }) => {
 })
 
 test('Multi-space and tab', async ({ page }) => {
+  test.skip(process.platform !== 'darwin', 'Space width relies on macOS font metrics')
   await init(page)
 
   await setCandidates(page, [
@@ -122,6 +123,7 @@ async function getLabelWidths(page: Page, indices: number[]) {
 }
 
 test('Uneven label width in vertical mode', async ({ page }) => {
+  test.skip(process.platform !== 'darwin', 'PingFang SC is only available on macOS')
   await init(page)
   await setLayout(page, VERTICAL)
   await setStyle(page, {
