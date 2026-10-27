@@ -98,6 +98,7 @@ test('Tab actions', async ({ page }) => {
 })
 
 test('Tab actions snapshot', async ({ page }) => {
+  test.skip(process.platform !== 'darwin', 'Screenshots are only supported on macOS')
   async function collapse(height: number) {
     await page.locator('.fcitx-hoverables').evaluate((element: HTMLElement, height) => {
       element.style.maxBlockSize = `${height}px`
@@ -113,11 +114,11 @@ test('Tab actions snapshot', async ({ page }) => {
     cands: cands(),
     tabActions,
   })
-  await expect(page).toHaveScreenshot('tab-actions.png', snapshotOptions)
+  await expect.soft(page).toHaveScreenshot('tab-actions.png', snapshotOptions)
 
   await collapse(126)
-  await expect(page).toHaveScreenshot('tab-actions-collapse-begin.png', snapshotOptions)
+  await expect.soft(page).toHaveScreenshot('tab-actions-collapse-begin.png', snapshotOptions)
 
   await collapse(56)
-  await expect(page).toHaveScreenshot('tab-actions-collapse-middle.png', snapshotOptions)
+  await expect.soft(page).toHaveScreenshot('tab-actions-collapse-middle.png', snapshotOptions)
 })
