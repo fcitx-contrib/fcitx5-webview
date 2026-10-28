@@ -37,7 +37,7 @@
     "@parcel/transformer-sass": "^2.16.4",
     "@parcel/transformer-typescript-types": "2.16.4",
     "@playwright/test": "^1.61.0",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.0",
     "eslint": "^10.5.0",
     "eslint-plugin-format": "^2.0.1",
     "parcel": "^2.16.4",
