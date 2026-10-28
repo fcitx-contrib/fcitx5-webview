@@ -157,9 +157,11 @@ void WebviewCandidateWindow::answer_actions(
     invoke_js("answerActions", actions);
 }
 
+#ifndef __APPLE__
 void WebviewCandidateWindow::set_theme(theme_t theme) const {
     invoke_js("setTheme", theme);
 }
+#endif
 
 void WebviewCandidateWindow::set_style(const void *style) const {
     invoke_js("setStyle", static_cast<const char *>(style));

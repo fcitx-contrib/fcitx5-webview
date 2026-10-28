@@ -41,6 +41,9 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 }
 
 - (void)effectiveAppearanceChanged:(NSAppearance *)appearance {
+    if (@available(macOS 27.0, *)) {
+        return; // The configured theme controls glass and web content.
+    }
     if ([appearance bestMatchFromAppearancesWithNames:@[
             NSAppearanceNameDarkAqua, NSAppearanceNameAqua
         ]] == NSAppearanceNameDarkAqua) {
@@ -55,7 +58,13 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
                         change:(NSDictionary<NSKeyValueChangeKey, id> *)change
                        context:(void *)context {
     if ([keyPath isEqualToString:@"effectiveAppearance"]) {
-        [self effectiveAppearanceChanged:change[NSKeyValueChangeNewKey]];
+        // A detached glass view must not override a non-glass theme.
+        if (@available(macOS 26.0, *)) {
+            if (self.blurView == self.glassView && !self.blurView.hidden) {
+                [self
+                    effectiveAppearanceChanged:change[NSKeyValueChangeNewKey]];
+            }
+        }
     } else {
         [super observeValueForKeyPath:keyPath
                              ofObject:object
@@ -65,6 +74,9 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 }
 
 - (void)initAppearanceObserver {
+    if (@available(macOS 27.0, *)) {
+        return;
+    }
     if (@available(macOS 26.0, *)) {
         [self.glassView.contentView addObserver:self
                                      forKeyPath:@"effectiveAppearance"
@@ -286,8 +298,15 @@ void WebviewCandidateWindow::set_transparent_background() {
         glassView.wantsLayer = YES;
         glassView.hidden = YES;
         glassView.contentView = [NSView new];
-        ((void (*)(id, SEL, int))objc_msgSend)(glassView,
-                                               @selector(set_variant:), 15);
+        if (@available(macOS 27.0, *)) {
+            // Match the regular glass used by native candidate windows.
+            glassView.style = NSGlassEffectViewStyleRegular;
+        } else {
+            // Only macOS 26 supports the background-adaptive IME variant.
+            // On macOS 27.2 it renders foreground glass without a backdrop.
+            ((void (*)(id, SEL, NSInteger))objc_msgSend)(
+                glassView, @selector(set_variant:), 15);
+        }
         window.glassView = glassView;
         [window initAppearanceObserver];
         window.blurView = glassView;
@@ -417,6 +436,20 @@ void WebviewCandidateWindow::resize(
                                    kCGPopUpMenuWindowLevel) +
                      1];
     [window setIsVisible:YES];
+}
+
+void WebviewCandidateWindow::set_theme(theme_t theme) const {
+    if (@available(macOS 27.0, *)) {
+        auto window = unwrap_webview_handle<HoverableWindow>(w_->window());
+        // A nil appearance follows the system, as does the web content.
+        window.glassView.appearance =
+            theme == system
+                ? nil
+                : [NSAppearance appearanceNamed:theme == dark
+                                                    ? NSAppearanceNameDarkAqua
+                                                    : NSAppearanceNameAqua];
+    }
+    invoke_js("setTheme", theme);
 }
 
 void WebviewCandidateWindow::set_native_blur(blur_t value) const {
