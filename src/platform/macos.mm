@@ -464,8 +464,6 @@ void WebviewCandidateWindow::set_native_blur(blur_t value) const {
         if (@available(macOS 26, *)) {
             if (value == blur_t::system || value == blur_t::liquid_glass) {
                 window.blurView = window.glassView;
-                [window effectiveAppearanceChanged:window.glassView.contentView
-                                                       .effectiveAppearance];
             } else {
                 window.blurView = window.visualView;
             }
@@ -480,6 +478,14 @@ void WebviewCandidateWindow::set_native_blur(blur_t value) const {
                      relativeTo:webView];
         [window.blurView setFrame:window.blurViewRect];
         window.blurView.hidden = NO;
+        if (@available(macOS 26.0, *)) {
+            if (window.blurView == window.glassView) {
+                // Attaching and showing the view can change its appearance.
+                // Changes while hidden are ignored by the observer.
+                [window effectiveAppearanceChanged:window.glassView.contentView
+                                                       .effectiveAppearance];
+            }
+        }
     }
 }
 
