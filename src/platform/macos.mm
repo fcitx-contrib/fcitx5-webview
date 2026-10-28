@@ -61,7 +61,8 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
         // A detached glass view must not override a non-glass theme.
         if (@available(macOS 26.0, *)) {
             if (self.blurView == self.glassView && !self.blurView.hidden) {
-                [self effectiveAppearanceChanged:change[NSKeyValueChangeNewKey]];
+                [self
+                    effectiveAppearanceChanged:change[NSKeyValueChangeNewKey]];
             }
         }
     } else {
@@ -442,10 +443,11 @@ void WebviewCandidateWindow::set_theme(theme_t theme) const {
         auto window = unwrap_webview_handle<HoverableWindow>(w_->window());
         // A nil appearance follows the system, as does the web content.
         window.glassView.appearance =
-            theme == system ? nil
-                            : [NSAppearance appearanceNamed:
-                                  theme == dark ? NSAppearanceNameDarkAqua
-                                                : NSAppearanceNameAqua];
+            theme == system
+                ? nil
+                : [NSAppearance appearanceNamed:theme == dark
+                                                    ? NSAppearanceNameDarkAqua
+                                                    : NSAppearanceNameAqua];
     }
     invoke_js("setTheme", theme);
 }
