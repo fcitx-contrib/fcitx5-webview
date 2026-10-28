@@ -3,6 +3,17 @@
   font-family: sans-serif;
 }
 
+// Color transitions belong to theme changes, independently of platform and interaction state.
+.fcitx-panel, .fcitx-contextmenu, .fcitx-candidate-background, .fcitx-tabs,
+.fcitx-header, .fcitx-aux-up, .fcitx-aux-down, .fcitx-paging,
+.fcitx-hoverable-inner, .fcitx-divider-side, .fcitx-divider-middle,
+.fcitx-pre-caret, .fcitx-caret, .fcitx-post-caret, .fcitx-text,
+.fcitx-tab-inner, .fcitx-label, .fcitx-comment, .fcitx-mark, .fcitx-menu-item {
+  transition: background-color var(--color-transition-duration, 0ms) ease,
+    color var(--color-transition-duration, 0ms) ease,
+    border-color var(--color-transition-duration, 0ms) ease;
+}
+
 .fcitx-hidden {
   display: none;
 }
