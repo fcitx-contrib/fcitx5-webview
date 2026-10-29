@@ -3,7 +3,7 @@ import { RIGHT } from '../page/constant'
 import { candidate, init, scrollExpand, setCandidates, setStyle, theme } from './util'
 
 test.beforeEach(async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'no-preference' })
 })
 
 test('Initial and repeated themes do not enable color transitions', async ({ page }) => {
@@ -21,6 +21,34 @@ test('Initial and repeated themes do not enable color transitions', async ({ pag
   await page.evaluate(() => window.fcitx.setTheme(1))
   await page.clock.runFor(200)
   await expect(text).toHaveCSS('transition-duration', '0s, 0s, 0s')
+})
+
+test('Reduced motion disables color transitions and responds to preference changes', async ({ page }) => {
+  await page.clock.pauseAt(Date.now())
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await init(page)
+  await setCandidates(page, [{}, {}], 0)
+  const text = candidate(page, 1).locator('.fcitx-text')
+
+  await page.evaluate(() => window.fcitx.setTheme(1))
+  await expect(text).toHaveCSS('transition-duration', '0s')
+  expect(await theme(page).evaluate(element => element.getAnimations({ subtree: true }).length)).toBe(0)
+
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await expect(text).toHaveCSS('transition-duration', '0.5s, 0.5s, 0.5s')
+  const transitions = await text.evaluate((element) => {
+    getComputedStyle(element).getPropertyValue('color')
+    window.fcitx.setTheme(2)
+    getComputedStyle(element).getPropertyValue('color')
+    return element.getAnimations()
+      .filter(animation => animation instanceof CSSTransition)
+      .map(animation => animation.transitionProperty)
+  })
+  expect(transitions).toContain('color')
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(text).toHaveCSS('transition-duration', '0s')
+  expect(await theme(page).evaluate(element => element.getAnimations({ subtree: true }).length)).toBe(0)
 })
 
 test('Rapid theme changes cancel the previous cleanup timer', async ({ page }) => {

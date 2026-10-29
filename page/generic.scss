@@ -12,6 +12,10 @@
   transition: background-color var(--color-transition-duration, 0ms) ease,
     color var(--color-transition-duration, 0ms) ease,
     border-color var(--color-transition-duration, 0ms) ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 .fcitx-hidden {
