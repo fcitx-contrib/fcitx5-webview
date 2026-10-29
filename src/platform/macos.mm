@@ -2,6 +2,7 @@
 #include <QuartzCore/QuartzCore.h>
 #include <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #include <WebKit/WKWebView.h>
+#include <cmath>
 
 NSString *const F5mErrorDomain = @"F5mErrorDomain";
 
@@ -364,6 +365,13 @@ void WebviewCandidateWindow::resize(
     double bottom_left_radius, double border_width, double width, double height,
     bool dragging) {
     const int gap = 4;
+    // AppKit rounds window origins and sizes separately to whole points. Round
+    // the size before positioning so fractional animation heights cannot move
+    // the fixed top edge by a point. Preserve the bottom inset for placement
+    // above the caret, where the window's bottom edge must stay fixed instead.
+    const double bottom_inset = height - anchor_bottom;
+    width = std::ceil(width);
+    height = std::ceil(height);
     NSRect frame = getNearestScreenFrame(caret_x_, caret_y_);
     double left = NSMinX(frame);
     double right = NSMaxX(frame);
@@ -393,7 +401,7 @@ void WebviewCandidateWindow::resize(
                 adjusted_y - bottom        // No enough space underneath
             || (!hidden_ && was_above_)) { // It was above, avoid flicker
             y_ = std::max<double>(adjusted_y + caret_height_ + gap, bottom) -
-                 (height - anchor_bottom);
+                 bottom_inset;
             y_ = std::min<double>(y_, top - (height - anchor_top));
             was_above_ = true;
         } else {
@@ -404,10 +412,16 @@ void WebviewCandidateWindow::resize(
     hidden_ = false;
     HoverableWindow *window =
         unwrap_webview_handle<HoverableWindow>(w_->window());
-    [window setFrame:NSMakeRect(x_, y_, width, height) display:YES animate:NO];
+    [window setFrame:NSMakeRect(std::round(x_), std::round(y_), width, height)
+             display:YES
+             animate:NO];
     [window orderFront:nil];
 
     // Update the blur view
+    // Use the actual content size for conversion to bottom-left coordinates.
+    const NSRect content_bounds = window.contentView.bounds;
+    width = NSWidth(content_bounds);
+    height = NSHeight(content_bounds);
     // Shrink the blur view a bit to avoid the border being too thick.
     // Don't shrink full border_width so that there is no ghost stripe.
     double shrink_width = border_width / 2;
