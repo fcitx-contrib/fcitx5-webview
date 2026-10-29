@@ -5,16 +5,28 @@ import {
 let darkMQL: MediaQueryList | undefined
 let isSystemDark = false
 let followSystemTheme = true
+const COLOR_TRANSITION_DURATION = 500
+let colorTransitionTimer: ReturnType<typeof setTimeout> | undefined
 
 function setColorTransition(enabled: boolean) {
-  theme.style.setProperty('--color-transition', enabled ? '' : 'none')
+  theme.style.setProperty('--color-transition-duration', enabled
+    ? `${COLOR_TRANSITION_DURATION}ms`
+    : '')
 }
 
 function withTransition(remove: string, add: string) {
-  setColorTransition(true)
+  if (theme.classList.contains(add)) {
+    return
+  }
+  clearTimeout(colorTransitionTimer)
+  // Apply the initial theme immediately. Animate only actual light/dark changes.
+  const initialized = theme.classList.contains(remove)
+  setColorTransition(initialized)
   theme.classList.remove(remove)
   theme.classList.add(add)
-  setTimeout(setColorTransition, 500, false)
+  if (initialized) {
+    colorTransitionTimer = setTimeout(setColorTransition, COLOR_TRANSITION_DURATION, false)
+  }
 }
 
 function setLightTheme() {

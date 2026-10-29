@@ -16,7 +16,8 @@ import {
 } from './util'
 
 test('HTML structure', async ({ page }) => {
-  // Freeze timers before initialization to keep theme transitions and caret blinking out of the HTML.
+  // Start in the requested theme and freeze caret blinking to keep the HTML stable.
+  await page.emulateMedia({ colorScheme: 'dark' })
   await page.clock.pauseAt(Date.now())
   await init(page)
   await setCandidates(page, [
