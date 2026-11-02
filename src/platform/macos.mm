@@ -23,7 +23,7 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 
 @end
 
-@interface HoverableWindow : NSWindow
+@interface HoverableWindow : NSPanel
 
 @property(nonatomic) NSRect blurViewRect;
 @property(nonatomic, strong) NSVisualEffectView *visualView;
@@ -36,6 +36,14 @@ NSString *const F5mErrorDomain = @"F5mErrorDomain";
 @end
 
 @implementation HoverableWindow
+
+- (BOOL)canBecomeKeyWindow {
+    return NO;
+}
+
+- (BOOL)canBecomeMainWindow {
+    return NO;
+}
 
 - (BOOL)isKeyWindow {
     return YES;
@@ -240,11 +248,19 @@ void WebviewCandidateWindow::platform_init() {
 }
 
 void *WebviewCandidateWindow::create_window() {
-    auto window =
-        [[HoverableWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
-                                           styleMask:0
-                                             backing:NSBackingStoreBuffered
-                                               defer:YES];
+    auto window = [[HoverableWindow alloc]
+        initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                  styleMask:NSWindowStyleMaskNonactivatingPanel
+                    backing:NSBackingStoreBuffered
+                      defer:YES];
+    // Config windows make the input method a regular application. Clicking
+    // candidates must still leave the input client active and focused.
+    window.hidesOnDeactivate = NO;
+    // NSPanel enables native shadows by default; the web content draws its own.
+    window.hasShadow = NO;
+    // NSPanel defaults to NO; preserve the ownership expected by our
+    // destructor.
+    window.releasedWhenClosed = YES;
     [window setLevel:NSPopUpMenuWindowLevel];
     window.candidateWindow = this;
     return window;
@@ -252,7 +268,7 @@ void *WebviewCandidateWindow::create_window() {
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {
     [unwrap_webview_handle<HoverableWindow>(w_->window())
-        close]; // By default NSWindow is released on close.
+        close]; // create_window enables releasedWhenClosed.
     auto listener = static_cast<NotificationListener *>(this->platform_data);
     [listener release];
 }
