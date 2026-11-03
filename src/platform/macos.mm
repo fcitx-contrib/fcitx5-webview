@@ -267,8 +267,10 @@ void *WebviewCandidateWindow::create_window() {
 }
 
 WebviewCandidateWindow::~WebviewCandidateWindow() {
-    [unwrap_webview_handle<HoverableWindow>(w_->window())
-        close]; // create_window enables releasedWhenClosed.
+    auto window = unwrap_webview_handle<HoverableWindow>(w_->window());
+    // The Cocoa backend still accesses the panel during destruction.
+    w_.reset();
+    [window close]; // create_window enables releasedWhenClosed.
     auto listener = static_cast<NotificationListener *>(this->platform_data);
     [listener release];
 }
