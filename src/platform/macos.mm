@@ -3,6 +3,7 @@
 #include <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #include <WebKit/WKWebView.h>
 #include <cmath>
+#include <objc/message.h>
 
 NSString *const F5mErrorDomain = @"F5mErrorDomain";
 
@@ -189,6 +190,16 @@ NSRect getNearestScreenFrame(double x, double y) {
 
 namespace candidate_window {
 
+static void configurePrivateWebKitFeatures(WKWebView *webView) {
+    // Enable native visual effects via -apple-visual-effect.
+    SEL systemAppearanceSelector =
+        NSSelectorFromString(@"_setUseSystemAppearance:");
+    if ([webView respondsToSelector:systemAppearanceSelector]) {
+        ((void (*)(id, SEL, BOOL))objc_msgSend)(
+            webView, systemAppearanceSelector, YES);
+    }
+}
+
 static void setViewCornerRadius(NSView *view, CGFloat width, CGFloat height,
                                 CGFloat top_left_radius,
                                 CGFloat top_right_radius,
@@ -286,6 +297,8 @@ void WebviewCandidateWindow::set_transparent_background() {
     // Transparent WKWebView
     WKWebView *webView =
         unwrap_webview_handle<WKWebView>(w_->browser_controller());
+    configurePrivateWebKitFeatures(webView);
+
     [webView setValue:@NO forKey:@"drawsBackground"];
     [webView setUnderPageBackgroundColor:[NSColor clearColor]];
 
