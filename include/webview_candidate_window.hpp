@@ -36,6 +36,16 @@ enum class blur_t { none = 0, system = 1, blur = 2, liquid_glass = 3 };
 
 enum theme_t { system = 0, light = 1, dark = 2 };
 
+struct AppAppearance {
+    std::string appId;
+    std::string appearance;
+    theme_t theme = system;
+    bool vibrancy = false;
+    bool contrast = false;
+
+    bool operator==(const AppAppearance &) const = default;
+};
+
 enum writing_mode_t { horizontal_tb = 0, vertical_rl = 1, vertical_lr = 2 };
 
 enum scroll_state_t { none = 0, ready = 1, scrolling = 2 };
@@ -111,6 +121,7 @@ class WebviewCandidateWindow {
     // color is either #RRGGBBAA or "" meaning app has no accent color.
     void apply_app_accent_color(const std::string &color);
     void set_accent_color() const;
+    void apply_app_appearance(const AppAppearance &appearance);
     void copy_html() const;
 
 #ifndef __EMSCRIPTEN__
@@ -182,6 +193,9 @@ class WebviewCandidateWindow {
     // Fallback to macOS default blue on platforms with no accent color support.
     int accent_color_ = 4;
     std::string app_accent_color_ = "";
+    AppAppearance app_appearance_;
+    bool app_appearance_ready_ = false;
+    void set_app_appearance() const;
     layout_t layout_ = layout_t::horizontal;
     writing_mode_t writing_mode_ = writing_mode_t::horizontal_tb;
     formatted preeditPreCaret_;
