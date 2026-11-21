@@ -154,6 +154,13 @@ declare global {
     resize: (new_epoch: number, dx: number, dy: number, dragging: boolean, hasContextmenu: boolean) => void
     setTheme: (theme: 0 | 1 | 2) => void
     setAccentColor: (color: number | null | string) => void
+    setAppAppearance: (
+      appId: string,
+      appearance: string,
+      theme: 0 | 1 | 2,
+      vibrancy: boolean,
+      contrast: boolean,
+    ) => void
     setStyle: (style: string) => void
     setWritingMode: (mode: WRITING_MODE) => void
     copyHTML: () => void

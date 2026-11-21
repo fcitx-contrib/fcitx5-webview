@@ -9,7 +9,7 @@ import { hidePanel, setCandidates, updateInputPanel } from './panel'
 import { loadPlugins, pluginManager, unloadPlugins } from './plugin'
 import { initScroll, scrollKeyAction } from './scroll'
 import { hoverables, initSelectors, panel } from './selector'
-import { initTheme, setAccentColor, setTheme } from './theme'
+import { initTheme, setAccentColor, setAppAppearance, setTheme } from './theme'
 import { answerActions, initUx, resize } from './ux'
 
 function setLayout(layout: LAYOUT) {
@@ -97,6 +97,7 @@ export function initPanel(container: HTMLElement) {
   window.fcitx.resize = resize
   window.fcitx.setTheme = setTheme
   window.fcitx.setAccentColor = setAccentColor
+  window.fcitx.setAppAppearance = setAppAppearance
   window.fcitx.setStyle = setStyle
   window.fcitx.setWritingMode = setWritingMode
   window.fcitx.copyHTML = copyHTML

@@ -94,6 +94,8 @@ WebviewCandidateWindow::WebviewCandidateWindow(
 
     bind("onload", [this, init_callback = std::move(init_callback)]() {
         invoke_js("setHost", system_, version_);
+        app_appearance_ready_ = true;
+        set_app_appearance();
         init_callback();
     });
 
@@ -128,6 +130,23 @@ void WebviewCandidateWindow::set_accent_color() const {
     } else {
         invoke_js("setAccentColor", accent_color_);
     }
+}
+
+void WebviewCandidateWindow::apply_app_appearance(
+    const AppAppearance &appearance) {
+    if (app_appearance_ == appearance) {
+        return;
+    }
+    app_appearance_ = appearance;
+    if (app_appearance_ready_) {
+        set_app_appearance();
+    }
+}
+
+void WebviewCandidateWindow::set_app_appearance() const {
+    invoke_js("setAppAppearance", app_appearance_.appId, app_appearance_.appearance,
+              app_appearance_.theme, app_appearance_.vibrancy,
+              app_appearance_.contrast);
 }
 
 void WebviewCandidateWindow::set_candidates(std::vector<Candidate> candidates,

@@ -5,6 +5,7 @@ import {
 let darkMQL: MediaQueryList | undefined
 let isSystemDark = false
 let followSystemTheme = true
+let appTheme: 0 | 1 | 2 = 0
 const COLOR_TRANSITION_DURATION = 500
 let colorTransitionTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -47,13 +48,22 @@ function systemThemeHandler() {
 }
 
 export function initTheme() {
+  isSystemDark = false
+  setAppAppearance('', '', 0, false, false)
+
   if (typeof window === 'undefined' || !window.matchMedia) {
     return
   }
+
   darkMQL = window.matchMedia('(prefers-color-scheme: dark)')
   isSystemDark = darkMQL.matches
+  updateAppDark()
+
   darkMQL.addEventListener('change', (event) => {
     isSystemDark = event.matches
+    if (appTheme === 0) {
+      updateAppDark()
+    }
     if (followSystemTheme) {
       systemThemeHandler()
     }
@@ -75,6 +85,28 @@ export function setTheme(theme: 0 | 1 | 2) {
       setDarkTheme()
       break
   }
+}
+
+function updateAppDark() {
+  theme.dataset.fcitxAppDark = String(
+    appTheme === 2
+    || (appTheme === 0 && isSystemDark),
+  )
+}
+
+export function setAppAppearance(
+  appId: string,
+  appearance: string,
+  appThemeValue: 0 | 1 | 2,
+  vibrancy: boolean,
+  contrast: boolean,
+) {
+  appTheme = appThemeValue
+  theme.dataset.fcitxAppId = appId
+  theme.dataset.fcitxAppAppearance = appearance
+  theme.dataset.fcitxAppVibrancy = String(vibrancy)
+  theme.dataset.fcitxAppContrast = String(contrast)
+  updateAppDark()
 }
 
 const accentColorMap = {
